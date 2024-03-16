@@ -4,7 +4,7 @@ import {Listbox, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarB
 import {users} from "./data";
 import {AcmeLogo} from "./AcmeLogo";
 
-export const ListboxWrapper = () => {
+export const RightListboxWrapper = () => {
   const [values, setValues] = React.useState(new Set(["1"]));
   const arrayValues = Array.from(values);
 
@@ -36,7 +36,7 @@ export const ListboxWrapper = () => {
   }, [arrayValues.length]);
 
   return (
-    <div className="w-full max-w-[w-52] flex flex-col h-screen bg-slate-800">
+    <div className="w-full max-w-[w-80] flex flex-col h-screen bg-slate-800">
       <div className="bg-gray-500 w-full">
         {topContent}
       </div>
@@ -54,7 +54,6 @@ export const ListboxWrapper = () => {
               <ListboxItem key={item.id} textValue={item.name}>
                 <div className="flex gap-2 items-center">
                   <Image
-                    isZoomed  
                     className="w-full"
                     alt="NextUI hero Image"
                     src={item.avatar}
@@ -64,7 +63,7 @@ export const ListboxWrapper = () => {
             )}
           </Listbox>
           <div className="w-full">
-            {topContent}
+              {topContent}
           </div>
     </div>
   )
