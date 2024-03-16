@@ -2,7 +2,7 @@
 import React from "react";
 import unsplash from "./unsplashConfig";
  
-import { Listbox, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 
 export const ImageEditor = () => {
 
@@ -102,7 +102,7 @@ export const ImageEditor = () => {
       <Button type="submit" onClick={() => searchImages("dog")}>
         <svg className="w-9 h-9 ml-auto mr-1 p-2 bg-gray-700 hover:bg-gray-800 text-white rounded-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
       </Button>
-      <div className="overflow-y-scroll overflow-x-hidden h-96 justify-center flex flex-wrap">
+      <div className="overflow-y-scroll overflow-x-hidden h-56 justify-center flex flex-wrap">
         {
           imageList.map(image => {
             return <img src={image.urls.regular}
@@ -115,10 +115,10 @@ export const ImageEditor = () => {
           })
         }
       </div>
-    
-        {count > 0?  <div className='relative flex group'>
+      <Divider className="my-4" />
+        {count > 0?  <div className='m-10 relative flex group'>
         
-        <div className="h-max w-full ">
+        <div className="h-96 w-full ">
           <img src={unsplashImage.url && unsplashImage.url} className=" object-cover h-full w-full  " alt="preview" />
         </div>
   
