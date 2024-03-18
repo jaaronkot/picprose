@@ -3,7 +3,8 @@ import React from "react";
 import unsplash from "./unsplashConfig";
 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
-
+const titleStr = "海内存知己，天涯若比邻"
+const authorStr = "@PixPark"
 export const ImageEditor = (props) => {
 
   return (
@@ -15,7 +16,7 @@ export const ImageEditor = (props) => {
               <img src={props.message.url && props.message.url} alt="Image" className="rounded-md aspect-video object-cover w-full" />
             </div>
 
-            <div className="backdrop-blur-none bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full">
+            <div className="backdrop-blur-sm bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full">
               <button
                 onClick={() => setUnsplashImage({
                   url: "",
@@ -30,19 +31,19 @@ export const ImageEditor = (props) => {
               </button>
 
               <div className={'px-10 pt-32  text-left rounded-xl h-full p-4 flex flex-col'}>
-                <h1 className=" md:text-5xl text-center text-2xl font-bold text-white">{"gzhaoyou1"}</h1>
+                <h1 className=" md:text-5xl text-center text-2xl font-bold text-white">{titleStr}</h1>
                 <div className="flex flex-col items-center py-10  ">
 
-                  <h2 className="text-xl  font-semibold text-left text-white ">{"@pixpark"}</h2>
+                  <h2 className="text-xl  font-semibold text-left text-white ">{authorStr}</h2>
                   {
                     // customIcon ?
                     //   <div className=" ">
                     //     <img src={customIcon} alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
                     //   </div>
                     //   :
-                    //   <div className="mr-2 items-center justify-center flex">
-                    //     <i className={`devicon-${icon.value}-plain text-white dev-icon text-3xl`}></i>
-                    //   </div>
+                      <div className="mr-2 items-center justify-center flex">
+                        <i className={`devicon-jaegertracing-plain text-white dev-icon text-4xl`}></i>
+                      </div>
                   }
 
                 </div>

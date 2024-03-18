@@ -5,13 +5,14 @@ import {ListboxWrapper} from "./ListboxWrapper";
 import {RightListboxWrapper} from "./RightListboxWrapper";
 import {users} from "./data";
 import {ImageEditor} from "./ImageEditor";
+import {ComponentToImg} from "./ComponentToImg";
 
 export default function Home() {
+  const [message, setMessage] = React.useState({});
   const onChildData = (data:{}) => {
-    console.log('message from child ' + data.url);
     setMessage(data)
   }
-  const [message, setMessage] = React.useState('');
+
   return (
     <div className="flex">
        <div className="w-52 bg-gray-200">
@@ -19,7 +20,10 @@ export default function Home() {
         </ListboxWrapper>
       </div>
       <div className="flex-1" >
+      <ComponentToImg>
         <ImageEditor message={message}/>
+      </ComponentToImg>
+       
       </div>
       <div className="w-80 bg-gray-320">
         <RightListboxWrapper onData={onChildData}>
