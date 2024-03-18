@@ -100,7 +100,7 @@ export const ListboxWrapper = (props) => {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button onClick={() => searchImages("dev")} as={Link} color="primary" href="#" variant="flat">
-                Sign Up
+                Search
               </Button>
             </NavbarItem>
           </NavbarContent>
