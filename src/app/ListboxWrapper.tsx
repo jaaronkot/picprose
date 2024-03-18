@@ -1,23 +1,17 @@
 'use client'
 import React from "react";
-import { Listbox, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Input, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
-import { AcmeLogo } from "./AcmeLogo";
+import { SearchIcon } from "./SearchIcon";
 
 export const ListboxWrapper = (props) => {
   const [values, setValues] = React.useState(new Set(["1"]));
 
   const [imageList, setImageList] = React.useState([]);
-
-  interface ImgContext {
-    url: string;
-    name: string;
-    avatar: string;
-    profile: string;
-    downloadLink: string;
-  }
-
-  const [unsplashImage, setUnsplashImage] = React.useState<ImgContext>({
+  const [searchValue, setSearchValue] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(Boolean);
+ 
+  const [unsplashImage, setUnsplashImage] = React.useState({
     url: "",
     name: "",
     avatar: "",
@@ -25,9 +19,10 @@ export const ListboxWrapper = (props) => {
     downloadLink: ""
   });
 
-
+ 
   const searchImages = (searchText: string) => {
     console.log('sssssssss')
+    setIsLoading(true)
     unsplash.search
       .getPhotos({
         query: searchText,
@@ -38,6 +33,7 @@ export const ListboxWrapper = (props) => {
 
       })
       .then(response => {
+        setIsLoading(false)
         setImageList(response.response.results)
       });
   }
@@ -67,9 +63,7 @@ export const ListboxWrapper = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" href="#" variant="flat">
-                Sign Up
-              </Button>
+           dd
             </NavbarItem>
           </NavbarContent>
         </Navbar>
@@ -93,14 +87,18 @@ export const ListboxWrapper = (props) => {
             wrapper: "px-4",
           }}
         >
-          <NavbarBrand>
-            <p className="font-bold text-inherit">ACME</p>
-          </NavbarBrand>
-
+     
+          <Input
+           type="search" 
+          placeholder="输入关键词搜索图片"
+          value = {searchValue}
+          onValueChange={setSearchValue}
+           />
+       
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button onClick={() => searchImages("dev")} as={Link} color="primary" href="#" variant="flat">
-                Search
+              <Button isLoading={isLoading} isIconOnly color="primary" href="#" variant="flat" onClick={() => searchImages(searchValue)}>
+              <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
               </Button>
             </NavbarItem>
           </NavbarContent>
