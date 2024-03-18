@@ -15,8 +15,8 @@ export default function Home() {
 
   return (
     <div className="flex">
-       <div className="w-52 bg-gray-200">
-        <ListboxWrapper>
+       <div className="w-80 bg-gray-200">
+        <ListboxWrapper onData={onChildData}>
         </ListboxWrapper>
       </div>
       <div className="flex-1" >
@@ -26,7 +26,7 @@ export default function Home() {
        
       </div>
       <div className="w-80 bg-gray-320">
-        <RightListboxWrapper onData={onChildData}>
+        <RightListboxWrapper>
         </RightListboxWrapper>
       </div>
         

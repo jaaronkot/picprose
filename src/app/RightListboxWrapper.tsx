@@ -55,7 +55,7 @@ export const RightListboxWrapper = (props) => {
 
 
   return (
-    <div className="w-full max-w-[w-80] h-screen bg-slate-800">
+    <div className="w-full max-w-[w-64] h-screen bg-slate-800 px-2">
       <Tabs fullWidth size="md" aria-label="Dynamic tabs" radius='sm'
       >
         <Tab key="property" title="属性">

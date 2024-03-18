@@ -10,7 +10,7 @@ export const ImageEditor = (props) => {
   return (
     <>
       {props.message ?
-        <div className="flex justify-center items-center h-full w-full px-20">
+        <div className="flex justify-center items-center h-full w-full px-10">
           <div className='relative flex group rounded-3xl'>
             <div className="flex justify-center items-center h-full">
               <img src={props.message.url && props.message.url} alt="Image" className="rounded-md aspect-video object-cover w-full" />

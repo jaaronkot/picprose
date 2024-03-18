@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import {nextui} from "@nextui-org/react";
+const { scrollbarGutter, scrollbarWidth, scrollbarColor } = require('tailwind-scrollbar-utilities');
 
 const config: Config = {
   content: [
@@ -18,6 +19,6 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(), scrollbarWidth()],
 };
 export default config;
