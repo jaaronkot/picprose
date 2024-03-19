@@ -7,6 +7,43 @@ import { AcmeLogo } from "./AcmeLogo";
 export const RightPropertyPanel = (props) => {
 
 
+
+  const [titleValue, setTitleValue] = React.useState("");
+  const [subTitleValue, setSubTitleValue] = React.useState("");
+  const [authorValue, setAuthorValue] = React.useState("");
+  const [iconValue, setIconValue] = React.useState("");
+
+  const [propertyInfo, setPropertyInfo] = React.useState({
+    font: "",
+    title: "",
+    subTitle: "",
+    author: "",
+    icon: "",
+    color: "",
+    aspect: "",
+    blur: 0
+  });
+
+  React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      author: authorValue
+    }));
+  }, [authorValue]);
+
+  React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      title: titleValue
+    }));
+  }, [titleValue]);
+
+ 
+  React.useEffect(() => {
+    props.onPropInfoChange(propertyInfo);
+  }, [propertyInfo]);
+ 
+  
   const dowloadImage = (imgFormat: string) => {
     props.onImageDowloadClick(imgFormat)
 
@@ -133,12 +170,16 @@ export const RightPropertyPanel = (props) => {
           label="标题"
           placeholder="Enter your description"
           className="max-w-xs"
+          value={titleValue}
+          onValueChange={setTitleValue}
         />
 
         <Input
           label="作者"
           type="search"
           placeholder="@PixPark"
+          value={authorValue}
+          onValueChange={setAuthorValue}
 
         />
       </div>

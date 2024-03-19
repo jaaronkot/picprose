@@ -3,9 +3,11 @@ import React from "react";
 import unsplash from "./unsplashConfig";
 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
-const titleStr = "海内存知己，天涯若比邻"
-const authorStr = "@PixPark"
+// const titleStr = "海内存知己，天涯若比邻"
+
 export const ImageEditor = (props) => {
+  const { title, author } = props.propertyInfo;
+  
   const getImageInfo = () => {
     return (props.message.url ? props.message : {
       url: "muban-7.svg",
@@ -38,10 +40,10 @@ export const ImageEditor = (props) => {
         </button>
 
         <div className={'px-10 pt-32  text-left rounded-xl h-full p-4 flex flex-col'}>
-          <h1 className=" md:text-5xl text-center text-2xl font-bold text-white">{titleStr}</h1>
+          <h1 className=" md:text-5xl text-center text-2xl font-bold text-white">{title}</h1>
           <div className="flex flex-col items-center py-10  ">
 
-            <h2 className="text-xl  font-semibold text-left text-white ">{authorStr}</h2>
+            <h2 className="text-xl  font-semibold text-left text-white ">{author}</h2>
             {
               // customIcon ?
               //   <div className=" ">

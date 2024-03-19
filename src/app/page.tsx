@@ -10,12 +10,29 @@ import { ComponentToImg } from "./ComponentToImg";
 export default function Home() {
   const child1Ref = React.useRef(null);
   const [message, setMessage] = React.useState({});
+
+    const [propertyInfo, setPropertyInfo] = React.useState({
+      font: "",
+      title: "",
+      subTitle: "",
+      author: "",
+      icon: "",
+      color: "",
+      aspect: "",
+      blur: 0
+    });
+
   const onChildData = (data: {}) => {
     setMessage(data)
   }
   const onImageDowloadClick = (imgFormat: string) => {
     child1Ref.current.downloadImage(imgFormat)
   }
+
+  const onPropInfoChange = (propInfo) => {
+    setPropertyInfo(propInfo)
+  }
+
 
   return (
     <div className="flex">
@@ -24,12 +41,12 @@ export default function Home() {
       </div>
       <div className="flex-1 bg-gray-100" >
         <ComponentToImg ref={child1Ref}  >
-          <ImageEditor message={message} />
+          <ImageEditor message={message} propertyInfo={propertyInfo}/>
         </ComponentToImg>
 
       </div>
       <div className="w-80">
-        <RightPropertyPanel onImageDowloadClick={onImageDowloadClick} />
+        <RightPropertyPanel onImageDowloadClick={onImageDowloadClick} onPropInfoChange={onPropInfoChange}/>
       </div>
 
     </div>

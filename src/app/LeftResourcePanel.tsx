@@ -5,20 +5,10 @@ import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 
 export const LeftResourcePanel = (props) => {
-  const [values, setValues] = React.useState(new Set(["1"]));
-
+  
   const [imageList, setImageList] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(Boolean);
- 
-  const [unsplashImage, setUnsplashImage] = React.useState({
-    url: "",
-    name: "",
-    avatar: "",
-    profile: "",
-    downloadLink: ""
-  });
-
  
   const searchImages = (searchText: string) => {
     setIsLoading(true)
