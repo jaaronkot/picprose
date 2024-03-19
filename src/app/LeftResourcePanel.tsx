@@ -4,7 +4,7 @@ import { Input, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBr
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 
-export const ListboxWrapper = (props) => {
+export const LeftResourcePanel = (props) => {
   const [values, setValues] = React.useState(new Set(["1"]));
 
   const [imageList, setImageList] = React.useState([]);
@@ -21,7 +21,6 @@ export const ListboxWrapper = (props) => {
 
  
   const searchImages = (searchText: string) => {
-    console.log('sssssssss')
     setIsLoading(true)
     unsplash.search
       .getPhotos({
@@ -49,26 +48,30 @@ export const ListboxWrapper = (props) => {
     })
   }
 
+  React.useEffect(() => {
+    searchImages('dev')
+  }, []);
+ 
   return (
-    <div className="w-full flex flex-col h-screen bg-slate-800">
-      <div className="bg-gray-500 w-full">
+    <div className="w-full flex flex-col h-screen">
+      <div className="w-full">
         <Navbar
           classNames={{
             wrapper: "px-4",
           }}
         >
           <NavbarBrand>
-            <p className="font-bold text-inherit">ACME</p>
+            <p className="font-bold text-inherit">Any Cover</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
             <NavbarItem>
-           dd
+            <Avatar isBordered src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
             </NavbarItem>
           </NavbarContent>
         </Navbar>
       </div>
-      <div className="flex-grow scrollbar-thin scrollbar-width: thin overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap ">
+      <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto">
         {
           imageList.map(image => {
             return <img src={image.urls.regular}
