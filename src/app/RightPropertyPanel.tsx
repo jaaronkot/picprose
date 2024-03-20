@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import { Tabs, Tab, Select, Input, Divider, SelectItem, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Tabs, Tab, Select, SelectItem, Selection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { AcmeLogo } from "./AcmeLogo";
 
@@ -12,6 +12,10 @@ export const RightPropertyPanel = (props) => {
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
   const [iconValue, setIconValue] = React.useState("");
+
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setIconValue(e.target.value);
+  };
 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
@@ -37,6 +41,13 @@ export const RightPropertyPanel = (props) => {
       title: titleValue
     }));
   }, [titleValue]);
+
+  React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      icon: iconValue
+    }));
+  }, [iconValue]);
 
  
   React.useEffect(() => {
@@ -134,6 +145,9 @@ export const RightPropertyPanel = (props) => {
         <Select
           label="图标"
           className="max-w-xs"
+          // selectedKeys={iconValue}
+          // onSelectionChange={setIconValue}
+          onChange={handleSelectionChange}
         >
           {animals.map((animal) => (
             <SelectItem key={animal.value} value={animal.value}>

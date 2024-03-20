@@ -1,15 +1,12 @@
 'use client'
 import React from "react";
-import unsplash from "./unsplashConfig";
-import { AndroidPlain } from 'devicons-react'
- 
+import { DiAndroid } from "react-icons/di";
 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 
-
 export const ImageEditor = (props) => {
-  const { title, author } = props.propertyInfo;
- 
+  const { aspect, blur, title, subTitle, author, icon, font, color } = props.propertyInfo;
+  
   const getImageInfo = () => {
     return (props.message.url ? props.message : {
       url: "muban-7.svg",
@@ -20,8 +17,21 @@ export const ImageEditor = (props) => {
     });
   }
 
-  const [customIcon, setCustomIcon] = React.useState('pixel-sheep.png')
+  const getIcon = () => {
+    // console.log('gezhaoyou icon:' + icon)
+    if(icon.length === 0) {
+      return (<div className=" ">
+        <img src='pixel-sheep.png' alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
+      </div>)
+    } else {
+      return (<div className="mr-2 items-center justify-center flex">
+        <DiAndroid color="white" size="35"/>
+      </div>)
+    }
+  }
 
+  const [customIcon, setCustomIcon] = React.useState('')
+  
   return (
  
     <div className="flex flex-row  items-center bg-white  justify-center  ">
@@ -53,17 +63,7 @@ export const ImageEditor = (props) => {
               <div className="flex flex-col items-center py-10  ">
 
                 <h2 className="text-xl font-semibold text-left text-white ">{author}</h2>
-                {
-                  customIcon ?
-                    <div className=" ">
-                      <img src={customIcon} alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
-                    </div>
-                    :
-                  <div className="mr-2 items-center justify-center flex">
-                    <AndroidPlain color="white" size="35" />
-                  </div>
-                }
-
+                {getIcon()}
               </div>
             </div>
           </div>
