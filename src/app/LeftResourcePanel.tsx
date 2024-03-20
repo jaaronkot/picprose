@@ -27,6 +27,12 @@ export const LeftResourcePanel = (props) => {
       });
   }
 
+  const onSearchKeydown = (e)=>{
+		if (e.keyCode === 13) {
+      searchImages(searchValue)
+		}
+	}
+
   // 
   const selectImage = (image) => {
     props.onData({
@@ -86,6 +92,7 @@ export const LeftResourcePanel = (props) => {
           placeholder="输入关键词搜索图片"
           value = {searchValue}
           onValueChange={setSearchValue}
+          onKeyDown={(e)=> onSearchKeydown(e)}
            />
        
           <NavbarContent justify="end">
