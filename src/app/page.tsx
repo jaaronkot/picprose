@@ -19,7 +19,7 @@ export default function Home() {
       icon: "",
       color: "",
       aspect: "",
-      blur: 0
+      blur: ""
     });
 
   const onChildData = (data: {}) => {
