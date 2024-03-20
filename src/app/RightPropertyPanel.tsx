@@ -147,7 +147,7 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="text-gray-500 font-bold text-inherit">属性</p>
+            <p className="text-gray-400 font-bold text-inherit">属性</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
