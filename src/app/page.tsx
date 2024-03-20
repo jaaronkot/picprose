@@ -26,7 +26,9 @@ export default function Home() {
     setMessage(data)
   }
   const onImageDowloadClick = (imgFormat: string) => {
-    child1Ref.current.downloadImage(imgFormat)
+    if (child1Ref.current) {
+      child1Ref.current.downloadImage(imgFormat)
+    }
   }
 
   const onPropInfoChange = (propInfo) => {

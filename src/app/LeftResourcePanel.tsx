@@ -16,7 +16,7 @@ export const LeftResourcePanel = (props) => {
       .getPhotos({
         query: searchText,
         page: 1,
-        per_page: 30,
+        perPage: 30,
         // orientation:'portrait'
 
 
@@ -51,7 +51,7 @@ export const LeftResourcePanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="font-bold text-inherit">Any Cover</p>
+            <p className="font-bold text-inherit">Mitopix</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">

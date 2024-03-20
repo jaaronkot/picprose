@@ -1,22 +1,25 @@
 'use client'
 import React from "react";
-import { Tabs, Tab, Select, SelectItem, Selection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Tabs, Tab, Select, SelectItem, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { AcmeLogo } from "./AcmeLogo";
 
 export const RightPropertyPanel = (props) => {
-
-
-
-  const [titleValue, setTitleValue] = React.useState("");
+ 
+  const [titleValue, setTitleValue] = React.useState("海内存知己，天涯若比邻");
   const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("");
+  const [authorValue, setAuthorValue] = React.useState("@PixPark");
   const [iconValue, setIconValue] = React.useState("");
+  const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setIconValue(e.target.value);
   };
 
+  const handleAspectSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAspectValue(e.target.value);
+  };
+ 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
     title: "",
@@ -49,16 +52,42 @@ export const RightPropertyPanel = (props) => {
     }));
   }, [iconValue]);
 
- 
+
+  React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      aspect: aspectValue
+    }));
+  }, [aspectValue]);
+
   React.useEffect(() => {
     props.onPropInfoChange(propertyInfo);
   }, [propertyInfo]);
- 
-  
+
+
   const dowloadImage = (imgFormat: string) => {
     props.onImageDowloadClick(imgFormat)
 
   }
+
+  const img_aspect_x_list = [
+    // 横屏
+    { label: "1:1", value: "aspect-[1/1]", description: "900x450" },
+    { label: "2:1", value: "aspect-[2/1]", description: "900x450" },
+    { label: "3:2", value: "aspect-[3/2]", description: "900x450" },
+    { label: "4:3", value: "aspect-[4/3]", description: "900x450" },
+    { label: "16:9", value: "aspect-[16/9]", description: "900x450" },
+  ]
+
+  const img_aspect_y_list = [
+    //  竖屏
+    { label: "1:2", value: "6", description: "900x450" },
+    { label: "2:3", value: "7", description: "900x450" },
+    { label: "3:4", value: "8", description: "900x450" },
+    { label: "9:16", value: "9", description: "900x450" },
+  ]
+
+
   const animals = [
     { label: "Cat", value: "cat", description: "The second most popular pet in the world" },
     { label: "Dog", value: "dog", description: "The most popular pet in the world" },
@@ -111,12 +140,23 @@ export const RightPropertyPanel = (props) => {
         <Select
           label="比例"
           className="max-w-xs"
+          defaultSelectedKeys={["aspect-[16/9]"]}
+          onChange={handleAspectSelectionChange}
         >
-          {animals.map((animal) => (
-            <SelectItem key={animal.value} value={animal.value}>
-              {animal.label}
-            </SelectItem>
-          ))}
+          <SelectSection showDivider title="横屏">
+            {img_aspect_x_list.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label + "  -   " + item.description}
+              </SelectItem>
+            ))}
+          </SelectSection>
+          <SelectSection showDivider title="竖屏">
+            {img_aspect_y_list.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label + "  -   " + item.description}
+              </SelectItem>
+            ))}
+          </SelectSection>
         </Select>
 
         <Slider
@@ -145,8 +185,6 @@ export const RightPropertyPanel = (props) => {
         <Select
           label="图标"
           className="max-w-xs"
-          // selectedKeys={iconValue}
-          // onSelectionChange={setIconValue}
           onChange={handleSelectionChange}
         >
           {animals.map((animal) => (
@@ -199,18 +237,18 @@ export const RightPropertyPanel = (props) => {
       </div>
       <Divider />
       <div className="w-full mt-4 px-4">
-      
-      <div className="text-gray-400 text-sm">下载图像</div>
+
+        <div className="text-gray-400 text-sm">下载图像</div>
         <div className="flex justify-between my-3">
           <Button onClick={() => dowloadImage("jpg")} as={Link} color="primary" href="#" variant="flat">
-              JPG
-            </Button>
-            <Button onClick={() => dowloadImage("png")} as={Link} color="primary" href="#" variant="flat">
-              PNG
-            </Button>
-            <Button onClick={() => dowloadImage("svg")} as={Link} color="primary" href="#" variant="flat">
-              SVG
-            </Button>
+            JPG
+          </Button>
+          <Button onClick={() => dowloadImage("png")} as={Link} color="primary" href="#" variant="flat">
+            PNG
+          </Button>
+          <Button onClick={() => dowloadImage("svg")} as={Link} color="primary" href="#" variant="flat">
+            SVG
+          </Button>
         </div>
       </div>
     </div>
