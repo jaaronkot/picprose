@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import { Tabs, Tab, Select, SelectItem, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Tabs, Tab, Select, SelectItem, SliderValue, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { AcmeLogo } from "./AcmeLogo";
 
@@ -11,6 +11,7 @@ export const RightPropertyPanel = (props) => {
   const [authorValue, setAuthorValue] = React.useState("@PixPark");
   const [iconValue, setIconValue] = React.useState("");
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
+  const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setIconValue(e.target.value);
@@ -28,7 +29,7 @@ export const RightPropertyPanel = (props) => {
     icon: "",
     color: "",
     aspect: "",
-    blur: 0
+    blur: ""
   });
 
   React.useEffect(() => {
@@ -52,6 +53,28 @@ export const RightPropertyPanel = (props) => {
     }));
   }, [iconValue]);
 
+  React.useEffect(() => {
+    var blurLevel: string = "backdrop-blur-none";
+    if(typeof blurValue === 'number') {
+      if(blurValue == 0) {
+        blurLevel = "backdrop-blur-none";
+      } else if(blurValue == 20) {
+        blurLevel = "backdrop-blur-sm";
+      } else if(blurValue == 40) {
+        blurLevel = "backdrop-blur";
+      } else if(blurValue == 60) {
+        blurLevel = "backdrop-blur-md";
+      } else if(blurValue == 80) {
+        blurLevel = "backdrop-blur-lg";
+      } else if(blurValue == 100) { 
+        blurLevel = "backdrop-blur-xl";
+      }
+    }
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      blur: blurLevel
+    }));
+  }, [blurValue]);
 
   React.useEffect(() => {
     setPropertyInfo(preValue => ({
@@ -124,13 +147,13 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="font-bold text-inherit">ACME</p>
+            <p className="text-gray-500 font-bold text-inherit">属性</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" href="#" variant="flat">
-                Sign Up
+              <Button as={Link} color="primary" target="_blank" href="https://github.com/gezhaoyou" variant="flat">
+                GitHub
               </Button>
             </NavbarItem>
           </NavbarContent>
@@ -161,24 +184,29 @@ export const RightPropertyPanel = (props) => {
 
         <Slider
           label="模糊"
-
+          value={blurValue} 
+          onChange={setBlurValue}
           size="sm"
-          step={10}
+          step={20}
           marks={[
             {
               value: 20,
               label: "20%",
             },
             {
-              value: 50,
-              label: "50%",
+              value: 40,
+              label: "40%",
+            },
+            {
+              value: 60,
+              label: "60%",
             },
             {
               value: 80,
               label: "80%",
             },
           ]}
-          defaultValue={20}
+
           className="max-w-md"
         />
         <Divider />

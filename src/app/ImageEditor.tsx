@@ -35,8 +35,6 @@ export const ImageEditor = (props) => {
   return (
  
     <div className="flex flex-row  items-center bg-white  justify-center  ">
-
-
       <div className="w-full">
 
         <div className='relative flex group rounded-3xl'>
@@ -44,15 +42,8 @@ export const ImageEditor = (props) => {
             <img src={getImageInfo().url && getImageInfo().url} alt="Image" className={"rounded-md object-cover w-full " + aspect} />
           </div>
 
-          <div className="backdrop-blur-sm bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full">
+          <div className={"bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full " + blur}>
             <button
-              onClick={() => setUnsplashImage({
-                url: "",
-                name: "",
-                avatar: "",
-                profile: "",
-                downloadLink: ""
-              })}
               className="absolute  top-2 right-2 cursor-pointer">
               <svg className="group-hover:inline-block hidden w-8 h-8 text-gray-800 bg-white p-2 rounded-full z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
 
