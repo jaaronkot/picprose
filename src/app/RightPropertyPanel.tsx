@@ -152,7 +152,7 @@ export const RightPropertyPanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" target="_blank" href="https://github.com/gezhaoyou" variant="flat">
+              <Button as={Link} color="primary" target="_blank" href="https://github.com/gezhaoyou/PicProse" variant="flat">
                 GitHub
               </Button>
             </NavbarItem>
