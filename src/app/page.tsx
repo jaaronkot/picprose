@@ -8,7 +8,7 @@ import { ImageEditor } from "./ImageEditor";
 import { ComponentToImg } from "./ComponentToImg";
 
 export default function Home() {
-  const child1Ref = React.useRef(null);
+  const child1Ref = React.useRef<ComponentToImg>(null);
   const [message, setMessage] = React.useState({});
 
     const [propertyInfo, setPropertyInfo] = React.useState({

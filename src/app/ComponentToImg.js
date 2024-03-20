@@ -70,3 +70,5 @@ export const ComponentToImg = forwardRef((props, ref) => {
 		</div>
 	);
 })
+
+ComponentToImg.displayName = "ComponentToImg"

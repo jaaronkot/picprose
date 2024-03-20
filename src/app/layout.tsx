@@ -17,8 +17,8 @@ const roboto_mono = Roboto_Mono({
 })
  
 export const metadata: Metadata = {
-  title: "Mitopix - Best Cover Image Generator Tool",
-  description: "Mitopix: the best article cover image generator tool for Medium, Wordpress, Wechat and other blog post.",
+  title: "Mito - Best Cover Image Generator Tool",
+  description: "Mito: the best article cover image generator tool for Medium, Wordpress, Wechat and other blog post.",
 };
 
 export default function RootLayout({children}: { children: React.ReactNode }) {

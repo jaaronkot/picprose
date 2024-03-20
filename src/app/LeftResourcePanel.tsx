@@ -51,12 +51,12 @@ export const LeftResourcePanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="font-bold text-inherit">Mitopix</p>
+            <p className="font-bold text-inherit">Mito</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
             <NavbarItem>
-            <Avatar isBordered src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
+            <Avatar isBordered src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
             </NavbarItem>
           </NavbarContent>
         </Navbar>
