@@ -2,31 +2,43 @@
 import React from "react";
 import { Tabs, Tab, Select, SelectItem, SliderValue, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
+import { DiGithub } from "react-icons/di";
 
 
 export const RightPropertyPanel = (props) => {
- 
+
   const [titleValue, setTitleValue] = React.useState("海内存知己，天涯若比邻");
   const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("@PixPark");
-  const [iconValue, setIconValue] = React.useState("");
+  const [authorValue, setAuthorValue] = React.useState("@PicProse");
+  const [iconValue, setIconValue] = React.useState("default-icon.png");
+  const [deviconValue, setDevIconValue] = React.useState("");
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
+  const inputRef = React.useRef(null);
+
+  const handleFileChange = (event) => {
+    if (event.target.files[0] != null) {
+      const file = URL.createObjectURL(event.target.files[0]);
+      setIconValue(file);
+      setDevIconValue("");
+    }
+  };
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setIconValue(e.target.value);
+    setDevIconValue(e.target.value);
   };
 
   const handleAspectSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAspectValue(e.target.value);
   };
- 
+
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
     title: "",
     subTitle: "",
     author: "",
     icon: "",
+    devicon: "",
     color: "",
     aspect: "",
     blur: ""
@@ -54,19 +66,26 @@ export const RightPropertyPanel = (props) => {
   }, [iconValue]);
 
   React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      devicon: deviconValue
+    }));
+  }, [deviconValue]);
+
+  React.useEffect(() => {
     var blurLevel: string = "backdrop-blur-none";
-    if(typeof blurValue === 'number') {
-      if(blurValue == 0) {
+    if (typeof blurValue === 'number') {
+      if (blurValue == 0) {
         blurLevel = "backdrop-blur-none";
-      } else if(blurValue == 20) {
+      } else if (blurValue == 20) {
         blurLevel = "backdrop-blur-sm";
-      } else if(blurValue == 40) {
+      } else if (blurValue == 40) {
         blurLevel = "backdrop-blur";
-      } else if(blurValue == 60) {
+      } else if (blurValue == 60) {
         blurLevel = "backdrop-blur-md";
-      } else if(blurValue == 80) {
+      } else if (blurValue == 80) {
         blurLevel = "backdrop-blur-lg";
-      } else if(blurValue == 100) { 
+      } else if (blurValue == 100) {
         blurLevel = "backdrop-blur-xl";
       }
     }
@@ -152,8 +171,8 @@ export const RightPropertyPanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" target="_blank" href="https://github.com/gezhaoyou/PicProse" variant="flat">
-                GitHub
+              <Button as={Link} color="primary" target="_blank" href="https://www.producthunt.com/posts/picprose" variant="flat">
+              "ProductHunt"
               </Button>
             </NavbarItem>
           </NavbarContent>
@@ -184,7 +203,7 @@ export const RightPropertyPanel = (props) => {
 
         <Slider
           label="模糊"
-          value={blurValue} 
+          value={blurValue}
           onChange={setBlurValue}
           size="sm"
           step={20}
@@ -210,18 +229,7 @@ export const RightPropertyPanel = (props) => {
           className="max-w-md"
         />
         <Divider />
-        <Select
-          label="图标"
-          className="max-w-xs"
-          onChange={handleSelectionChange}
-        >
-          {animals.map((animal) => (
-            <SelectItem key={animal.value} value={animal.value}>
-              {animal.label}
-            </SelectItem>
-          ))}
-        </Select>
-
+        
 
         <Select
           label="字体"
@@ -246,6 +254,29 @@ export const RightPropertyPanel = (props) => {
           ))}
         </Select>
         <Divider />
+        <div className="flex w-full">
+          <div className="w-4/5">
+            <Select
+              label="图标"
+              onChange={handleSelectionChange}
+            >
+              {animals.map((animal) => (
+                <SelectItem key={animal.value} value={animal.value}>
+                  {animal.label}
+                </SelectItem>
+              ))}
+            </Select></div>
+          <div className="flex-grow" />
+          <div className="w-1/6 ml-2 mt-1">
+            <input type="file"
+              className="hidden"
+              onChange={handleFileChange}
+              ref={inputRef}
+            />
+            <Button isIconOnly color="primary" size="lg" variant="flat" onClick={() => inputRef.current.click()}>
+              +
+            </Button></div>
+        </div>
         <Textarea
           label="标题"
           placeholder="Enter your description"
@@ -257,7 +288,7 @@ export const RightPropertyPanel = (props) => {
         <Input
           label="作者"
           type="search"
-          placeholder="@PixPark"
+          placeholder="@PicProse"
           value={authorValue}
           onValueChange={setAuthorValue}
 

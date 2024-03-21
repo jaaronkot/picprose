@@ -17,8 +17,8 @@ const roboto_mono = Roboto_Mono({
 })
  
 export const metadata: Metadata = {
-  title: "PicProse - Best Cover Image Generator Tool",
-  description: "PicProse is the best article cover image generator tool for Medium, Wordpress, Wechat and other blog post.",
+  title: "PicProse - Better Cover Image Generator Tools",
+  description: "PicProse is better cover image generator tool for Medium, YouTube, BiliBili, Blog and more.",
 };
 
 export default function RootLayout({children}: { children: React.ReactNode }) {

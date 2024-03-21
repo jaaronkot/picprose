@@ -58,7 +58,7 @@ export const LeftResourcePanel = (props) => {
         >
           <NavbarBrand>
             <AcmeLogo/>
-            <p className="font-bold text-inherit"> PicProse</p>
+            <p className="font-bold text-inherit">PicProse</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
@@ -98,7 +98,7 @@ export const LeftResourcePanel = (props) => {
        
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button isLoading={isLoading} isIconOnly color="primary" href="#" variant="flat" onClick={() => searchImages(searchValue)}>
+              <Button isLoading={isLoading} isIconOnly color="primary" variant="flat" onClick={() => searchImages(searchValue)}>
               <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
               </Button>
             </NavbarItem>

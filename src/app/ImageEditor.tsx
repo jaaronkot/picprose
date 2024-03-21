@@ -1,12 +1,12 @@
 'use client'
 import React from "react";
-import { DiAndroid } from "react-icons/di";
+import { DiAndroid, DiGithub } from "react-icons/di";
 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
-  const { aspect, blur, title, subTitle, author, icon, font, color } = props.propertyInfo;
- 
+  const { aspect, blur, title, subTitle, author, icon, devicon, font, color } = props.propertyInfo;
+
   const getImageInfo = () => {
     return (props.message.url ? props.message : {
       url: "default-bg.jpg",
@@ -17,22 +17,21 @@ export const ImageEditor = (props) => {
     });
   }
   const getIcon = () => {
-    // console.log('gezhaoyou icon:' + icon)
-    if(icon.length === 0) {
-      return (<div className=" ">
-        <img src='default-icon.png' alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
-      </div>)
-    } else {
+    if (devicon.length != 0) {
       return (<div className="mr-2 items-center justify-center flex">
         <DiAndroid color="white" size="35"/>
       </div>)
-    }
+    } else {
+      return (<div className=" ">
+        <img src={icon} alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
+      </div>)
+    } 
   }
 
   const [customIcon, setCustomIcon] = React.useState('')
-  
+
   return (
-    <div className="flex flex-row  items-center bg-white justify-center aspect-square">
+    <div className="flex flex-row  items-center bg-white justify-center">
       <div className="w-full">
         <div className='relative flex group rounded-3xl'>
           <div className="flex justify-center items-center h-full">

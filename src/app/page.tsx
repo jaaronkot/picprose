@@ -18,6 +18,7 @@ export default function Home() {
       author: "",
       icon: "",
       color: "",
+      devicon: "",
       aspect: "",
       blur: ""
     });
