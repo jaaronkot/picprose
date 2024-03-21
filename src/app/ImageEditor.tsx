@@ -6,22 +6,21 @@ import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navba
 
 export const ImageEditor = (props) => {
   const { aspect, blur, title, subTitle, author, icon, font, color } = props.propertyInfo;
-  
+ 
   const getImageInfo = () => {
     return (props.message.url ? props.message : {
-      url: "muban-7.svg",
-      name: "defaut",
-      avatar: "default-img-author.jpg",
+      url: "default-bg.jpg",
+      name: "PicProse",
+      avatar: "default-author.jpg",
       profile: "default",
       downloadLink: ""
     });
   }
-
   const getIcon = () => {
     // console.log('gezhaoyou icon:' + icon)
     if(icon.length === 0) {
       return (<div className=" ">
-        <img src='pixel-sheep.png' alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
+        <img src='default-icon.png' alt="img" className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white" />
       </div>)
     } else {
       return (<div className="mr-2 items-center justify-center flex">
@@ -33,13 +32,11 @@ export const ImageEditor = (props) => {
   const [customIcon, setCustomIcon] = React.useState('')
   
   return (
- 
-    <div className="flex flex-row  items-center bg-white  justify-center  ">
+    <div className="flex flex-row  items-center bg-white justify-center aspect-square">
       <div className="w-full">
-
         <div className='relative flex group rounded-3xl'>
           <div className="flex justify-center items-center h-full">
-            <img src={getImageInfo().url && getImageInfo().url} alt="Image" className={"rounded-md object-cover w-full " + aspect} />
+            <img src={getImageInfo().url && getImageInfo().url} alt="Image" className={"rounded-md object-cover w-full aspect-[16/9] " + aspect} />
           </div>
 
           <div className={"bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full " + blur}>
@@ -74,6 +71,5 @@ export const ImageEditor = (props) => {
         </div>
       </div>
     </div>
-    // </div>
   )
 };

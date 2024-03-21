@@ -95,11 +95,11 @@ export const RightPropertyPanel = (props) => {
 
   const img_aspect_x_list = [
     // 横屏
-    { label: "1:1", value: "aspect-[1/1]", description: "900x450" },
-    { label: "2:1", value: "aspect-[2/1]", description: "900x450" },
-    { label: "3:2", value: "aspect-[3/2]", description: "900x450" },
-    { label: "4:3", value: "aspect-[4/3]", description: "900x450" },
-    { label: "16:9", value: "aspect-[16/9]", description: "900x450" },
+    { label: "1 : 1", value: "aspect-square", description: "900x450" },
+    { label: "2 : 1", value: "aspect-[2/1]", description: "900x450" },
+    { label: "3 : 2", value: "aspect-[3/2]", description: "900x450" },
+    { label: "4 : 3", value: "aspect-[4/3]", description: "900x450" },
+    { label: "16: 9", value: "aspect-[16/9]", description: "900x450" },
   ]
 
   const img_aspect_y_list = [
