@@ -2,7 +2,7 @@
 import React from "react";
 import { Tabs, Tab, Select, SelectItem, SliderValue, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
-import { AcmeLogo } from "./AcmeLogo";
+
 
 export const RightPropertyPanel = (props) => {
  
@@ -147,7 +147,7 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="text-gray-400 font-bold text-inherit">属性</p>
+            <p className="text-gray-350 font-bold text-inherit">参数</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">

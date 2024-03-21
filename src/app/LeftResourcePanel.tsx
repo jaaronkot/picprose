@@ -3,7 +3,7 @@ import React from "react";
 import { Input, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
-
+import { AcmeLogo } from "./AcmeLogo";
 export const LeftResourcePanel = (props) => {
   
   const [imageList, setImageList] = React.useState([]);
@@ -57,7 +57,8 @@ export const LeftResourcePanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="font-bold text-inherit">PicProse</p>
+            <AcmeLogo/>
+            <p className="font-bold text-inherit"> PicProse</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
