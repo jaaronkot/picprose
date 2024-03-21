@@ -98,8 +98,8 @@ export const LeftResourcePanel = (props) => {
        
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button isLoading={isLoading} isIconOnly color="primary" variant="flat" onClick={() => searchImages(searchValue)}>
-              <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+              <Button isLoading={isLoading} isIconOnly variant="flat" color="primary" onClick={() => searchImages(searchValue)}>
+              <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
               </Button>
             </NavbarItem>
           </NavbarContent>

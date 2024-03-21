@@ -171,8 +171,8 @@ export const RightPropertyPanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" target="_blank" href="https://www.producthunt.com/posts/picprose" variant="flat">
-              "ProductHunt"
+              <Button as={Link} color="primary" variant="flat" target="_blank" href="https://www.producthunt.com/posts/picprose">
+              ProductHunt
               </Button>
             </NavbarItem>
           </NavbarContent>
@@ -273,7 +273,7 @@ export const RightPropertyPanel = (props) => {
               onChange={handleFileChange}
               ref={inputRef}
             />
-            <Button isIconOnly color="primary" size="lg" variant="flat" onClick={() => inputRef.current.click()}>
+            <Button isIconOnly color="primary" variant="flat" size="lg" onClick={() => inputRef.current.click()}>
               +
             </Button></div>
         </div>
@@ -299,13 +299,13 @@ export const RightPropertyPanel = (props) => {
 
         <div className="text-gray-400 text-sm">下载图像</div>
         <div className="flex justify-between my-3">
-          <Button onClick={() => dowloadImage("jpg")} as={Link} color="primary" href="#" variant="flat">
+          <Button onClick={() => dowloadImage("jpg")} as={Link} color="primary" variant="flat">
             JPG
           </Button>
-          <Button onClick={() => dowloadImage("png")} as={Link} color="primary" href="#" variant="flat">
+          <Button onClick={() => dowloadImage("png")} as={Link} color="primary" variant="flat">
             PNG
           </Button>
-          <Button onClick={() => dowloadImage("svg")} as={Link} color="primary" href="#" variant="flat">
+          <Button onClick={() => dowloadImage("svg")} as={Link} color="primary" variant="flat">
             SVG
           </Button>
         </div>
