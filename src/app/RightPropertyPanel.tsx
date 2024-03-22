@@ -10,7 +10,7 @@ export const RightPropertyPanel = (props) => {
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
-  const [fontValue, setFontValue] = React.useState("");
+  const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("default-icon.png");
   const [deviconValue, setDevIconValue] = React.useState("");
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
@@ -141,9 +141,9 @@ export const RightPropertyPanel = (props) => {
   ]
 
   const font_list = [
+    { label: "OpenSans", value: "font-opensans", description: "The largest land animal" },
     { label: "Anke", value: "font-anke", description: "The second most popular pet in the world" },
     { label: "Roboto", value: "font-roboto-mono", description: "The most popular pet in the world" },
-    { label: "OpenSans", value: "font-opensans", description: "The largest land animal" },
   ]
 
   const animals = [
@@ -249,7 +249,6 @@ export const RightPropertyPanel = (props) => {
         <Select
           label="字体"
           className="max-w-xs py-2"
-          defaultSelectedKeys={["font-anke"]}
           onChange={onFontSelectChange}
         >
           {font_list.map((font) => (

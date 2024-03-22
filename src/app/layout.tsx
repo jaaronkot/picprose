@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {Providers} from "./providers";
-import Head from 'next/head'
- 
+import { GoogleAnalytics } from '@next/third-parties/google'
+
 import { Open_Sans, Roboto_Mono, Anek_Latin } from 'next/font/google'
 
 const openSans = Open_Sans({
@@ -39,6 +39,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
           {children}
         </Providers>
       </body>
+      <GoogleAnalytics gaId="G-XWHW3HHDZR" />
     </html>
   );
 }
