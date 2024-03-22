@@ -16,9 +16,26 @@ export const ImageEditor = (props) => {
       downloadLink: ""
     });
   }
+
+  const getTitle = () => {
+    if(title.length != 0) {
+      return title
+    } else {
+      return '海内存知己，天涯若比邻'
+    }
+  }
+
+  const getAuthor = () => {
+    if(author.length != 0) {
+      return author
+    } else {
+      return '@PicProse'
+    }
+  }
+  
   const getIcon = () => {
     if (devicon.length != 0) {
-      return (<div className="mr-2 items-center justify-center flex">
+      return (<div className="m-2 items-center justify-center flex">
         <DiAndroid color="white" size="35"/>
       </div>)
     } else {
@@ -46,10 +63,9 @@ export const ImageEditor = (props) => {
             </button>
 
             <div className={' px-10 pt-32  text-left rounded-xl h-full p-4 flex flex-col'}>
-              <h1 className="font-inter md:text-5xl text-center text-2xl font-bold  text-white">{title}</h1>
+              <h1 className={"md:text-5xl text-center text-2xl font-bold  text-white " + font}>{getTitle()}</h1>
               <div className="flex flex-col items-center py-10  ">
-
-                <h2 className="text-xl font-semibold text-left text-white ">{author}</h2>
+                <h2 className={"text-xl font-semibold text-left text-white " + font}>{getAuthor()}</h2>
                 {getIcon()}
               </div>
             </div>

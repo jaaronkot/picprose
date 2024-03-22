@@ -7,9 +7,10 @@ import { DiGithub } from "react-icons/di";
 
 export const RightPropertyPanel = (props) => {
 
-  const [titleValue, setTitleValue] = React.useState("海内存知己，天涯若比邻");
+  const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("@PicProse");
+  const [authorValue, setAuthorValue] = React.useState("");
+  const [fontValue, setFontValue] = React.useState("");
   const [iconValue, setIconValue] = React.useState("default-icon.png");
   const [deviconValue, setDevIconValue] = React.useState("");
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
@@ -32,6 +33,10 @@ export const RightPropertyPanel = (props) => {
     setAspectValue(e.target.value);
   };
 
+  const onFontSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFontValue(e.target.value);
+  };
+ 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
     title: "",
@@ -64,6 +69,13 @@ export const RightPropertyPanel = (props) => {
       icon: iconValue
     }));
   }, [iconValue]);
+
+  React.useEffect(() => {
+    setPropertyInfo(preValue => ({
+      ...preValue,
+      font: fontValue
+    }));
+  }, [fontValue]);
 
   React.useEffect(() => {
     setPropertyInfo(preValue => ({
@@ -109,7 +121,6 @@ export const RightPropertyPanel = (props) => {
 
   const dowloadImage = (imgFormat: string) => {
     props.onImageDowloadClick(imgFormat)
-
   }
 
   const img_aspect_x_list = [
@@ -129,6 +140,11 @@ export const RightPropertyPanel = (props) => {
     { label: "9:16", value: "9", description: "900x450" },
   ]
 
+  const font_list = [
+    { label: "Anke", value: "font-anke", description: "The second most popular pet in the world" },
+    { label: "Roboto", value: "font-roboto-mono", description: "The most popular pet in the world" },
+    { label: "OpenSans", value: "font-opensans", description: "The largest land animal" },
+  ]
 
   const animals = [
     { label: "Cat", value: "cat", description: "The second most popular pet in the world" },
@@ -188,14 +204,14 @@ export const RightPropertyPanel = (props) => {
           <SelectSection showDivider title="横屏">
             {img_aspect_x_list.map((item) => (
               <SelectItem key={item.value} value={item.value}>
-                {item.label + "  -   " + item.description}
+                {item.label}
               </SelectItem>
             ))}
           </SelectSection>
           <SelectSection showDivider title="竖屏">
             {img_aspect_y_list.map((item) => (
               <SelectItem key={item.value} value={item.value}>
-                {item.label + "  -   " + item.description}
+                {item.label}
               </SelectItem>
             ))}
           </SelectSection>
@@ -210,34 +226,35 @@ export const RightPropertyPanel = (props) => {
           marks={[
             {
               value: 20,
-              label: "20%",
+              label: "20",
             },
             {
               value: 40,
-              label: "40%",
+              label: "40",
             },
             {
               value: 60,
-              label: "60%",
+              label: "60",
             },
             {
               value: 80,
-              label: "80%",
+              label: "80",
             },
           ]}
 
           className="max-w-md py-2"
         />
         <Divider />
-        
-
+ 
         <Select
           label="字体"
           className="max-w-xs py-2"
+          defaultSelectedKeys={["font-anke"]}
+          onChange={onFontSelectChange}
         >
-          {animals.map((animal) => (
-            <SelectItem key={animal.value} value={animal.value}>
-              {animal.label}
+          {font_list.map((font) => (
+            <SelectItem key={font.value} value={font.value}>
+              {font.label}
             </SelectItem>
           ))}
         </Select>
@@ -279,7 +296,7 @@ export const RightPropertyPanel = (props) => {
         </div>
         <Textarea
           label="标题"
-          placeholder="Enter your description"
+          placeholder="输入标题"
           className="max-w-xs py-2"
           value={titleValue}
           onValueChange={setTitleValue}
@@ -289,7 +306,7 @@ export const RightPropertyPanel = (props) => {
           label="作者"
           type="search"
           className="py-2"
-          placeholder="@PicProse"
+          placeholder="输入作者"
           value={authorValue}
           onValueChange={setAuthorValue}
 
