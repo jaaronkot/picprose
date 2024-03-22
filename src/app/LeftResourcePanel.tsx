@@ -45,7 +45,7 @@ export const LeftResourcePanel = (props) => {
   }
 
   React.useEffect(() => {
-    searchImages('dev')
+    searchImages('scenery')
   }, []);
  
   return (

@@ -178,10 +178,10 @@ export const RightPropertyPanel = (props) => {
           </NavbarContent>
         </Navbar>
       </div>
-      <div className="flex-grow justify-center flex flex-wrap px-4">
+      <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap px-4">
         <Select
           label="比例"
-          className="max-w-xs"
+          className="max-w-xs py-2"
           defaultSelectedKeys={["aspect-[16/9]"]}
           onChange={handleAspectSelectionChange}
         >
@@ -226,14 +226,14 @@ export const RightPropertyPanel = (props) => {
             },
           ]}
 
-          className="max-w-md"
+          className="max-w-md py-2"
         />
         <Divider />
         
 
         <Select
           label="字体"
-          className="max-w-xs"
+          className="max-w-xs py-2"
         >
           {animals.map((animal) => (
             <SelectItem key={animal.value} value={animal.value}>
@@ -245,7 +245,7 @@ export const RightPropertyPanel = (props) => {
 
         <Select
           label="颜色"
-          className="max-w-xs"
+          className="max-w-xs py-2"
         >
           {animals.map((animal) => (
             <SelectItem key={animal.value} value={animal.value}>
@@ -254,7 +254,7 @@ export const RightPropertyPanel = (props) => {
           ))}
         </Select>
         <Divider />
-        <div className="flex w-full">
+        <div className="flex w-full py-2">
           <div className="w-4/5">
             <Select
               label="图标"
@@ -280,7 +280,7 @@ export const RightPropertyPanel = (props) => {
         <Textarea
           label="标题"
           placeholder="Enter your description"
-          className="max-w-xs"
+          className="max-w-xs py-2"
           value={titleValue}
           onValueChange={setTitleValue}
         />
@@ -288,6 +288,7 @@ export const RightPropertyPanel = (props) => {
         <Input
           label="作者"
           type="search"
+          className="py-2"
           placeholder="@PicProse"
           value={authorValue}
           onValueChange={setAuthorValue}
@@ -311,6 +312,5 @@ export const RightPropertyPanel = (props) => {
         </div>
       </div>
     </div>
-
   )
 };
