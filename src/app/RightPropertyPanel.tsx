@@ -3,8 +3,7 @@ import React from "react";
 import { Tabs, Tab, Select, SelectItem, SliderValue, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { DiGithub } from "react-icons/di";
-
-
+import { TwitterPicker } from "react-color";
 export const RightPropertyPanel = (props) => {
 
   const [titleValue, setTitleValue] = React.useState("");
@@ -245,7 +244,43 @@ export const RightPropertyPanel = (props) => {
           className="max-w-md py-2"
         />
         <Divider />
- 
+        <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
+        遮罩
+      </div>
+      <div className="flex items-center justify-center">
+      <TwitterPicker className=""/>
+      </div>
+      
+        <Slider
+          label="遮罩"
+          value={blurValue}
+          onChange={setBlurValue}
+          size="sm"
+          step={20}
+          marks={[
+            {
+              value: 20,
+              label: "20",
+            },
+            {
+              value: 40,
+              label: "40",
+            },
+            {
+              value: 60,
+              label: "60",
+            },
+            {
+              value: 80,
+              label: "80",
+            },
+          ]}
+
+          className="max-w-md py-2"
+        />
+        <Divider/>
+        
+    
         <Select
           label="字体"
           className="max-w-xs py-2"
