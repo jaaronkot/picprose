@@ -21,6 +21,7 @@ const config: Config = {
         sans: ["var(--font-opensans)"],
         mono: ["var(--font-roboto-mono)"],
         anke: ["var(--font-anke)"],
+        dingtalk: ["var(--font-dingtalk)"],
       },
       aspectRatio: {
         '2/1': '2 / 1',

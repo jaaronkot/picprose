@@ -30,14 +30,14 @@ import {
 } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { DiGithub } from "react-icons/di";
-import { TwitterPicker } from "react-color";
+import { TwitterPicker, CompactPicker } from "react-color";
 export const RightPropertyPanel = (props) => {
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
   const [fontValue, setFontValue] = React.useState("font-anke");
-  const [iconValue, setIconValue] = React.useState("default-icon.png");
-  const [deviconValue, setDevIconValue] = React.useState("");
+  const [iconValue, setIconValue] = React.useState("");
+  const [deviconValue, setDevIconValue] = React.useState("adonisjs");
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
@@ -184,81 +184,45 @@ export const RightPropertyPanel = (props) => {
 
   const font_list = [
     {
-      label: "OpenSans",
+      label: "Font-DingTalk",
+      value: "font-dingtalk",
+      description: "The largest land animal",
+    },
+    {
+      label: "Font-OpenSans",
       value: "font-opensans",
       description: "The largest land animal",
     },
     {
-      label: "Anke",
+      label: "Font-Anke",
       value: "font-anke",
       description: "The second most popular pet in the world",
     },
     {
-      label: "Roboto",
+      label: "Font-Roboto",
       value: "font-roboto-mono",
       description: "The most popular pet in the world",
     },
   ];
 
-  const animals = [
+  const colors = [
     {
-      label: "Cat",
-      value: "cat",
+      label: "red",
+      value: "red",
       description: "The second most popular pet in the world",
     },
     {
-      label: "Dog",
-      value: "dog",
+      label: "blue",
+      value: "blue",
       description: "The most popular pet in the world",
     },
     {
-      label: "Elephant",
-      value: "elephant",
+      label: "green",
+      value: "green",
       description: "The largest land animal",
     },
-    { label: "Lion", value: "lion", description: "The king of the jungle" },
-    { label: "Tiger", value: "tiger", description: "The largest cat species" },
-    {
-      label: "Giraffe",
-      value: "giraffe",
-      description: "The tallest land animal",
-    },
-    {
-      label: "Dolphin",
-      value: "dolphin",
-      description: "A widely distributed and diverse group of aquatic mammals",
-    },
-    {
-      label: "Penguin",
-      value: "penguin",
-      description: "A group of aquatic flightless birds",
-    },
-    {
-      label: "Zebra",
-      value: "zebra",
-      description: "A several species of African equids",
-    },
-    {
-      label: "Shark",
-      value: "shark",
-      description:
-        "A group of elasmobranch fish characterized by a cartilaginous skeleton",
-    },
-    {
-      label: "Whale",
-      value: "whale",
-      description: "Diverse group of fully aquatic placental marine mammals",
-    },
-    {
-      label: "Otter",
-      value: "otter",
-      description: "A carnivorous mammal in the subfamily Lutrinae",
-    },
-    {
-      label: "Crocodile",
-      value: "crocodile",
-      description: "A large semiaquatic reptile",
-    },
+    { label: "black", value: "lion", description: "The king of the jungle" },
+    { label: "white", value: "tiger", description: "The largest cat species" },
   ];
   return (
     <div className="w-full flex flex-col h-screen">
@@ -336,8 +300,11 @@ export const RightPropertyPanel = (props) => {
           ]}
           className="max-w-md py-2"
         />
+        
+        
+        {/*
         <Divider />
-        {/* <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
+         <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
           遮罩
         </div>
         <div className="flex items-center justify-center">
@@ -376,6 +343,7 @@ export const RightPropertyPanel = (props) => {
           label="字体"
           className="max-w-xs py-2"
           onChange={onFontSelectChange}
+          defaultSelectedKeys={["font-anke"]}
         >
           {font_list.map((font) => (
             <SelectItem key={font.value} value={font.value}>
@@ -385,21 +353,24 @@ export const RightPropertyPanel = (props) => {
         </Select>
 
         <Select label="颜色" className="max-w-xs py-2">
-          {animals.map((animal) => (
-            <SelectItem key={animal.value} value={animal.value}>
-              {animal.label}
+          {colors.map((color) => (
+            <SelectItem key={color.value} value={color.value}>
+              {color.label}
             </SelectItem>
           ))}
         </Select>
         <Divider />
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select label="图标" onChange={handleSelectionChange}>
+            <Select
+              label="图标"
+              onChange={handleSelectionChange}
+              defaultSelectedKeys={["adonisjs"]}
+            >
               {devIconOptions.map((item) => (
                 <SelectItem key={item.value} textValue={item.value}>
                   <div className="flex gap-2 items-center">
-                    <i
-                      className={`devicon-${item.value}-plain text-black dev-icon text-2xl`}
+                    <i className={`devicon-${item.value}-plain text-black dev-icon text-2xl`}
                     ></i>
                     <div className="flex flex-col">{item.label}</div>
                   </div>
