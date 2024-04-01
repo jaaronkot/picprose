@@ -1,7 +1,6 @@
 'use client'
 import React from "react";
-import { DiAndroid, DiGithub } from "react-icons/di";
-
+import "./devicon.css" 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
@@ -35,8 +34,8 @@ export const ImageEditor = (props) => {
   
   const getIcon = () => {
     if (devicon.length != 0) {
-      return (<div className="m-2 items-center justify-center flex">
-        <DiAndroid color="white" size="35"/>
+      return (<div className="m-4 items-center justify-center flex">
+        <i className={`devicon-${devicon}-plain text-white dev-icon text-4xl`}></i>
       </div>)
     } else {
       return (<div className=" ">

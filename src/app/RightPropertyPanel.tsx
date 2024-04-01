@@ -1,11 +1,37 @@
-'use client'
+"use client";
 import React from "react";
-import { Tabs, Tab, Select, SelectItem, SliderValue, Selection, SelectSection, Input, Divider, Slider, Accordion, AccordionItem, Card, Listbox, CardBody, ListboxItem, Textarea, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import {
+  Tabs,
+  Tab,
+  Select,
+  SelectItem,
+  SliderValue,
+  Selection,
+  SelectSection,
+  Input,
+  Divider,
+  Slider,
+  Accordion,
+  AccordionItem,
+  Card,
+  Listbox,
+  CardBody,
+  ListboxItem,
+  Textarea,
+  ScrollShadow,
+  Avatar,
+  Image,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+} from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { DiGithub } from "react-icons/di";
 import { TwitterPicker } from "react-color";
 export const RightPropertyPanel = (props) => {
-
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
@@ -16,6 +42,8 @@ export const RightPropertyPanel = (props) => {
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
 
+  const [devIconOptions, setDevIconOptions] = React.useState([]);
+
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -24,18 +52,30 @@ export const RightPropertyPanel = (props) => {
     }
   };
 
+  const initDeviconList = () => {
+    fetch("./devicon.json")
+      .then((r) => r.json())
+      .then((data) => {
+        setDevIconOptions(
+          data.map((item) => ({ value: item.name, label: item.name }))
+        );
+      });
+  };
+
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDevIconValue(e.target.value);
   };
 
-  const handleAspectSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleAspectSelectionChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setAspectValue(e.target.value);
   };
 
   const onFontSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFontValue(e.target.value);
   };
- 
+
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
     title: "",
@@ -45,47 +85,47 @@ export const RightPropertyPanel = (props) => {
     devicon: "",
     color: "",
     aspect: "",
-    blur: ""
+    blur: "",
   });
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      author: authorValue
+      author: authorValue,
     }));
   }, [authorValue]);
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      title: titleValue
+      title: titleValue,
     }));
   }, [titleValue]);
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      icon: iconValue
+      icon: iconValue,
     }));
   }, [iconValue]);
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      font: fontValue
+      font: fontValue,
     }));
   }, [fontValue]);
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      devicon: deviconValue
+      devicon: deviconValue,
     }));
   }, [deviconValue]);
 
   React.useEffect(() => {
     var blurLevel: string = "backdrop-blur-none";
-    if (typeof blurValue === 'number') {
+    if (typeof blurValue === "number") {
       if (blurValue == 0) {
         blurLevel = "backdrop-blur-none";
       } else if (blurValue == 20) {
@@ -100,16 +140,16 @@ export const RightPropertyPanel = (props) => {
         blurLevel = "backdrop-blur-xl";
       }
     }
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      blur: blurLevel
+      blur: blurLevel,
     }));
   }, [blurValue]);
 
   React.useEffect(() => {
-    setPropertyInfo(preValue => ({
+    setPropertyInfo((preValue) => ({
       ...preValue,
-      aspect: aspectValue
+      aspect: aspectValue,
     }));
   }, [aspectValue]);
 
@@ -117,10 +157,13 @@ export const RightPropertyPanel = (props) => {
     props.onPropInfoChange(propertyInfo);
   }, [propertyInfo]);
 
-
   const dowloadImage = (imgFormat: string) => {
-    props.onImageDowloadClick(imgFormat)
-  }
+    props.onImageDowloadClick(imgFormat);
+  };
+
+  React.useEffect(() => {
+    initDeviconList();
+  }, []);
 
   const img_aspect_x_list = [
     // 横屏
@@ -129,7 +172,7 @@ export const RightPropertyPanel = (props) => {
     { label: "3 : 2", value: "aspect-[3/2]", description: "900x450" },
     { label: "4 : 3", value: "aspect-[4/3]", description: "900x450" },
     { label: "16: 9", value: "aspect-[16/9]", description: "900x450" },
-  ]
+  ];
 
   const img_aspect_y_list = [
     //  竖屏
@@ -137,40 +180,85 @@ export const RightPropertyPanel = (props) => {
     { label: "2:3", value: "7", description: "900x450" },
     { label: "3:4", value: "8", description: "900x450" },
     { label: "9:16", value: "9", description: "900x450" },
-  ]
+  ];
 
   const font_list = [
-    { label: "OpenSans", value: "font-opensans", description: "The largest land animal" },
-    { label: "Anke", value: "font-anke", description: "The second most popular pet in the world" },
-    { label: "Roboto", value: "font-roboto-mono", description: "The most popular pet in the world" },
-  ]
+    {
+      label: "OpenSans",
+      value: "font-opensans",
+      description: "The largest land animal",
+    },
+    {
+      label: "Anke",
+      value: "font-anke",
+      description: "The second most popular pet in the world",
+    },
+    {
+      label: "Roboto",
+      value: "font-roboto-mono",
+      description: "The most popular pet in the world",
+    },
+  ];
 
   const animals = [
-    { label: "Cat", value: "cat", description: "The second most popular pet in the world" },
-    { label: "Dog", value: "dog", description: "The most popular pet in the world" },
-    { label: "Elephant", value: "elephant", description: "The largest land animal" },
+    {
+      label: "Cat",
+      value: "cat",
+      description: "The second most popular pet in the world",
+    },
+    {
+      label: "Dog",
+      value: "dog",
+      description: "The most popular pet in the world",
+    },
+    {
+      label: "Elephant",
+      value: "elephant",
+      description: "The largest land animal",
+    },
     { label: "Lion", value: "lion", description: "The king of the jungle" },
     { label: "Tiger", value: "tiger", description: "The largest cat species" },
-    { label: "Giraffe", value: "giraffe", description: "The tallest land animal" },
+    {
+      label: "Giraffe",
+      value: "giraffe",
+      description: "The tallest land animal",
+    },
     {
       label: "Dolphin",
       value: "dolphin",
       description: "A widely distributed and diverse group of aquatic mammals",
     },
-    { label: "Penguin", value: "penguin", description: "A group of aquatic flightless birds" },
-    { label: "Zebra", value: "zebra", description: "A several species of African equids" },
+    {
+      label: "Penguin",
+      value: "penguin",
+      description: "A group of aquatic flightless birds",
+    },
+    {
+      label: "Zebra",
+      value: "zebra",
+      description: "A several species of African equids",
+    },
     {
       label: "Shark",
       value: "shark",
-      description: "A group of elasmobranch fish characterized by a cartilaginous skeleton",
+      description:
+        "A group of elasmobranch fish characterized by a cartilaginous skeleton",
     },
     {
       label: "Whale",
       value: "whale",
       description: "Diverse group of fully aquatic placental marine mammals",
     },
-    { label: "Otter", value: "otter", description: "A carnivorous mammal in the subfamily Lutrinae" },
-    { label: "Crocodile", value: "crocodile", description: "A large semiaquatic reptile" },
+    {
+      label: "Otter",
+      value: "otter",
+      description: "A carnivorous mammal in the subfamily Lutrinae",
+    },
+    {
+      label: "Crocodile",
+      value: "crocodile",
+      description: "A large semiaquatic reptile",
+    },
   ];
   return (
     <div className="w-full flex flex-col h-screen">
@@ -186,8 +274,14 @@ export const RightPropertyPanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="primary" variant="flat" target="_blank" href="https://www.producthunt.com/posts/picprose">
-              ProductHunt
+              <Button
+                as={Link}
+                color="primary"
+                variant="flat"
+                target="_blank"
+                href="https://www.producthunt.com/posts/picprose"
+              >
+                ProductHunt
               </Button>
             </NavbarItem>
           </NavbarContent>
@@ -240,17 +334,16 @@ export const RightPropertyPanel = (props) => {
               label: "80",
             },
           ]}
-
           className="max-w-md py-2"
         />
         <Divider />
-        <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
-        遮罩
-      </div>
-      <div className="flex items-center justify-center">
-      <TwitterPicker className=""/>
-      </div>
-      
+        {/* <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
+          遮罩
+        </div>
+        <div className="flex items-center justify-center">
+          <TwitterPicker className="" />
+        </div> 
+        
         <Slider
           label="遮罩"
           value={blurValue}
@@ -275,12 +368,10 @@ export const RightPropertyPanel = (props) => {
               label: "80",
             },
           ]}
-
           className="max-w-md py-2"
-        />
-        <Divider/>
-        
-    
+        /> */}
+        <Divider />
+
         <Select
           label="字体"
           className="max-w-xs py-2"
@@ -293,11 +384,7 @@ export const RightPropertyPanel = (props) => {
           ))}
         </Select>
 
-
-        <Select
-          label="颜色"
-          className="max-w-xs py-2"
-        >
+        <Select label="颜色" className="max-w-xs py-2">
           {animals.map((animal) => (
             <SelectItem key={animal.value} value={animal.value}>
               {animal.label}
@@ -307,26 +394,37 @@ export const RightPropertyPanel = (props) => {
         <Divider />
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select
-              label="图标"
-              onChange={handleSelectionChange}
-            >
-              {animals.map((animal) => (
-                <SelectItem key={animal.value} value={animal.value}>
-                  {animal.label}
+            <Select label="图标" onChange={handleSelectionChange}>
+              {devIconOptions.map((item) => (
+                <SelectItem key={item.value} textValue={item.value}>
+                  <div className="flex gap-2 items-center">
+                    <i
+                      className={`devicon-${item.value}-plain text-black dev-icon text-2xl`}
+                    ></i>
+                    <div className="flex flex-col">{item.label}</div>
+                  </div>
                 </SelectItem>
               ))}
-            </Select></div>
+            </Select>
+          </div>
           <div className="flex-grow" />
           <div className="w-1/6 ml-2 mt-1">
-            <input type="file"
+            <input
+              type="file"
               className="hidden"
               onChange={handleFileChange}
               ref={inputRef}
             />
-            <Button isIconOnly color="primary" variant="flat" size="lg" onClick={() => inputRef.current.click()}>
+            <Button
+              isIconOnly
+              color="primary"
+              variant="flat"
+              size="lg"
+              onClick={() => inputRef.current.click()}
+            >
               +
-            </Button></div>
+            </Button>
+          </div>
         </div>
         <Textarea
           label="标题"
@@ -343,25 +441,38 @@ export const RightPropertyPanel = (props) => {
           placeholder="输入作者"
           value={authorValue}
           onValueChange={setAuthorValue}
-
         />
       </div>
       <Divider />
       <div className="w-full mt-4 px-4">
-
         <div className="text-gray-400 text-sm">下载图像</div>
         <div className="flex justify-between my-3">
-          <Button onClick={() => dowloadImage("jpg")} as={Link} color="primary" variant="flat">
+          <Button
+            onClick={() => dowloadImage("jpg")}
+            as={Link}
+            color="primary"
+            variant="flat"
+          >
             JPG
           </Button>
-          <Button onClick={() => dowloadImage("png")} as={Link} color="primary" variant="flat">
+          <Button
+            onClick={() => dowloadImage("png")}
+            as={Link}
+            color="primary"
+            variant="flat"
+          >
             PNG
           </Button>
-          <Button onClick={() => dowloadImage("svg")} as={Link} color="primary" variant="flat">
+          <Button
+            onClick={() => dowloadImage("svg")}
+            as={Link}
+            color="primary"
+            variant="flat"
+          >
             SVG
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 };
