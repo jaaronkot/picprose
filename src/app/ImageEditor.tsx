@@ -35,7 +35,7 @@ export const ImageEditor = (props) => {
   const getIcon = () => {
     if (devicon.length != 0) {
       return (<div className="m-4 items-center justify-center flex">
-        <i className={`devicon-${devicon}-plain text-white dev-icon text-4xl`}></i>
+        <i className={`devicon-${devicon} text-white dev-icon text-4xl`}></i>
       </div>)
     } else {
       return (<div className=" ">

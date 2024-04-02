@@ -42,7 +42,11 @@ export const RightPropertyPanel = (props) => {
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
 
-  const [devIconOptions, setDevIconOptions] = React.useState([]);
+  const [devIconList, setDevIconList] = React.useState([{
+    value: "",
+    label: "",
+    font: "",
+  }]);
 
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
@@ -56,13 +60,13 @@ export const RightPropertyPanel = (props) => {
     fetch("./devicon.json")
       .then((r) => r.json())
       .then((data) => {
-        setDevIconOptions(
-          data.map((item) => ({ value: item.name, label: item.name }))
+        setDevIconList(
+          data.map((item) => ({ value: item.name, label: item.name, font: item.versions.font[0]}))
         );
       });
   };
 
-  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleDeviconSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDevIconValue(e.target.value);
   };
 
@@ -364,13 +368,12 @@ export const RightPropertyPanel = (props) => {
           <div className="w-4/5">
             <Select
               label="图标"
-              onChange={handleSelectionChange}
-              defaultSelectedKeys={["adonisjs"]}
+              onChange={handleDeviconSelectionChange}
             >
-              {devIconOptions.map((item) => (
-                <SelectItem key={item.value} textValue={item.value}>
+              {devIconList.map((item) => (
+                <SelectItem key={item.value + "-" + item.font} textValue={item.value}>
                   <div className="flex gap-2 items-center">
-                    <i className={`devicon-${item.value}-plain text-black dev-icon text-2xl`}
+                    <i className={`devicon-${item.value}-${item.font} text-black dev-icon text-2xl`}
                     ></i>
                     <div className="flex flex-col">{item.label}</div>
                   </div>
