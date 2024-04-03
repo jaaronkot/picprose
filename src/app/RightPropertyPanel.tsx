@@ -31,45 +31,26 @@ import {
 import unsplash from "./unsplashConfig";
 import { DiGithub } from "react-icons/di";
 import { TwitterPicker, CompactPicker } from "react-color";
+import {deviconList} from "./devicon";
 export const RightPropertyPanel = (props) => {
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
   const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("");
-  const [deviconValue, setDevIconValue] = React.useState("adonisjs");
+  const [deviconValue, setDevIconValue] = React.useState<Selection>(new Set(["adonisjs"]));
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
-
-  const [devIconList, setDevIconList] = React.useState([{
-    value: "",
-    label: "",
-    font: "",
-  }]);
-
+ 
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
       setIconValue(file);
-      setDevIconValue("");
+      setDevIconValue(new Set([""]));
     }
   };
-
-  const initDeviconList = () => {
-    fetch("./devicon.json")
-      .then((r) => r.json())
-      .then((data) => {
-        setDevIconList(
-          data.map((item) => ({ value: item.name, label: item.name, font: item.versions.font[0]}))
-        );
-      });
-  };
-
-  const handleDeviconSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDevIconValue(e.target.value);
-  };
-
+ 
   const handleAspectSelectionChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -121,9 +102,10 @@ export const RightPropertyPanel = (props) => {
   }, [fontValue]);
 
   React.useEffect(() => {
+    const icon = Array.from(deviconValue)[0].toString();
     setPropertyInfo((preValue) => ({
       ...preValue,
-      devicon: deviconValue,
+      devicon: icon,
     }));
   }, [deviconValue]);
 
@@ -164,11 +146,7 @@ export const RightPropertyPanel = (props) => {
   const dowloadImage = (imgFormat: string) => {
     props.onImageDowloadClick(imgFormat);
   };
-
-  React.useEffect(() => {
-    initDeviconList();
-  }, []);
-
+ 
   const img_aspect_x_list = [
     // 横屏
     { label: "1 : 1", value: "aspect-square", description: "900x450" },
@@ -368,14 +346,14 @@ export const RightPropertyPanel = (props) => {
           <div className="w-4/5">
             <Select
               label="图标"
-              onChange={handleDeviconSelectionChange}
+              onSelectionChange={setDevIconValue}
             >
-              {devIconList.map((item) => (
-                <SelectItem key={item.value + "-" + item.font} textValue={item.value}>
+              {deviconList.map((item) => (
+                <SelectItem key={item.name + "-" + item.versions.font[0]} textValue={item.name}>
                   <div className="flex gap-2 items-center">
-                    <i className={`devicon-${item.value}-${item.font} text-black dev-icon text-2xl`}
+                    <i className={`devicon-${item.name}-${item.versions.font[0]} text-black dev-icon text-2xl`}
                     ></i>
-                    <div className="flex flex-col">{item.label}</div>
+                    <div className="flex flex-col">{item.name}</div>
                   </div>
                 </SelectItem>
               ))}
