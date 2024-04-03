@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import "./devicon.css" 
+import "./devicon.min.css" 
 import { Listbox, Divider, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
