@@ -20,7 +20,7 @@ export const ImageEditor = (props) => {
     if(title.length != 0) {
       return title
     } else {
-      return '海内存知己，天涯若比邻'
+      return 'Why UI designers should understand Flexbox and CSS Grid'
     }
   }
 

@@ -38,7 +38,7 @@ export const RightPropertyPanel = (props) => {
   const [authorValue, setAuthorValue] = React.useState("");
   const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("");
-  const [deviconValue, setDevIconValue] = React.useState<Selection>(new Set(["adonisjs"]));
+  const [deviconValue, setDevIconValue] = React.useState<Selection>(new Set(["css3-plain"]));
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
