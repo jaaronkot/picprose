@@ -62,7 +62,7 @@ export const ImageEditor = (props) => {
             </button>
 
             <div className={' px-10 pt-32  text-left rounded-xl h-full p-4 flex flex-col'}>
-              <h1 className={"md:text-5xl text-center text-2xl font-bold  text-white " + font}>{getTitle()}</h1>
+              <h1 className={" leading-tight text-center text-5xl font-bold  text-white " + font}>{getTitle()}</h1>
               <div className="flex flex-col items-center py-10  ">
                 <h2 className={"text-xl font-semibold text-left text-white " + font}>{getAuthor()}</h2>
                 {getIcon()}
