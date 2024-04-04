@@ -39,7 +39,7 @@ export default function Home() {
 
   return (
     <div className="flex">
-      <div className="w-80">
+      <div className="min-w-80 max-w-80">
         <LeftResourcePanel onData={onChildData} />
       </div>
       <div className="flex-1 bg-gray-100 min-w-96" >
@@ -48,7 +48,7 @@ export default function Home() {
         </ComponentToImg>
 
       </div>
-      <div className="w-80">
+      <div className="min-w-80 max-w-80">
         <RightPropertyPanel onImageDowloadClick={onImageDowloadClick} onPropInfoChange={onPropInfoChange}/>
       </div>
 

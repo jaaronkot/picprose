@@ -47,7 +47,7 @@ export const ImageEditor = (props) => {
   const [customIcon, setCustomIcon] = React.useState('')
 
   return (
-    <div className="flex flex-row  items-center bg-white justify-center">
+    <div className="flex flex-row  items-center bg-transparent justify-center">
       <div className="w-full">
         <div className='relative flex group rounded-3xl'>
           <div className="flex justify-center items-center h-full">
