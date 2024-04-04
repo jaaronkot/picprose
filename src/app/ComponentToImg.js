@@ -34,16 +34,17 @@ export const ComponentToImg = forwardRef((props, ref) => {
 
 		const element = componentRef.current;
 
- 
+		var scale = 1.6;
 		var config = {
-			height: element.offsetHeight * 2,
-			width: element.offsetWidth * 2,
+			height: element.offsetHeight * scale,
+			width: element.offsetWidth * scale,
 			style: {
-				transform: "scale(" + 2 + ")",
+				transform: "scale(" + scale + ")",
 				transformOrigin: "top left",
 				width: element.offsetWidth + "px",
 				height: element.offsetHeight + "px",
-			}
+			},
+			quality: 0.92
 		}
 
 		if(imgFormat === 'jpg') {
@@ -65,7 +66,7 @@ export const ComponentToImg = forwardRef((props, ref) => {
 		}
 	}));
 	return (
-		<div className="flex justify-center items-center h-full w-full  px-5 ">
+		<div className="flex justify-center items-center h-full w-full  px-5">
 			<div ref={componentRef}>{props.children}</div>
 		</div>
 	);
