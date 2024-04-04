@@ -66,9 +66,7 @@ export const ComponentToImg = forwardRef((props, ref) => {
 		}
 	}));
 	return (
-		<div className="flex justify-center items-center h-full w-full  px-5">
-			<div ref={componentRef}>{props.children}</div>
-		</div>
+		<div ref={componentRef}>{props.children}</div>
 	);
 })
 
