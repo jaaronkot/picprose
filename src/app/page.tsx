@@ -42,7 +42,7 @@ export default function Home() {
       <div className="min-w-80 max-w-80">
         <LeftResourcePanel onData={onChildData} />
       </div>
-      <div className="flex-1 bg-gray-100 min-w-96" >
+      <div className="flex-1 bg-gray-100 min-w-[720px]">
         <ComponentToImg ref={child1Ref}  >
           <ImageEditor message={message} propertyInfo={propertyInfo}/>
         </ComponentToImg>

@@ -158,10 +158,10 @@ export const RightPropertyPanel = (props) => {
 
   const img_aspect_y_list = [
     //  竖屏
-    { label: "1:2", value: "6", description: "900x450" },
-    { label: "2:3", value: "7", description: "900x450" },
-    { label: "3:4", value: "8", description: "900x450" },
-    { label: "9:16", value: "9", description: "900x450" },
+    { label: "1:2", value: "aspect-[1/2]", description: "900x450" },
+    { label: "2:3", value: "aspect-[2/3]", description: "900x450" },
+    { label: "3:4", value: "aspect-[3/4]", description: "900x450" },
+    { label: "9:16", value: "aspect-[9/16]", description: "900x450" },
   ];
 
   const font_list = [

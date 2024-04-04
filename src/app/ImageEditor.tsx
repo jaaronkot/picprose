@@ -51,7 +51,7 @@ export const ImageEditor = (props) => {
       <div className="w-full">
         <div className='relative flex group rounded-3xl'>
           <div className="flex justify-center items-center h-full">
-            <img src={getImageInfo().url && getImageInfo().url} alt="Image" className={"rounded-md object-cover w-full aspect-[16/9] " + aspect} />
+            <img src={getImageInfo().url && getImageInfo().url} alt="Image" className={"max-h-[720px] rounded-md object-cover w-full aspect-[16/9] " + aspect} />
           </div>
 
           <div className={"bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full " + blur}>
