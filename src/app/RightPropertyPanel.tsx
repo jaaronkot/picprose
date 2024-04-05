@@ -41,12 +41,14 @@ export const RightPropertyPanel = (props) => {
   const [authorValue, setAuthorValue] = React.useState("");
   const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("");
-  const [backColor, setBackColor] = React.useState("");
+  const [backColor, setBackColor] = React.useState("#1F2937");
+  const [backBlurLevel, setBackBlurLevel] = React.useState(60);
   const [deviconValue, setDevIconValue] = React.useState<Selection>(
     new Set(["css3-plain"])
   );
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
+  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(60);
   const inputRef = React.useRef(null);
 
   const handleFileChange = (event) => {
@@ -81,6 +83,7 @@ export const RightPropertyPanel = (props) => {
     color: "",
     aspect: "",
     blur: "",
+    blurTrans: "",
   });
 
   React.useEffect(() => {
@@ -118,6 +121,24 @@ export const RightPropertyPanel = (props) => {
       devicon: icon,
     }));
   }, [deviconValue]);
+
+
+  React.useEffect(() => {
+    setPropertyInfo((preValue) => ({
+      ...preValue,
+      color: backColor,
+    }));
+  }, [backColor]);
+  
+  React.useEffect(() => {
+    let trans = Math.floor(2.55 * parseInt(blurTransValue.toString(10))).toString(16)
+    console.log(trans)
+    setPropertyInfo((preValue) => ({
+      ...preValue,
+      blurTrans: trans,
+    }));
+  }, [blurTransValue]);
+
 
   React.useEffect(() => {
     var blurLevel: string = "backdrop-blur-none";
@@ -209,6 +230,12 @@ export const RightPropertyPanel = (props) => {
     setBackColor(color.hex.toUpperCase())
   };
 
+  const handleColorBlurChangeComplete = (level) => {
+    setBackBlurLevel(level)
+  };
+
+  
+
   return (
     <div className="w-full flex flex-col h-screen">
       <div className="w-full">
@@ -291,6 +318,7 @@ export const RightPropertyPanel = (props) => {
             <Input
               type="url"
               label="遮罩颜色"
+              value={backColor.replace("#", "")}
               placeholder={backColor.replace("#", "")}
               startContent={
                 <div className="pointer-events-none flex items-center">
@@ -316,16 +344,37 @@ export const RightPropertyPanel = (props) => {
                 aria-label="Single selection example"
                 variant="flat"
                 disallowEmptySelection
+                selectionMode="single"
               >
                 <DropdownItem key="text">
-                  <div className="m-1">
-                    <TwitterPicker
-                      circleSpacing={16}
-                      circleSize={26}
-                      triangle='hide'
+                  <div className="m-2">
+                    <CirclePicker
+                      colors={[
+                        "#1f2937",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#2196f3",
+                        "#03a9f4",
+                        "#00bcd4",
+                        "#009688",
+                        "#4caf50",
+                        "#8bc34a",
+                        "#cddc39",
+                      ]}
                       onChangeComplete={handleColorChangeComplete}
                     />
                   </div>
+                  <Divider />
+                  <Slider
+          label="透明度"
+          value={blurTransValue}
+          onChange={setBlurTransValue}
+          size="sm"
+          step={5}
+          className="max-w-md my-2"
+        />
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>

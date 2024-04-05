@@ -34,6 +34,7 @@ export default function Home() {
     devicon: "",
     aspect: "",
     blur: "",
+    blurTrans: "",
   });
 
   const onChildData = (data: {}) => {

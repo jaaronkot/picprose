@@ -18,7 +18,7 @@ import {
 } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
-  const { aspect, blur, title, subTitle, author, icon, devicon, font, color } =
+  const { aspect, blur, blurTrans, title, subTitle, author, icon, devicon, font, color } =
     props.propertyInfo;
 
   const getImageInfo = () => {
@@ -82,8 +82,9 @@ export const ImageEditor = (props) => {
       </div>
 
       <div
+        style = {{ backgroundColor: color+blurTrans}}
         className={
-          "bg-gray-800/60 absolute top-0 right-0 left-0 rounded-md h-full " +
+          "absolute top-0 right-0 left-0 rounded-md h-full " +
           blur
         }
       >
