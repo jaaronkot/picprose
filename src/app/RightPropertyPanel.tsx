@@ -27,22 +27,28 @@ import {
   NavbarItem,
   Link,
   Button,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownTrigger,
 } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
-import { DiGithub } from "react-icons/di";
-import { TwitterPicker, CompactPicker } from "react-color";
-import {deviconList} from "./devicon";
+import { TwitterPicker, CirclePicker } from "react-color";
+import { deviconList } from "./devicon";
 export const RightPropertyPanel = (props) => {
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("");
   const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("");
-  const [deviconValue, setDevIconValue] = React.useState<Selection>(new Set(["css3-plain"]));
+  const [backColor, setBackColor] = React.useState("");
+  const [deviconValue, setDevIconValue] = React.useState<Selection>(
+    new Set(["css3-plain"])
+  );
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const inputRef = React.useRef(null);
- 
+
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -50,7 +56,7 @@ export const RightPropertyPanel = (props) => {
       setDevIconValue(new Set([""]));
     }
   };
- 
+
   const handleAspectSelectionChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -60,6 +66,10 @@ export const RightPropertyPanel = (props) => {
   const onFontSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFontValue(e.target.value);
   };
+
+  const getColorPlaceHolder = () => {
+    backColor.replace("#", "")
+  }
 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
@@ -146,7 +156,7 @@ export const RightPropertyPanel = (props) => {
   const dowloadImage = (imgFormat: string) => {
     props.onImageDowloadClick(imgFormat);
   };
- 
+
   const img_aspect_x_list = [
     // 横屏
     { label: "1 : 1", value: "aspect-square", description: "900x450" },
@@ -193,19 +203,21 @@ export const RightPropertyPanel = (props) => {
       value: "red",
       description: "The second most popular pet in the world",
     },
-    {
-      label: "blue",
-      value: "blue",
-      description: "The most popular pet in the world",
-    },
-    {
-      label: "green",
-      value: "green",
-      description: "The largest land animal",
-    },
-    { label: "black", value: "lion", description: "The king of the jungle" },
-    { label: "white", value: "tiger", description: "The largest cat species" },
   ];
+
+  const backStyle = {
+    fontSize: '20px',
+    backgroundColor: backColor,
+    borderWidth: '6px',
+    borderColor: '#E9E9EB'
+  };
+
+
+  const handleColorChangeComplete = (color) => {
+    console.log(color.hex );
+    setBackColor(color.hex)
+  };
+
   return (
     <div className="w-full flex flex-col h-screen">
       <div className="w-full">
@@ -282,45 +294,67 @@ export const RightPropertyPanel = (props) => {
           ]}
           className="max-w-md py-2"
         />
-        
-        
-        {/*
-        <Divider />
-         <div className="text-sm px-[16px] pt-[16px] pb-[8px] font-semibold">
-          遮罩
+         
+        <div className="flex w-full py-2">
+          <div className="w-4/5">
+            <Input
+              type="url"
+              label="遮罩颜色"
+              placeholder={backColor.replace("#", "")}
+              startContent={
+                <div className="pointer-events-none flex items-center">
+                  <span className="text-default-400 text-small">#</span>
+                </div>
+              }
+            />
+          </div>
+          <div className="flex-grow" />
+          <div className="w-1/6 ml-2 mt-1">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button  
+                isIconOnly
+              color="primary"
+              variant="bordered"
+              size="lg"
+             style={backStyle}
+              >
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Single selection example"
+                variant="flat"
+                disallowEmptySelection
+                selectionMode="single"
+              >
+                <DropdownItem key="text">
+                  <div className="m-1">
+                    <CirclePicker
+                      circleSpacing={16}
+                      circleSize={26}
+                      colors={[
+                        "#f44336",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#2196f3",
+                        "#03a9f4",
+                        "#00bcd4",
+                        "#009688",
+                        "#4caf50",
+                        "#8bc34a",
+                        "#cddc39",
+                      ]}
+                      onChangeComplete={handleColorChangeComplete}
+                    />
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
-        <div className="flex items-center justify-center">
-          <TwitterPicker className="" />
-        </div> 
-        
-        <Slider
-          label="遮罩"
-          value={blurValue}
-          onChange={setBlurValue}
-          size="sm"
-          step={20}
-          marks={[
-            {
-              value: 20,
-              label: "20",
-            },
-            {
-              value: 40,
-              label: "40",
-            },
-            {
-              value: 60,
-              label: "60",
-            },
-            {
-              value: 80,
-              label: "80",
-            },
-          ]}
-          className="max-w-md py-2"
-        /> */}
         <Divider />
-
         <Select
           label="字体"
           className="max-w-xs py-2"
@@ -334,24 +368,19 @@ export const RightPropertyPanel = (props) => {
           ))}
         </Select>
 
-        <Select label="颜色" className="max-w-xs py-2">
-          {colors.map((color) => (
-            <SelectItem key={color.value} value={color.value}>
-              {color.label}
-            </SelectItem>
-          ))}
-        </Select>
-        <Divider />
+
+      
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select
-              label="图标"
-              onSelectionChange={setDevIconValue}
-            >
+            <Select label="图标" onSelectionChange={setDevIconValue}>
               {deviconList.map((item) => (
-                <SelectItem key={item.name + "-" + item.versions.font[0]} textValue={item.name}>
+                <SelectItem
+                  key={item.name + "-" + item.versions.font[0]}
+                  textValue={item.name}
+                >
                   <div className="flex gap-2 items-center">
-                    <i className={`devicon-${item.name}-${item.versions.font[0]} text-black dev-icon text-2xl`}
+                    <i
+                      className={`devicon-${item.name}-${item.versions.font[0]} text-black dev-icon text-2xl`}
                     ></i>
                     <div className="flex flex-col">{item.name}</div>
                   </div>
@@ -378,6 +407,7 @@ export const RightPropertyPanel = (props) => {
             </Button>
           </div>
         </div>
+        <Divider />
         <Textarea
           label="标题"
           placeholder="输入标题"
