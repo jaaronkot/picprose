@@ -197,14 +197,6 @@ export const RightPropertyPanel = (props) => {
     },
   ];
 
-  const colors = [
-    {
-      label: "red",
-      value: "red",
-      description: "The second most popular pet in the world",
-    },
-  ];
-
   const backStyle = {
     fontSize: '20px',
     backgroundColor: backColor,
@@ -214,8 +206,7 @@ export const RightPropertyPanel = (props) => {
 
 
   const handleColorChangeComplete = (color) => {
-    console.log(color.hex );
-    setBackColor(color.hex)
+    setBackColor(color.hex.toUpperCase())
   };
 
   return (
@@ -325,27 +316,13 @@ export const RightPropertyPanel = (props) => {
                 aria-label="Single selection example"
                 variant="flat"
                 disallowEmptySelection
-                selectionMode="single"
               >
                 <DropdownItem key="text">
                   <div className="m-1">
-                    <CirclePicker
+                    <TwitterPicker
                       circleSpacing={16}
                       circleSize={26}
-                      colors={[
-                        "#f44336",
-                        "#e91e63",
-                        "#9c27b0",
-                        "#673ab7",
-                        "#3f51b5",
-                        "#2196f3",
-                        "#03a9f4",
-                        "#00bcd4",
-                        "#009688",
-                        "#4caf50",
-                        "#8bc34a",
-                        "#cddc39",
-                      ]}
+                      triangle='hide'
                       onChangeComplete={handleColorChangeComplete}
                     />
                   </div>
