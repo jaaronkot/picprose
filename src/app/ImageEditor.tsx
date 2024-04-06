@@ -72,12 +72,12 @@ export const ImageEditor = (props) => {
   const [customIcon, setCustomIcon] = React.useState("");
 
   return (
-    <div className="relative flex group rounded-3xl">
-      <div className={"max-h-[720px] " + aspect}>
+    <div className="max-h-screen relative flex group rounded-3xl">
+      <div style = {{maxHeight: '90vh'}} className={aspect}>
         <img
           src={getImageInfo().url && getImageInfo().url}
           alt="Image"
-          className={"rounded-md object-cover h-full w-full " + aspect}
+          className={"rounded-md object-cover h-full w-full"}
         />
       </div>
 

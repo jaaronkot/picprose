@@ -55,7 +55,7 @@ export default function Home() {
       <div className="min-w-80 max-w-80">
         <LeftResourcePanel onData={onChildData} />
       </div>
-      <div className="bg-gray-100 overflow-x-auto ">
+      <div className="flex-grow bg-gray-100 overflow-x-auto ">
         <div className="flex justify-center items-center h-full w-full min-w-[800px] px-5 ">
           <ComponentToImg ref={child1Ref}>
             <ImageEditor message={message} propertyInfo={propertyInfo} />
