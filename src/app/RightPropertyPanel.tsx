@@ -70,8 +70,8 @@ export const RightPropertyPanel = (props) => {
   };
 
   const getColorPlaceHolder = () => {
-    backColor.replace("#", "")
-  }
+    backColor.replace("#", "");
+  };
 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
@@ -122,23 +122,23 @@ export const RightPropertyPanel = (props) => {
     }));
   }, [deviconValue]);
 
-
   React.useEffect(() => {
     setPropertyInfo((preValue) => ({
       ...preValue,
       color: backColor,
     }));
   }, [backColor]);
-  
+
   React.useEffect(() => {
-    let trans = Math.floor(2.55 * parseInt(blurTransValue.toString(10))).toString(16)
-    console.log(trans)
+    let trans = Math.floor(
+      2.55 * parseInt(blurTransValue.toString(10))
+    ).toString(16);
+    console.log(trans);
     setPropertyInfo((preValue) => ({
       ...preValue,
       blurTrans: trans,
     }));
   }, [blurTransValue]);
-
 
   React.useEffect(() => {
     var blurLevel: string = "backdrop-blur-none";
@@ -219,22 +219,19 @@ export const RightPropertyPanel = (props) => {
   ];
 
   const backStyle = {
-    fontSize: '20px',
+    fontSize: "20px",
     backgroundColor: backColor,
-    borderWidth: '6px',
-    borderColor: '#E9E9EB'
+    borderWidth: "6px",
+    borderColor: "#E9E9EB",
   };
 
-
   const handleColorChangeComplete = (color) => {
-    setBackColor(color.hex.toUpperCase())
+    setBackColor(color.hex.toUpperCase());
   };
 
   const handleColorBlurChangeComplete = (level) => {
-    setBackBlurLevel(level)
+    setBackBlurLevel(level);
   };
-
-  
 
   return (
     <div className="w-full flex flex-col h-screen">
@@ -286,33 +283,6 @@ export const RightPropertyPanel = (props) => {
           </SelectSection>
         </Select>
 
-        <Slider
-          label="模糊"
-          value={blurValue}
-          onChange={setBlurValue}
-          size="sm"
-          step={20}
-          marks={[
-            {
-              value: 20,
-              label: "20",
-            },
-            {
-              value: 40,
-              label: "40",
-            },
-            {
-              value: 60,
-              label: "60",
-            },
-            {
-              value: 80,
-              label: "80",
-            },
-          ]}
-          className="max-w-md py-2"
-        />
-         
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Input
@@ -331,14 +301,13 @@ export const RightPropertyPanel = (props) => {
           <div className="w-1/6 ml-2 mt-1">
             <Dropdown>
               <DropdownTrigger>
-                <Button  
-                isIconOnly
-              color="primary"
-              variant="bordered"
-              size="lg"
-             style={backStyle}
-              >
-                </Button>
+                <Button
+                  isIconOnly
+                  color="primary"
+                  variant="bordered"
+                  size="lg"
+                  style={backStyle}
+                ></Button>
               </DropdownTrigger>
               <DropdownMenu
                 aria-label="Single selection example"
@@ -367,7 +336,13 @@ export const RightPropertyPanel = (props) => {
                     />
                   </div>
                   <Divider />
-                  <Slider
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        </div>
+        <Divider />
+        <Slider
           label="透明度"
           value={blurTransValue}
           onChange={setBlurTransValue}
@@ -375,11 +350,15 @@ export const RightPropertyPanel = (props) => {
           step={5}
           className="max-w-md my-2"
         />
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        </div>
+        <Slider
+          label="模糊"
+          value={blurValue}
+          onChange={setBlurValue}
+          size="sm"
+          step={20}
+          className="max-w-md py-2"
+        />
+
         <Divider />
         <Select
           label="字体"
@@ -394,8 +373,6 @@ export const RightPropertyPanel = (props) => {
           ))}
         </Select>
 
-
-      
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Select label="图标" onSelectionChange={setDevIconValue}>
