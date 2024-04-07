@@ -18,8 +18,19 @@ import {
 } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
-  const { aspect, blur, blurTrans, title, subTitle, author, icon, devicon, font, color, logoPosition } =
-    props.propertyInfo;
+  const {
+    aspect,
+    blur,
+    blurTrans,
+    title,
+    subTitle,
+    author,
+    icon,
+    devicon,
+    font,
+    color,
+    logoPosition,
+  } = props.propertyInfo;
 
   const getImageInfo = () => {
     return props.message.url
@@ -73,7 +84,7 @@ export const ImageEditor = (props) => {
 
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
-      <div style = {{maxHeight: '90vh'}} className={aspect}>
+      <div style={{ maxHeight: "90vh" }} className={aspect}>
         <img
           src={getImageInfo().url && getImageInfo().url}
           alt="Image"
@@ -82,11 +93,8 @@ export const ImageEditor = (props) => {
       </div>
 
       <div
-        style = {{ backgroundColor: color+blurTrans}}
-        className={
-          "absolute top-0 right-0 left-0 rounded-md h-full " +
-          blur
-        }
+        style={{ backgroundColor: color + blurTrans }}
+        className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
         <button className="absolute  top-2 right-2 cursor-pointer">
           <svg
@@ -97,21 +105,21 @@ export const ImageEditor = (props) => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
+            />
           </svg>
         </button>
         <div className="flex justify-center items-center h-full w-full">
           <div>
             <div
-              className={
-                "px-10 text-left rounded-xl h-full p-4 flex flex-col"
-              }
+              className={"px-10 text-left rounded-xl h-full p-4 flex flex-col"}
             >
               <h1
+                draggable="true"
                 className={
                   " leading-tight text-center text-5xl font-bold  text-white " +
                   font
@@ -132,10 +140,9 @@ export const ImageEditor = (props) => {
             </div>
           </div>
         </div>
-        <div  className={"absolute " + logoPosition}>
-        {logoPosition != "default" && getIcon()}
+        <div className={"absolute " + logoPosition}>
+          {logoPosition != "default" && getIcon()}
         </div>
-       
       </div>
 
       <div className="absolute  bottom-4 right-4 opacity-80">

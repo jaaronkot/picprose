@@ -91,7 +91,7 @@ export const RightPropertyPanel = (props) => {
     aspect: "",
     blur: "",
     blurTrans: "",
-    logoPosition: ""
+    logoPosition: "",
   });
 
   React.useEffect(() => {
@@ -128,7 +128,7 @@ export const RightPropertyPanel = (props) => {
       logoPosition: logoPosition,
     }));
   }, [logoPosition]);
- 
+
   React.useEffect(() => {
     const icon = Array.from(deviconValue)[0].toString();
     setPropertyInfo((preValue) => ({
@@ -434,20 +434,36 @@ export const RightPropertyPanel = (props) => {
               size="lg"
               onClick={() => inputRef.current.click()}
             >
-              +
+              <svg
+                className="w-6 h-6 text-sky-500 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"
+                />
+              </svg>
             </Button>
           </div>
         </div>
 
-        <Tabs 
-         classNames={{
-          tabList: "my-2",
-          tab: "w-[50px] h-12",
+        <Tabs
+          classNames={{
+            tabList: "w-full my-2",
+            tab: "w-[47px] h-12",
           }}
-         aria-label="Options"
-         selectedKey={logoPosition}
-         onSelectionChange={setLogoPosition}
-         >
+          aria-label="Options"
+          selectedKey={logoPosition}
+          onSelectionChange={setLogoPosition}
+        >
           <Tab
             key="top-4 left-4"
             title={
