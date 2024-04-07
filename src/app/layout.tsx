@@ -12,6 +12,24 @@ const dingTalkFont = localFont({
   display: 'swap',
   variable: '--font-dingtalk',
 })
+
+const kingsoftFont = localFont({
+  src: 'fonts/Kingsoft_Cloud_Font.ttf',
+  display: 'swap',
+  variable: '--font-kingsoft',
+})
+
+const xinYiGuanHeiFont = localFont({
+  src: 'fonts/ZiTiQuanXinYiGuanHeiTi.ttf',
+  display: 'swap',
+  variable: '--font-xinyiguanhei',
+})
+
+const alibabaFont = localFont({
+  src: 'fonts/AlibabaPuHuiTi-3-55-Regular.ttf',
+  display: 'swap',
+  variable: '--font-alibaba',
+})
  
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -20,6 +38,7 @@ const openSans = Open_Sans({
   variable: '--font-opensans',
 })
  
+
 //👇 Configure the object for our second font
 const robotoMono = Roboto_Mono({
   subsets: ['latin'],
@@ -41,7 +60,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${openSans.variable} ${robotoMono.variable} ${ankeLatin.variable} ${dingTalkFont.variable} font-sans light`}>
+    <html lang="en" className={`${openSans.variable} ${robotoMono.variable} ${ankeLatin.variable} ${dingTalkFont.variable} ${kingsoftFont.variable} ${xinYiGuanHeiFont.variable} ${alibabaFont.variable} font-sans light`}>
 
       <body>
         <Providers>

@@ -35,6 +35,12 @@ import {
 import unsplash from "./unsplashConfig";
 import { TwitterPicker, CirclePicker } from "react-color";
 import { deviconList } from "./devicon";
+import { TopLeftIcon } from "./icons/TopLeftIcon";
+import { BottomLeftIcon } from "./icons/BottomLeftIcon";
+import { MiddleIcon } from "./icons/MiddleIcon";
+import { BottomRightIcon } from "./icons/BottomRightIcon";
+import { TopRightIcon } from "./icons/TopRightIcon";
+
 export const RightPropertyPanel = (props) => {
   const [titleValue, setTitleValue] = React.useState("");
   const [subTitleValue, setSubTitleValue] = React.useState("");
@@ -202,6 +208,11 @@ export const RightPropertyPanel = (props) => {
       description: "The largest land animal",
     },
     {
+      label: "Font-Alibaba",
+      value: "font-alibaba",
+      description: "The largest land animal",
+    },
+    {
       label: "Font-OpenSans",
       value: "font-opensans",
       description: "The largest land animal",
@@ -215,6 +226,16 @@ export const RightPropertyPanel = (props) => {
       label: "Font-Roboto",
       value: "font-roboto-mono",
       description: "The most popular pet in the world",
+    },
+    {
+      label: "Font-KingSoft",
+      value: "font-kingsoft",
+      description: "The largest land animal",
+    },
+    {
+      label: "Font-XinYiGuanHei",
+      value: "font-xinyiguanhei",
+      description: "The largest land animal",
     },
   ];
 
@@ -282,7 +303,7 @@ export const RightPropertyPanel = (props) => {
             ))}
           </SelectSection>
         </Select>
-
+        <Divider />
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Input
@@ -335,13 +356,11 @@ export const RightPropertyPanel = (props) => {
                       onChangeComplete={handleColorChangeComplete}
                     />
                   </div>
-                  <Divider />
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
         </div>
-        <Divider />
         <Slider
           label="透明度"
           value={blurTransValue}
@@ -350,14 +369,14 @@ export const RightPropertyPanel = (props) => {
           step={5}
           className="max-w-md my-2"
         />
-        <Slider
+        {/* <Slider
           label="模糊"
           value={blurValue}
           onChange={setBlurValue}
           size="sm"
           step={20}
           className="max-w-md py-2"
-        />
+        /> */}
 
         <Divider />
         <Select
@@ -410,6 +429,56 @@ export const RightPropertyPanel = (props) => {
             </Button>
           </div>
         </div>
+
+        <Tabs 
+         classNames={{
+          tabList: "my-2",
+          tab: "w-[50px] h-12",
+          }}
+         aria-label="Options">
+          <Tab
+            key="videos"
+            title={
+              <div className="flex items-center space-x-2">
+                <TopLeftIcon />
+              </div>
+            }
+          />
+          <Tab
+            key="videos1"
+            title={
+              <div className="flex items-center space-x-2">
+                <BottomLeftIcon />
+              </div>
+            }
+          />
+          <Tab
+            key="videos2"
+            title={
+              <div className="flex items-center space-x-2">
+                <MiddleIcon />
+              </div>
+            }
+          />
+
+          <Tab
+            key="videos3"
+            title={
+              <div className="flex items-center space-x-2">
+                <BottomRightIcon />
+              </div>
+            }
+          />
+          <Tab
+            key="videos4"
+            title={
+              <div className="flex items-center space-x-2">
+                <TopRightIcon />
+              </div>
+            }
+          />
+        </Tabs>
+
         <Divider />
         <Textarea
           label="标题"

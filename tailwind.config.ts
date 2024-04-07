@@ -22,6 +22,9 @@ const config: Config = {
         mono: ["var(--font-roboto-mono)"],
         anke: ["var(--font-anke)"],
         dingtalk: ["var(--font-dingtalk)"],
+        kingsoft: ["var(--font-kingsoft)"],
+        xinyiguanhei: ["var(--font-xinyiguanhei)"],
+        alibaba: ["var(--font-alibaba)"],
       },
       aspectRatio: {
         '2/1': '2 / 1',
