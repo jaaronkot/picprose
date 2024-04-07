@@ -35,6 +35,7 @@ export default function Home() {
     aspect: "",
     blur: "",
     blurTrans: "",
+    logoPosition: "",
   });
 
   const onChildData = (data: {}) => {

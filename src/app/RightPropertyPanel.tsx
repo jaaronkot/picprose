@@ -56,6 +56,7 @@ export const RightPropertyPanel = (props) => {
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
   const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(60);
   const inputRef = React.useRef(null);
+  const [logoPosition, setLogoPosition] = React.useState("default");
 
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
@@ -90,6 +91,7 @@ export const RightPropertyPanel = (props) => {
     aspect: "",
     blur: "",
     blurTrans: "",
+    logoPosition: ""
   });
 
   React.useEffect(() => {
@@ -120,6 +122,13 @@ export const RightPropertyPanel = (props) => {
     }));
   }, [fontValue]);
 
+  React.useEffect(() => {
+    setPropertyInfo((preValue) => ({
+      ...preValue,
+      logoPosition: logoPosition,
+    }));
+  }, [logoPosition]);
+ 
   React.useEffect(() => {
     const icon = Array.from(deviconValue)[0].toString();
     setPropertyInfo((preValue) => ({
@@ -435,9 +444,12 @@ export const RightPropertyPanel = (props) => {
           tabList: "my-2",
           tab: "w-[50px] h-12",
           }}
-         aria-label="Options">
+         aria-label="Options"
+         selectedKey={logoPosition}
+         onSelectionChange={setLogoPosition}
+         >
           <Tab
-            key="videos"
+            key="top-4 left-4"
             title={
               <div className="flex items-center space-x-2">
                 <TopLeftIcon />
@@ -445,7 +457,7 @@ export const RightPropertyPanel = (props) => {
             }
           />
           <Tab
-            key="videos1"
+            key="bottom-4 left-4"
             title={
               <div className="flex items-center space-x-2">
                 <BottomLeftIcon />
@@ -453,7 +465,7 @@ export const RightPropertyPanel = (props) => {
             }
           />
           <Tab
-            key="videos2"
+            key="default"
             title={
               <div className="flex items-center space-x-2">
                 <MiddleIcon />
@@ -462,7 +474,7 @@ export const RightPropertyPanel = (props) => {
           />
 
           <Tab
-            key="videos3"
+            key="bottom-4 right-4"
             title={
               <div className="flex items-center space-x-2">
                 <BottomRightIcon />
@@ -470,7 +482,7 @@ export const RightPropertyPanel = (props) => {
             }
           />
           <Tab
-            key="videos4"
+            key="top-4 right-4"
             title={
               <div className="flex items-center space-x-2">
                 <TopRightIcon />

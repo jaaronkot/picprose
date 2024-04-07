@@ -18,7 +18,7 @@ import {
 } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
-  const { aspect, blur, blurTrans, title, subTitle, author, icon, devicon, font, color } =
+  const { aspect, blur, blurTrans, title, subTitle, author, icon, devicon, font, color, logoPosition } =
     props.propertyInfo;
 
   const getImageInfo = () => {
@@ -127,11 +127,15 @@ export const ImageEditor = (props) => {
                 >
                   {getAuthor()}
                 </h2>
-                {getIcon()}
+                {logoPosition == "default" && getIcon()}
               </div>
             </div>
           </div>
         </div>
+        <div  className={"absolute " + logoPosition}>
+        {logoPosition != "default" && getIcon()}
+        </div>
+       
       </div>
 
       <div className="absolute  bottom-4 right-4 opacity-80">
