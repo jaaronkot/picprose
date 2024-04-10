@@ -282,9 +282,9 @@ export const RightPropertyPanel = (props) => {
                 color="primary"
                 variant="flat"
                 target="_blank"
-                href="https://www.producthunt.com/posts/picprose"
+                href="https:/github.com/gezhaoyou/picprose"
               >
-                ProductHunt
+                <i className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}/>GitHub
               </Button>
             </NavbarItem>
           </NavbarContent>
