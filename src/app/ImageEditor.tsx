@@ -119,7 +119,6 @@ export const ImageEditor = (props) => {
               className={"px-10 text-left rounded-xl h-full p-4 flex flex-col"}
             >
               <h1
-                draggable="true"
                 className={
                   " leading-tight text-center text-5xl font-bold  text-white " +
                   font

@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import { Input, ListboxItem, Chip, ScrollShadow, Avatar, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Input, ListboxItem, Chip, ScrollShadow, Avatar, AvatarIcon, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 import { AcmeLogo } from "./AcmeLogo";
@@ -63,7 +63,8 @@ export const LeftResourcePanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-            <Avatar isBordered src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
+            <Avatar icon={<AvatarIcon />}/>
+            
             </NavbarItem>
           </NavbarContent>
         </Navbar>
@@ -74,7 +75,7 @@ export const LeftResourcePanel = (props) => {
             return <img src={image.urls.regular}
               key={image.id}
               alt={image.alt_description}
-              className="rounded m-2 cursor-pointer w-5/12 object-cover h-24"
+              className="transition-transform duration-300 transform hover:scale-110 rounded m-2 cursor-pointer w-5/12 object-cover h-24"
               onClick={() => selectImage(image)
               }
             />
