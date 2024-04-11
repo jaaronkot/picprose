@@ -69,10 +69,10 @@ export const LeftResourcePanel = (props) => {
       <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto">
         {
           imageList.map(image => {
-            return <img src={image.urls.regular}
+            return <img src={image.urls.small}
               key={image.id}
               alt={image.alt_description}
-              className="transition-transform duration-300 transform hover:scale-110 rounded m-2 cursor-pointer w-5/12 object-cover h-24"
+              className="transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24"
               onClick={() => selectImage(image)
               }
             />
