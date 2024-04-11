@@ -1,6 +1,10 @@
 ## Intro
 PicProse is a article cover image generator tool for Medium, Wordpress, Wechat and other blog post
 
+**Online:** [https://picprose.net](https://picprose.net)
+
+**User:** [https://pixpark.net](https://pixpark.net)
+
 ![preview](./doc/preview.jpg)
 
 ## Getting Started
