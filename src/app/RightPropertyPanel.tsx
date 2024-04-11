@@ -42,9 +42,9 @@ import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
 
 export const RightPropertyPanel = (props) => {
-  const [titleValue, setTitleValue] = React.useState("");
+  const [titleValue, setTitleValue] = React.useState("Why UI designers should understand Flexbox and CSS Grid");
   const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("");
+  const [authorValue, setAuthorValue] = React.useState("@PicProse");
   const [fontValue, setFontValue] = React.useState("font-anke");
   const [iconValue, setIconValue] = React.useState("");
   const [backColor, setBackColor] = React.useState("#1F2937");
@@ -148,7 +148,7 @@ export const RightPropertyPanel = (props) => {
     let trans = Math.floor(
       2.55 * parseInt(blurTransValue.toString(10))
     ).toString(16);
-    console.log(trans);
+
     setPropertyInfo((preValue) => ({
       ...preValue,
       blurTrans: trans,
@@ -282,7 +282,7 @@ export const RightPropertyPanel = (props) => {
                 color="primary"
                 variant="flat"
                 target="_blank"
-                href="https:/github.com/gezhaoyou/picprose"
+                href="https://github.com/gezhaoyou/picprose"
               >
                 <i className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}/>GitHub
               </Button>

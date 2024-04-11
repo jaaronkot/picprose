@@ -44,20 +44,14 @@ export const ImageEditor = (props) => {
         };
   };
 
+  
+
   const getTitle = () => {
-    if (title.length != 0) {
       return title;
-    } else {
-      return "Why UI designers should understand Flexbox and CSS Grid";
-    }
   };
 
   const getAuthor = () => {
-    if (author.length != 0) {
       return author;
-    } else {
-      return "@PicProse";
-    }
   };
 
   const getIcon = () => {

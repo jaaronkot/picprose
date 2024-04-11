@@ -18,8 +18,6 @@ export const LeftResourcePanel = (props) => {
         page: 1,
         perPage: 30,
         // orientation:'portrait'
-
-
       })
       .then(response => {
         setIsLoading(false)
@@ -63,8 +61,7 @@ export const LeftResourcePanel = (props) => {
 
           <NavbarContent justify="end">
             <NavbarItem>
-            <Avatar icon={<AvatarIcon />}/>
-            
+            <Avatar  className="text-[#2F6EE7]" icon={<AvatarIcon />}/>
             </NavbarItem>
           </NavbarContent>
         </Navbar>
