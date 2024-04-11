@@ -5,11 +5,18 @@ PicProse is a article cover image generator tool for Medium, Wordpress, Wechat a
 
 ## Getting Started
 
-First, config Unsplash key
+**First:**
+config Unsplash key
 
-❗️Config unsplash key in file `unsplashConfig.tsx`
+💡 create file `.env.local`, put in your unsplash key 
+```
+NEXT_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
+```
+Refer: [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
-Second, run the development server:
+
+**Second:**
+Run the development server:
 
 ```bash
 npm run dev
