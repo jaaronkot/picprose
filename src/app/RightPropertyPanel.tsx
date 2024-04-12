@@ -138,7 +138,11 @@ export const RightPropertyPanel = (props) => {
   }, [logoPosition]);
 
   React.useEffect(() => {
-    const icon = Array.from(deviconValue)[0].toString();
+    var icon = ""
+    if(deviconValue.size > 0) {
+      icon = Array.from(deviconValue)[0].toString();
+    }
+   
     setPropertyInfo((preValue) => ({
       ...preValue,
       devicon: icon,

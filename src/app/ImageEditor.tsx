@@ -62,7 +62,7 @@ export const ImageEditor = (props) => {
           <i className={`devicon-${devicon} text-white dev-icon text-4xl`}></i>
         </div>
       );
-    } else {
+    } else if(icon.length > 0) {
       return (
         <div className=" ">
           <img
@@ -72,6 +72,8 @@ export const ImageEditor = (props) => {
           />
         </div>
       );
+    } else {
+      return ""
     }
   };
 
