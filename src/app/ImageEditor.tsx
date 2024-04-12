@@ -32,11 +32,12 @@ export const ImageEditor = (props) => {
     logoPosition,
   } = props.propertyInfo;
 
+ 
   const getImageInfo = () => {
     return props.message.url
       ? props.message
       : {
-          url: "default-bg.jpg",
+          url: "stacked-waves.svg",
           name: "PicProse",
           avatar: "default-author.jpg",
           profile: "default",

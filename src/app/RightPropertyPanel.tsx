@@ -42,7 +42,15 @@ import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
 
 export const RightPropertyPanel = (props) => {
-  const [titleValue, setTitleValue] = React.useState("Why UI designers should understand Flexbox and CSS Grid");
+  const titleArr = [
+    "海内存知己, 天涯若比邻",
+    "星垂平野阔, 月涌大江流",
+    "大漠孤烟直, 长河落日圆",
+  ];
+
+  const [titleValue, setTitleValue] = React.useState(
+    titleArr[Math.floor(Math.random() * 3)]
+  );
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("@PicProse");
   const [fontValue, setFontValue] = React.useState("font-anke");
@@ -284,7 +292,10 @@ export const RightPropertyPanel = (props) => {
                 target="_blank"
                 href="https://github.com/gezhaoyou/picprose"
               >
-                <i className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}/>GitHub
+                <i
+                  className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}
+                />
+                GitHub
               </Button>
             </NavbarItem>
           </NavbarContent>
