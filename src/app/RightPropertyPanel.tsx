@@ -284,7 +284,7 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="text-gray-350 font-bold text-inherit">参数</p>
+            <p className="text-gray-350 font-bold text-inherit">属性</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
@@ -418,7 +418,7 @@ export const RightPropertyPanel = (props) => {
 
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select label="图标" onSelectionChange={setDevIconValue}>
+            <Select label="图标 / 水印" onSelectionChange={setDevIconValue}>
               {deviconList.map((item) => (
                 <SelectItem
                   key={item.name + "-" + item.versions.font[0]}
@@ -449,23 +449,10 @@ export const RightPropertyPanel = (props) => {
               size="lg"
               onClick={() => inputRef.current.click()}
             >
-              <svg
-                className="w-6 h-6 text-[#2F6EE7] dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"
-                />
-              </svg>
+           
+                <svg className="w-6 h-6 text-gray-550 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"/>
+                </svg>
             </Button>
           </div>
         </div>

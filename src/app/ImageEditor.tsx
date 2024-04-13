@@ -81,7 +81,7 @@ export const ImageEditor = (props) => {
 
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
-      <div style={{ maxHeight: "90vh" }} className={aspect}>
+      <div style={{ maxHeight: "90vh" }} className={aspect == "" ? "aspect-[16/9]" :  aspect}>
         <img
           src={getImageInfo().url && getImageInfo().url}
           alt="Image"
@@ -90,7 +90,7 @@ export const ImageEditor = (props) => {
       </div>
 
       <div
-        style={{ backgroundColor: color + blurTrans }}
+        style={{ backgroundColor: (color == "" ? "#1F293799" : color + blurTrans) }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
         <button className="absolute  top-2 right-2 cursor-pointer">

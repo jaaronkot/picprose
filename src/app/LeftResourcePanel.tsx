@@ -9,7 +9,21 @@ export const LeftResourcePanel = (props) => {
   const [imageList, setImageList] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(Boolean);
- 
+  const inputRef = React.useRef(null);
+
+  const handleFileChange = (event) => {
+    if (event.target.files[0] != null) {
+      const file = URL.createObjectURL(event.target.files[0]);
+      props.onData({
+        url: file,
+        name: "PicProse",
+        avatar: "default-author.jpg",
+        profile: "default",
+        downloadLink: "",
+      })
+    }
+  };
+
   const searchImages = (searchText: string) => {
     setIsLoading(true)
     unsplash.search
@@ -85,7 +99,20 @@ export const LeftResourcePanel = (props) => {
             wrapper: "px-4",
           }}
         >
-     
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleFileChange}
+              ref={inputRef}
+            />
+          <Button isLoading={isLoading} variant="flat" color="primary" isIconOnly 
+            onClick={() => inputRef.current.click()}  >
+          <svg className="w-5 h-5 text-[#2F6EE7] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"/>
+          </svg>
+
+
+              </Button>
           <Input
            type="search" 
           placeholder="输入关键词搜索图片"
@@ -97,7 +124,7 @@ export const LeftResourcePanel = (props) => {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button isLoading={isLoading} isIconOnly variant="flat" color="primary" onClick={() => searchImages(searchValue)}>
-              <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
+              <SearchIcon className="text-[#2F6EE7] mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
               </Button>
             </NavbarItem>
           </NavbarContent>
