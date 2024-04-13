@@ -48,8 +48,10 @@ export const ImageEditor = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    setIsLoading(true);
-  }, [props.message]);
+    if(props.message.url != null) {
+      setIsLoading(true);
+    }
+  }, [props.message.url]);
 
   const getTitle = () => {
     return title;

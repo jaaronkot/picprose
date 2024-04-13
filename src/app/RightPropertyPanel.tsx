@@ -332,14 +332,9 @@ export const RightPropertyPanel = (props) => {
           <div className="w-4/5">
             <Input
               type="url"
-              label="遮罩颜色"
-              value={backColor.replace("#", "")}
-              placeholder={backColor.replace("#", "")}
-              startContent={
-                <div className="pointer-events-none flex items-center">
-                  <span className="text-default-400 text-small">#</span>
-                </div>
-              }
+              label="遮罩"
+              value={backColor}
+              placeholder={backColor}
             />
           </div>
           <div className="flex-grow" />
@@ -425,11 +420,11 @@ export const RightPropertyPanel = (props) => {
               defaultSelectedKeys={["aarch64-plain"]}
               renderValue={(items) => {
                 return items.map((item) => (
-                  <div className="flex gap-2 items-center">
+                  <div key={item.key} className="flex gap-2 items-center">
                     <i
                       className={`devicon-${item.key} text-black dev-icon text-base`}
                     ></i>
-                    <div className="flex flex-col">{item.key}</div>
+                    <div className="flex flex-col">{item.data.name}</div>
                   </div>
                 ));
               }}
