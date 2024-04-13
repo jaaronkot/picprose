@@ -138,11 +138,11 @@ export const RightPropertyPanel = (props) => {
   }, [logoPosition]);
 
   React.useEffect(() => {
-    var icon = ""
-    if(deviconValue.size > 0) {
+    var icon = "";
+    if (deviconValue.size > 0) {
       icon = Array.from(deviconValue)[0].toString();
     }
-   
+
     setPropertyInfo((preValue) => ({
       ...preValue,
       devicon: icon,
@@ -418,28 +418,21 @@ export const RightPropertyPanel = (props) => {
 
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select label="图标|水印" 
-            items={deviconList}
-            onSelectionChange={setDevIconValue} 
-            defaultSelectedKeys={["aarch64-plain"]}
-            renderValue={(items) => {
-              var icon = ""
-              if(items.size > 0) {
-                icon = Array.from(items)[0].toString();
-              }
-          
-              items.map((item) => (
-                console.log(item)
-              ));
-              return items.map((item) => (
-                <div className="flex gap-2 items-center">
-                <i
-                  className={`devicon-${item.key} text-black dev-icon text-base`}
-                ></i>
-                <div className="flex flex-col">{item.key}</div>
-              </div>
-              ));
-            }}
+            <Select
+              label="图标|水印"
+              items={deviconList}
+              onSelectionChange={setDevIconValue}
+              defaultSelectedKeys={["aarch64-plain"]}
+              renderValue={(items) => {
+                return items.map((item) => (
+                  <div className="flex gap-2 items-center">
+                    <i
+                      className={`devicon-${item.key} text-black dev-icon text-base`}
+                    ></i>
+                    <div className="flex flex-col">{item.key}</div>
+                  </div>
+                ));
+              }}
             >
               {(item) => (
                 <SelectItem
@@ -471,10 +464,23 @@ export const RightPropertyPanel = (props) => {
               size="lg"
               onClick={() => inputRef.current.click()}
             >
-           
-           <svg className="w-5 h-5 text-[#2F6EE7] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"/>
-          </svg>
+              <svg
+                className="w-5 h-5 text-[#2F6EE7] dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.3"
+                  d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"
+                />
+              </svg>
             </Button>
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
   NavbarItem,
   Link,
   Button,
+  Spinner,
 } from "@nextui-org/react";
 
 export const ImageEditor = (props) => {
@@ -32,7 +33,6 @@ export const ImageEditor = (props) => {
     logoPosition,
   } = props.propertyInfo;
 
- 
   const getImageInfo = () => {
     return props.message.url
       ? props.message
@@ -45,14 +45,18 @@ export const ImageEditor = (props) => {
         };
   };
 
-  
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+  }, [props.message]);
 
   const getTitle = () => {
-      return title;
+    return title;
   };
 
   const getAuthor = () => {
-      return author;
+    return author;
   };
 
   const getIcon = () => {
@@ -62,7 +66,7 @@ export const ImageEditor = (props) => {
           <i className={`devicon-${devicon} text-white dev-icon text-4xl`}></i>
         </div>
       );
-    } else if(icon.length > 0) {
+    } else if (icon.length > 0) {
       return (
         <div className=" ">
           <img
@@ -73,7 +77,7 @@ export const ImageEditor = (props) => {
         </div>
       );
     } else {
-      return ""
+      return "";
     }
   };
 
@@ -81,16 +85,22 @@ export const ImageEditor = (props) => {
 
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
-      <div style={{ maxHeight: "90vh" }} className={aspect == "" ? "aspect-[16/9]" :  aspect}>
+      <div
+        style={{ maxHeight: "90vh" }}
+        className={aspect == "" ? "aspect-[16/9]" : aspect}
+      >
         <img
           src={getImageInfo().url && getImageInfo().url}
           alt="Image"
           className={"rounded-md object-cover h-full w-full"}
+          onLoad={() => setIsLoading(false)}
         />
       </div>
 
       <div
-        style={{ backgroundColor: (color == "" ? "#1F293799" : color + blurTrans) }}
+        style={{
+          backgroundColor: color == "" ? "#1F293799" : color + blurTrans,
+        }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
         <button className="absolute  top-2 right-2 cursor-pointer">
@@ -139,6 +149,8 @@ export const ImageEditor = (props) => {
         <div className={"absolute " + logoPosition}>
           {logoPosition != "default" && getIcon()}
         </div>
+
+        {isLoading && <Spinner className={"absolute bottom-8 left-8"} />}
       </div>
 
       <div className="absolute  bottom-4 right-4 opacity-80">
