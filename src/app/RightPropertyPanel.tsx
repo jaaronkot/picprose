@@ -58,7 +58,7 @@ export const RightPropertyPanel = (props) => {
   const [backColor, setBackColor] = React.useState("#1F2937");
   const [backBlurLevel, setBackBlurLevel] = React.useState(60);
   const [deviconValue, setDevIconValue] = React.useState<Selection>(
-    new Set(["css3-plain"])
+    new Set(["aarch64-plain"])
   );
   const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
   const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
@@ -418,8 +418,30 @@ export const RightPropertyPanel = (props) => {
 
         <div className="flex w-full py-2">
           <div className="w-4/5">
-            <Select label="图标 / 水印" onSelectionChange={setDevIconValue}>
-              {deviconList.map((item) => (
+            <Select label="图标|水印" 
+            items={deviconList}
+            onSelectionChange={setDevIconValue} 
+            defaultSelectedKeys={["aarch64-plain"]}
+            renderValue={(items) => {
+              var icon = ""
+              if(items.size > 0) {
+                icon = Array.from(items)[0].toString();
+              }
+          
+              items.map((item) => (
+                console.log(item)
+              ));
+              return items.map((item) => (
+                <div className="flex gap-2 items-center">
+                <i
+                  className={`devicon-${item.key} text-black dev-icon text-base`}
+                ></i>
+                <div className="flex flex-col">{item.key}</div>
+              </div>
+              ));
+            }}
+            >
+              {(item) => (
                 <SelectItem
                   key={item.name + "-" + item.versions.font[0]}
                   textValue={item.name}
@@ -431,7 +453,7 @@ export const RightPropertyPanel = (props) => {
                     <div className="flex flex-col">{item.name}</div>
                   </div>
                 </SelectItem>
-              ))}
+              )}
             </Select>
           </div>
           <div className="flex-grow" />
@@ -450,9 +472,9 @@ export const RightPropertyPanel = (props) => {
               onClick={() => inputRef.current.click()}
             >
            
-                <svg className="w-6 h-6 text-gray-550 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"/>
-                </svg>
+           <svg className="w-5 h-5 text-[#2F6EE7] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"/>
+          </svg>
             </Button>
           </div>
         </div>
