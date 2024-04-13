@@ -46,10 +46,11 @@ export const RightPropertyPanel = (props) => {
     "海内存知己, 天涯若比邻",
     "星垂平野阔, 月涌大江流",
     "大漠孤烟直, 长河落日圆",
+    "Why UI designers should understand Flexbox and CSS Grid",
   ];
 
   const [titleValue, setTitleValue] = React.useState(
-    titleArr[Math.floor(Math.random() * 3)]
+    titleArr[Math.floor(Math.random() * 4)]
   );
   const [subTitleValue, setSubTitleValue] = React.useState("");
   const [authorValue, setAuthorValue] = React.useState("@PicProse");
