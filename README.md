@@ -43,6 +43,18 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 Run
  ```bash
 npm run build
-```
-
+ ```
 static file generate to `out` dir
+
+## Deploy to Vercel
+You can start by creating your own Nextra site and deploying to Vercel by clicking the link:
+
+<a
+  className="mt-3 inline-flex"
+  target="_blank"
+  href="https://vercel.com/new/clone?s=https://github.com/gezhaoyou/picprose&showOptionalTeamCreation=false">
+
+  ![](https://vercel.com/button)  </a>
+
+## License
+PicProse is open-source under the GNU Affero General Public License v3.0 (AGPL-3.0), you will find more information about the license and how to comply with it [here](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
