@@ -1,7 +1,7 @@
 ## Intro
 PicProse is a article cover image generator tool for Medium, Wordpress, Wechat and other blog post
 
-**Online:** [https://picprose.net](https://picprose.net)
+**Preview:** [https://picprose.net](https://picprose.net) or [https://picprose.pixpark.net/](https://picprose.pixpark.net/)(China)
 
 **User:** [https://pixpark.net](https://pixpark.net)
 
@@ -49,12 +49,9 @@ static file generate to `out` dir
 ## Deploy to Vercel
 You can start by creating your own Nextra site and deploying to Vercel by clicking the link:
 
-<a
-  className="mt-3 inline-flex"
+<a className="mt-3 inline-flex"
   target="_blank"
-  href="https://vercel.com/new/clone?s=https://github.com/gezhaoyou/picprose&showOptionalTeamCreation=false">
-
-  ![](https://vercel.com/button)  </a>
+  href="https://vercel.com/new/clone?s=https://github.com/gezhaoyou/picprose&showOptionalTeamCreation=false">![](https://vercel.com/button)</a>
 
 ## License
 PicProse is open-source under the GNU Affero General Public License v3.0 (AGPL-3.0), you will find more information about the license and how to comply with it [here](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
