@@ -2,19 +2,6 @@
 import React from "react";
 import "./devicon.min.css";
 import {
-  Listbox,
-  Divider,
-  ListboxItem,
-  Chip,
-  ScrollShadow,
-  Avatar,
-  Image,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Button,
   Spinner,
 } from "@nextui-org/react";
 
@@ -74,7 +61,7 @@ export const ImageEditor = (props) => {
           <img
             src={icon}
             alt="img"
-            className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white"
+            className="w-12 h-12 m-2 rounded-full"
           />
         </div>
       );
@@ -115,9 +102,9 @@ export const ImageEditor = (props) => {
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
             />
           </svg>
@@ -173,7 +160,8 @@ export const ImageEditor = (props) => {
           </a>
 
           <a
-            href="https://unsplash.com/?utm_source=https://picprose.pixpark.net&utm_medium=referral"
+            href="https://unsplash.com/?utm_source=PicProse&utm_medium=referral"
+            target="_blank"
             className="text-sm text-white mx-2"
           >
             Unsplash
