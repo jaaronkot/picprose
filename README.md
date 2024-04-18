@@ -53,5 +53,11 @@ You can start by creating your own Nextra site and deploying to Vercel by clicki
   target="_blank"
   href="https://vercel.com/new/clone?s=https://github.com/gezhaoyou/picprose&showOptionalTeamCreation=false">![](https://vercel.com/button)</a>
 
+## Deploy to Docker
+
+```sh
+docker run -d --name picprose -e NEXT_PUBLIC_UNSPLASH_API_KEY=xxx -p 3000:3000 hausen1012/picprose
+```
+
 ## License
 PicProse is open-source under the GNU Affero General Public License v3.0 (AGPL-3.0), you will find more information about the license and how to comply with it [here](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
