@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import {Providers} from "./providers";
 import { GoogleAnalytics } from '@next/third-parties/google'
-
+import Script from 'next/script'
 import { Open_Sans, Roboto_Mono, Anek_Latin } from 'next/font/google'
 import localFont from 'next/font/local'
  
@@ -68,7 +68,9 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
           {children}
         </Providers>
       </body>
-      <GoogleAnalytics gaId="G-L0HREZLHE4" />
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} />
+      <Script defer src="https://us.umami.is/script.js" data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID!}></Script>
+      
     </html>
   );
 }
