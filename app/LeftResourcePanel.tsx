@@ -18,6 +18,12 @@ import {
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 import { AcmeLogo } from "./AcmeLogo";
+import PhotoAlbum from "react-photo-album";
+ 
+const PHOTO_SPACING = 8;
+const TARGET_ROW_HEIGHT = 110;
+const ROW_CONSTRAINTS = { maxPhotos: 2 };
+
 export const LeftResourcePanel = (props) => {
   const [imageList, setImageList] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState("");
@@ -50,8 +56,21 @@ export const LeftResourcePanel = (props) => {
         // orientation:'portrait'
       })
       .then((response) => {
+        var photos = response.response.results.map((item) => { 
+          return {
+            src : item.urls.small,
+            url : item.urls.regular,
+            key : item.id,
+            alt : item.alt_description,
+            width : item.width,
+            height : item.height,
+            name : item.user.name,
+            avatar: item.user.profile_image.small,
+            profile: `${item.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
+          };
+        });
+        setImageList(photos);
         setIsLoading(false);
-        setImageList(response.response.results);
       });
   };
 
@@ -62,18 +81,12 @@ export const LeftResourcePanel = (props) => {
   };
 
   //
-  const selectImage = (image) => {
-    props.onData({
-      url: image.urls.regular,
-      name: image.user.name,
-      avatar: image.user.profile_image.small,
-      profile: `${image.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
-      downloadLink: image.links.download_location,
-    });
+  const selectImage = (index) => {
+    props.onData(imageList[index]);
   };
 
   React.useEffect(() => {
-    searchImages("scenery");
+    searchImages("dev");
   }, []);
 
   return (
@@ -99,18 +112,16 @@ export const LeftResourcePanel = (props) => {
           </NavbarContent>
         </Navbar>
       </div>
-      <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto">
-        {imageList.map((image) => {
-          return (
-            <img
-              src={image.urls.small}
-              key={image.id}
-              alt={image.alt_description}
-              className="transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24"
-              onClick={() => selectImage(image)}
-            />
-          );
-        })}
+      <div className="flex-grow overflow-y-scroll scrollbar-thin scrollbar-color-auto px-4">
+        <PhotoAlbum 
+          photos={imageList}
+          layout="rows"
+          targetRowHeight={TARGET_ROW_HEIGHT}
+          rowConstraints={ROW_CONSTRAINTS}
+          spacing={PHOTO_SPACING}
+          defaultContainerWidth={330}
+          onClick={({ index }) => selectImage(index)} 
+          />
       </div>
       <div className="w-full">
         <Navbar
