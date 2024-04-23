@@ -12,23 +12,26 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
+  Spinner,
   Button,
 } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 import { AcmeLogo } from "./AcmeLogo";
 import PhotoAlbum from "react-photo-album";
- 
+import InfiniteScroll from "react-infinite-scroll-component";
+
 const PHOTO_SPACING = 8;
 const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
 export const LeftResourcePanel = (props) => {
   const [imageList, setImageList] = React.useState([]);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(Boolean);
+  const [searchValue, setSearchValue] = React.useState("dev");
+  // const [isLoading, setIsLoading] = React.useState(Boolean);
   const inputRef = React.useRef(null);
+  const [unsplashPage, setUnsplashPage] = React.useState(1);
+  const [hasMore, setHasMore] = React.useState(true);
 
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
@@ -47,37 +50,55 @@ export const LeftResourcePanel = (props) => {
     if (searchText === "") {
       return;
     }
-    setIsLoading(true);
+    // setIsLoading(true);
     unsplash.search
       .getPhotos({
         query: searchText,
-        page: 1,
-        perPage: 30,
+        page: unsplashPage,
+        perPage: 20,
         // orientation:'portrait'
       })
-      .then((response) => {
-        var photos = response.response.results.map((item) => { 
-          return {
-            src : item.urls.small,
-            url : item.urls.regular,
-            key : item.id,
-            alt : item.alt_description,
-            width : item.width,
-            height : item.height,
-            name : item.user.name,
-            avatar: item.user.profile_image.small,
-            profile: `${item.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
-          };
-        });
-        setImageList(photos);
-        setIsLoading(false);
+      .then((result) => {
+        if (result.type === 'success') {
+          var photos = result.response.results.map((item) => {
+            return {
+              src: item.urls.small,
+              url: item.urls.regular,
+              key: item.id,
+              alt: item.alt_description,
+              width: item.width,
+              height: item.height,
+              name: item.user.name,
+              avatar: item.user.profile_image.small,
+              profile: `${item.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
+            };
+          });
+          if(photos.length < 20) {
+            setHasMore(false)
+          }
+          setImageList([...imageList, ...photos]);
+          // setIsLoading(false);
+        } else {
+            setHasMore(false)
+        }
+ 
+
+        
       });
   };
 
   const onSearchKeydown = (e) => {
     if (e.keyCode === 13) {
-      searchImages(searchValue);
+      fetchImage()
     }
+  };
+
+  const fetchImage = () => {
+    // clear imagelist
+    setImageList([])
+    setUnsplashPage(1)
+    setHasMore(true)
+    searchImages(searchValue)
   };
 
   //
@@ -86,8 +107,12 @@ export const LeftResourcePanel = (props) => {
   };
 
   React.useEffect(() => {
-    searchImages("dev");
-  }, []);
+    searchImages(searchValue);
+  }, [unsplashPage]);
+ 
+  const fetchMoreData = () => {
+    setUnsplashPage(unsplashPage + 1);
+  };
 
   return (
     <div className="w-full flex flex-col h-screen">
@@ -112,16 +137,34 @@ export const LeftResourcePanel = (props) => {
           </NavbarContent>
         </Navbar>
       </div>
-      <div className="flex-grow overflow-y-scroll scrollbar-thin scrollbar-color-auto px-4">
-        <PhotoAlbum 
-          photos={imageList}
-          layout="rows"
-          targetRowHeight={TARGET_ROW_HEIGHT}
-          rowConstraints={ROW_CONSTRAINTS}
-          spacing={PHOTO_SPACING}
-          defaultContainerWidth={330}
-          onClick={({ index }) => selectImage(index)} 
+      <div className="flex-grow">
+      <InfiniteScroll
+          className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
+          dataLength={imageList.length}
+          height={640}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<div className="grid justify-items-center ">
+              <Spinner className="my-2"/>
+            </div>}
+          endMessage={
+            <div className="grid justify-items-center ">
+              <div className="my-2">
+              已经到底...
+              </div>
+          </div>
+          }
+        >
+          <PhotoAlbum
+            photos={imageList}
+            layout="rows"
+            targetRowHeight={TARGET_ROW_HEIGHT}
+            rowConstraints={ROW_CONSTRAINTS}
+            spacing={PHOTO_SPACING}
+            // defaultContainerWidth={330}
+            onClick={({ index }) => selectImage(index)}
           />
+        </InfiniteScroll>
       </div>
       <div className="w-full">
         <Navbar
@@ -170,11 +213,12 @@ export const LeftResourcePanel = (props) => {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button
-                isLoading={isLoading}
+                // isLoading={isLoading}
                 isIconOnly
                 variant="flat"
                 color="primary"
-                onClick={() => searchImages(searchValue)}
+                onClick={() => {fetchImage}
+                }
               >
                 <SearchIcon className="text-[#2F6EE7] mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
               </Button>

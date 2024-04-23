@@ -2,19 +2,6 @@
 import React from "react";
 import "./devicon.min.css";
 import {
-  Listbox,
-  Divider,
-  ListboxItem,
-  Chip,
-  ScrollShadow,
-  Avatar,
-  Image,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Button,
   Spinner,
 } from "@nextui-org/react";
 

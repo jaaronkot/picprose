@@ -18,6 +18,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-photo-album": "^2.3.1",
     "unsplash-js": "^7.0.19"
   },
