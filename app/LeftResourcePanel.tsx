@@ -22,17 +22,19 @@ import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const PHOTO_SPACING = 8;
+const KEY_CODE_ENTERN = 13;
+const PHOTO_COUNT_PER_PAGE = 20;
 const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
 export const LeftResourcePanel = (props) => {
   const [imageList, setImageList] = React.useState([]);
-  const [searchValue, setSearchValue] = React.useState("dev");
-  // const [isLoading, setIsLoading] = React.useState(Boolean);
+  const [searchValue, setSearchValue] = React.useState("");
+  const [isNeedRandomPhoto, setIsNeedRandomPhoto] = React.useState(true);
   const inputRef = React.useRef(null);
   const [unsplashPage, setUnsplashPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
-
+  
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -46,17 +48,12 @@ export const LeftResourcePanel = (props) => {
     }
   };
 
-  const searchImages = (searchText: string) => {
-    if (searchText === "") {
-      return;
-    }
-    // setIsLoading(true);
+  const searchImages = (searchText: string = "dev", pageNum: number = 1) => {
     unsplash.search
       .getPhotos({
         query: searchText,
-        page: unsplashPage,
-        perPage: 20,
-        // orientation:'portrait'
+        page: pageNum,
+        perPage: PHOTO_COUNT_PER_PAGE,
       })
       .then((result) => {
         if (result.type === 'success') {
@@ -73,45 +70,81 @@ export const LeftResourcePanel = (props) => {
               profile: `${item.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
             };
           });
-          if(photos.length < 20) {
+          if(photos.length < PHOTO_COUNT_PER_PAGE) {
             setHasMore(false)
           }
-          setImageList([...imageList, ...photos]);
-          // setIsLoading(false);
-        } else {
-            setHasMore(false)
+          if(pageNum == 1) {
+            setImageList(photos);
+          } else {
+            setImageList([...imageList, ...photos]);
+          }
         }
- 
-
-        
       });
   };
 
+  const fetchRandomPhotos = () => {
+    unsplash.photos.getRandom({
+      count: PHOTO_COUNT_PER_PAGE,
+    }).then((result) => {
+          var photos = result.response.map((item) => {
+            return {
+              src: item.urls.small,
+              url: item.urls.regular,
+              key: item.id,
+              alt: item.alt_description,
+              width: item.width,
+              height: item.height,
+              name: item.user.name,
+              avatar: item.user.profile_image.small,
+              profile: `${item.user.links.html}?utm_source=https://picprose.net&utm_medium=referral`,
+            };
+          });
+          if(photos.length < PHOTO_COUNT_PER_PAGE) {
+            setHasMore(false)
+          }
+          setImageList([...imageList, ...photos]);
+       
+      });
+  }
+
   const onSearchKeydown = (e) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === KEY_CODE_ENTERN) {
       fetchImage()
     }
   };
 
   const fetchImage = () => {
-    // clear imagelist
-    setImageList([])
-    setUnsplashPage(1)
+    if (searchValue === "") {
+      return;
+    }
+ 
+    setIsNeedRandomPhoto(false);
     setHasMore(true)
-    searchImages(searchValue)
+    const pageNum = 1
+    setUnsplashPage(pageNum)
+    searchImages(searchValue, pageNum)
+  };
+ 
+  const onScrollToBottom = () => {
+    if(isNeedRandomPhoto) {
+      // fetch more random image
+      fetchRandomPhotos();
+    } else {
+      // search more image
+      const pageNum = unsplashPage + 1
+      setUnsplashPage(pageNum);
+      searchImages(searchValue, pageNum);
+    }
   };
 
-  //
-  const selectImage = (index) => {
-    props.onData(imageList[index]);
-  };
 
   React.useEffect(() => {
-    searchImages(searchValue);
-  }, [unsplashPage]);
+    fetchRandomPhotos();
+  }, []);
  
-  const fetchMoreData = () => {
-    setUnsplashPage(unsplashPage + 1);
+  //
+  const selectImage = (index: number) => {
+    props.onData(imageList[index]);
   };
 
   return (
@@ -142,15 +175,15 @@ export const LeftResourcePanel = (props) => {
           className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
           dataLength={imageList.length}
           height={640}
-          next={fetchMoreData}
+          next={onScrollToBottom}
           hasMore={hasMore}
           loader={<div className="grid justify-items-center ">
-              <Spinner className="my-2"/>
+              <Spinner className="my-4"/>
             </div>}
           endMessage={
             <div className="grid justify-items-center ">
-              <div className="my-2">
-              已经到底...
+              <div className="my-4">
+              已经到底了...
               </div>
           </div>
           }
@@ -213,11 +246,12 @@ export const LeftResourcePanel = (props) => {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button
-                // isLoading={isLoading}
                 isIconOnly
                 variant="flat"
                 color="primary"
-                onClick={() => {fetchImage}
+                onClick={() => {
+                  fetchImage()
+                }
                 }
               >
                 <SearchIcon className="text-[#2F6EE7] mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
