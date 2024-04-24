@@ -35,7 +35,7 @@ export const LeftResourcePanel = (props) => {
   const [unsplashPage, setUnsplashPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
 
-  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+  const [windowHeight, setWindowHeight] = React.useState(0);
  
 
   const handleFileChange = (event) => {
@@ -142,6 +142,10 @@ export const LeftResourcePanel = (props) => {
   };
 
   React.useEffect(() => {
+    setWindowHeight(window.innerHeight);
+    
+    fetchRandomPhotos();
+
     const handleResize = () => {
       setWindowHeight(window.innerHeight);
     };
@@ -152,8 +156,6 @@ export const LeftResourcePanel = (props) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-
-    fetchRandomPhotos();
   }, []);
 
 
