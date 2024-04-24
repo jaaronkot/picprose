@@ -61,7 +61,7 @@ export const ImageEditor = (props) => {
           <img
             src={icon}
             alt="img"
-            className="w-12 h-12 m-2 rounded-full bg-white border-2 border-white"
+            className="w-12 h-12 m-2 rounded-full"
           />
         </div>
       );
