@@ -23,7 +23,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const PHOTO_SPACING = 8;
 const KEY_CODE_ENTERN = 13;
-const PHOTO_COUNT_PER_PAGE = 20;
+const PHOTO_COUNT_PER_PAGE = 30;
 const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
