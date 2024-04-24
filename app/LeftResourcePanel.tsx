@@ -34,6 +34,7 @@ export const LeftResourcePanel = (props) => {
   const inputRef = React.useRef(null);
   const [unsplashPage, setUnsplashPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
+  const [hasSetFirstRandomPhoto, setHasSetFirstRandomPhoto] = React.useState(false);
 
   const [windowHeight, setWindowHeight] = React.useState(0);
  
@@ -107,6 +108,10 @@ export const LeftResourcePanel = (props) => {
         if (photos.length < PHOTO_COUNT_PER_PAGE) {
           setHasMore(false);
         }
+        if(!hasSetFirstRandomPhoto) {
+          setHasSetFirstRandomPhoto(true)
+          selectImage(Math.floor(Math.random() * 20), photos)
+        }
         setImageList([...imageList, ...photos]);
       });
   };
@@ -160,7 +165,7 @@ export const LeftResourcePanel = (props) => {
 
 
   //
-  const selectImage = (index: number) => {
+  const selectImage = (index: number, imageList:[]) => {
     props.onData(imageList[index]);
   };
 
@@ -211,7 +216,7 @@ export const LeftResourcePanel = (props) => {
             targetRowHeight={TARGET_ROW_HEIGHT}
             rowConstraints={ROW_CONSTRAINTS}
             spacing={PHOTO_SPACING}
-            onClick={({ index }) => selectImage(index)}
+            onClick={({ index }) => selectImage(index, imageList)}
           />
         </InfiniteScroll>
         <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65  rounded-xl">
