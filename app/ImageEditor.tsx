@@ -160,7 +160,8 @@ export const ImageEditor = (props) => {
           </a>
 
           <a
-            href="https://unsplash.com/?utm_source=https://picprose.pixpark.net&utm_medium=referral"
+            href="https://unsplash.com/?utm_source=PicProse&utm_medium=referral"
+            target="_blank"
             className="text-sm text-white mx-2"
           >
             Unsplash
