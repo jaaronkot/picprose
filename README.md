@@ -14,11 +14,13 @@
 PicProse is a article cover image generator tool for Medium, Wordpress, Wechat and other blog post
 
 **Preview:** 
+
 [https://picprose.net](https://picprose.net)
 
 [https://picprose.pixpark.net/](https://picprose.pixpark.net/)(Chinese mainland)
 
 **Showcase:**
+
 [https://pixpark.net](https://pixpark.net)
 
 ![preview](./doc/screenshot.png)
@@ -26,6 +28,7 @@ PicProse is a article cover image generator tool for Medium, Wordpress, Wechat a
 ## Getting Started
 
 **Step 1:**
+
 config Unsplash key
 
 💡 create file `.env.local`, put in your unsplash key 
@@ -36,6 +39,7 @@ Refer: [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
 
 **Step 2:**
+
 Run the development server:
 
 ```bash
