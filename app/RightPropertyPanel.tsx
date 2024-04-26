@@ -40,32 +40,28 @@ import { BottomLeftIcon } from "./icons/BottomLeftIcon";
 import { MiddleIcon } from "./icons/MiddleIcon";
 import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
+import { config } from "@/config";
 
 export const RightPropertyPanel = (props) => {
-  const titleArr = [
-    "海内存知己, 天涯若比邻",
-    "星垂平野阔, 月涌大江流",
-    "大漠孤烟直, 长河落日圆",
-    "Why UI designers should understand Flexbox and CSS Grid",
-  ];
+  const titleArr = config.title;
 
   const [titleValue, setTitleValue] = React.useState(
     titleArr[Math.floor(Math.random() * 4)]
   );
-  const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("@PicProse");
-  const [fontValue, setFontValue] = React.useState("font-anke");
-  const [iconValue, setIconValue] = React.useState("");
-  const [backColor, setBackColor] = React.useState("#1F2937");
-  const [backBlurLevel, setBackBlurLevel] = React.useState(60);
+  const [subTitleValue, setSubTitleValue] = React.useState(config.subTitle);
+  const [authorValue, setAuthorValue] = React.useState(config.author);
+  const [fontValue, setFontValue] = React.useState(config.font);
+  const [iconValue, setIconValue] = React.useState(config.icon);
+  const [backColor, setBackColor] = React.useState(config.backColor);
+  const [backBlurLevel, setBackBlurLevel] = React.useState(config.backBlurLevel);
   const [deviconValue, setDevIconValue] = React.useState<Selection>(
-    new Set(["aarch64-plain"])
+    new Set(config.deviconValue)
   );
-  const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
-  const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
-  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(60);
+  const [aspectValue, setAspectValue] = React.useState(config.aspect);
+  const [blurValue, setBlurValue] = React.useState<SliderValue>(config.blur);
+  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(config.blurTrans);
   const inputRef = React.useRef(null);
-  const [logoPosition, setLogoPosition] = React.useState("default");
+  const [logoPosition, setLogoPosition] = React.useState(config.logoPosition);
 
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
