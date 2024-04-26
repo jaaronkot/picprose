@@ -1,8 +1,9 @@
-<h1 align="center"> PicProse </h1>
+<h1 align="center">PicProse</h1>
 
 <p align="center">
    <a href="https://github.com/gezhaoyou/picprose/stargazers"><img alt="PicProse Stars" src="https://img.shields.io/github/stars/gezhaoyou/picprose?style=social"/></a>
     <a href="https://github.com/gezhaoyou/picprose/releases/latest"><img alt="PicProse Release" src="https://img.shields.io/github/v/release/gezhaoyou/picprose"/></a>
+      <a href="#"><img alt="PicProse" src="https://img.shields.io/badge/Stack-React_%7C_Next.JS_%7C_NextUI_%7C_Tailwind CSS-green"/></a>
     <a href="https://github.com/gezhaoyou/picprose/blob/main/LICENSE"><img alt="PicProse Stars" src="https://img.shields.io/github/license/gezhaoyou/picprose"/></a>  
 </p>
 
