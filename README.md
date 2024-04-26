@@ -1,8 +1,9 @@
-<h1 align="center"> PicProse </h1>
+<h1 align="center">PicProse</h1>
 
 <p align="center">
    <a href="https://github.com/gezhaoyou/picprose/stargazers"><img alt="PicProse Stars" src="https://img.shields.io/github/stars/gezhaoyou/picprose?style=social"/></a>
     <a href="https://github.com/gezhaoyou/picprose/releases/latest"><img alt="PicProse Release" src="https://img.shields.io/github/v/release/gezhaoyou/picprose"/></a>
+      <a href="#"><img alt="PicProse" src="https://img.shields.io/badge/Stack-React_%7C_Next.JS_%7C_NextUI_%7C_Tailwind CSS-green"/></a>
     <a href="https://github.com/gezhaoyou/picprose/blob/main/LICENSE"><img alt="PicProse Stars" src="https://img.shields.io/github/license/gezhaoyou/picprose"/></a>  
 </p>
 
@@ -74,4 +75,4 @@ docker run -d --name picprose -e NEXT_PUBLIC_UNSPLASH_API_KEY=xxx -p 3000:3000 h
 ```
 
 ## License
-PicProse is open-source under the GNU Affero General Public License v3.0 (AGPL-3.0), you will find more information about the license and how to comply with it [here](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
+PicProse is open-source under the [MIT License](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).

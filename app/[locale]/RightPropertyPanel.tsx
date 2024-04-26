@@ -40,33 +40,29 @@ import { BottomLeftIcon } from "./icons/BottomLeftIcon";
 import { MiddleIcon } from "./icons/MiddleIcon";
 import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
-
+import { config } from "@/config";
+import {useTranslations} from 'next-intl';
 export const RightPropertyPanel = (props) => {
-  const titleArr = [
-    "海内存知己, 天涯若比邻",
-    "星垂平野阔, 月涌大江流",
-    "大漠孤烟直, 长河落日圆",
-    "Why UI designers should understand Flexbox and CSS Grid",
-  ];
+  const titleArr = config.title;
 
   const [titleValue, setTitleValue] = React.useState(
     titleArr[Math.floor(Math.random() * 4)]
   );
-  const [subTitleValue, setSubTitleValue] = React.useState("");
-  const [authorValue, setAuthorValue] = React.useState("@PicProse");
-  const [fontValue, setFontValue] = React.useState("font-anke");
-  const [iconValue, setIconValue] = React.useState("");
-  const [backColor, setBackColor] = React.useState("#1F2937");
-  const [backBlurLevel, setBackBlurLevel] = React.useState(60);
+  const [subTitleValue, setSubTitleValue] = React.useState(config.subTitle);
+  const [authorValue, setAuthorValue] = React.useState(config.author);
+  const [fontValue, setFontValue] = React.useState(config.font);
+  const [iconValue, setIconValue] = React.useState(config.icon);
+  const [backColor, setBackColor] = React.useState(config.backColor);
+  const [backBlurLevel, setBackBlurLevel] = React.useState(config.backBlurLevel);
   const [deviconValue, setDevIconValue] = React.useState<Selection>(
-    new Set(["aarch64-plain"])
+    new Set(config.deviconValue)
   );
-  const [aspectValue, setAspectValue] = React.useState("aspect-[16/9]");
-  const [blurValue, setBlurValue] = React.useState<SliderValue>(0);
-  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(60);
+  const [aspectValue, setAspectValue] = React.useState(config.aspect);
+  const [blurValue, setBlurValue] = React.useState<SliderValue>(config.blur);
+  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(config.blurTrans);
   const inputRef = React.useRef(null);
-  const [logoPosition, setLogoPosition] = React.useState("default");
-
+  const [logoPosition, setLogoPosition] = React.useState(config.logoPosition);
+  const t = useTranslations('RightPropertyPanel');
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -285,7 +281,7 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="text-gray-350 font-bold text-inherit">属性</p>
+            <p className="text-gray-350 font-bold text-inherit">{t("property")}</p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
@@ -308,7 +304,7 @@ export const RightPropertyPanel = (props) => {
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap px-4">
         <Select
-          label="比例"
+          label={t('aspect')}
           className="max-w-xs py-2"
           defaultSelectedKeys={["aspect-[16/9]"]}
           onChange={handleAspectSelectionChange}
@@ -333,7 +329,7 @@ export const RightPropertyPanel = (props) => {
           <div className="w-4/5">
             <Input
               type="url"
-              label="遮罩"
+              label={t('mask')}
               value={backColor}
               placeholder={backColor}
             />
@@ -382,7 +378,7 @@ export const RightPropertyPanel = (props) => {
           </div>
         </div>
         <Slider
-          label="透明度"
+          label={t('transparence')}
           value={blurTransValue}
           onChange={setBlurTransValue}
           size="sm"
@@ -400,7 +396,7 @@ export const RightPropertyPanel = (props) => {
 
         <Divider />
         <Select
-          label="字体"
+          label={t("font")}
           className="max-w-xs py-2"
           onChange={onFontSelectChange}
           defaultSelectedKeys={["font-anke"]}
@@ -415,7 +411,7 @@ export const RightPropertyPanel = (props) => {
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Select
-              label="图标|水印"
+              label={t('icon')}
               items={deviconList}
               onSelectionChange={setDevIconValue}
               defaultSelectedKeys={["aarch64-plain"]}
@@ -535,15 +531,15 @@ export const RightPropertyPanel = (props) => {
 
         <Divider />
         <Textarea
-          label="标题"
-          placeholder="输入标题"
+          label={t("title")}
+          placeholder={t("title_place")}
           className="max-w-xs py-2"
           value={titleValue}
           onValueChange={setTitleValue}
         />
 
         <Input
-          label="作者"
+          label={t("author")}
           type="search"
           className="py-2"
           placeholder="输入作者"
@@ -553,7 +549,7 @@ export const RightPropertyPanel = (props) => {
       </div>
       <Divider />
       <div className="w-full mt-4 px-4">
-        <div className="text-gray-400 text-sm">下载图像</div>
+        <div className="text-gray-400 text-sm">{t("download")}</div>
         <div className="flex justify-between my-3">
           <Button
             onClick={() => dowloadImage("jpg")}

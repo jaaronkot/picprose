@@ -1,0 +1,19 @@
+{
+    "LeftResourcePanel": {
+        "powered_by": "Powered by ",
+        "search_end" : "No more image...",
+        "input_search" : "Search"
+    },
+    "RightPropertyPanel": {
+        "property": "Property",
+        "aspect": "Aspect",
+        "mask": "Mask",
+        "transparence": "Transparence",
+        "font": "Font",
+        "icon": "Icon",
+        "title": "Title",
+        "title_place": "Please input title",
+        "author": "Author",
+        "download": "Download"
+    }
+}
