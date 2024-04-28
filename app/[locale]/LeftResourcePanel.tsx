@@ -20,7 +20,7 @@ import { SearchIcon } from "./SearchIcon";
 import { PicproseLogo } from "./PicproseLogo";
 import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import {useTranslations} from 'next-intl';
 const PHOTO_SPACING = 8;
 const KEY_CODE_ENTERN = 13;
 const PHOTO_COUNT_PER_PAGE = 30;
@@ -28,6 +28,7 @@ const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
 export const LeftResourcePanel = (props) => {
+  const t = useTranslations('LeftResourcePanel');
   const [imageList, setImageList] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [isNeedRandomPhoto, setIsNeedRandomPhoto] = React.useState(true);
@@ -205,7 +206,7 @@ export const LeftResourcePanel = (props) => {
           }
           endMessage={
             <div className="grid justify-items-center ">
-              <div className="my-4">已经到底了...</div>
+              <div className="my-4">{t('search_end')}</div>
             </div>
           }
         >
@@ -221,7 +222,7 @@ export const LeftResourcePanel = (props) => {
         <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65  rounded-xl">
           <div className="flex items-center ml-2">
             <span className="leading-6 text-xs text-white text-center">
-              Powered by{" "}
+              {t('powered_by')}
             </span>
             <a
               href="https://unsplash.com/?utm_source=PicProse&utm_medium=referral"
@@ -270,7 +271,7 @@ export const LeftResourcePanel = (props) => {
           </Button>
           <Input
             type="search"
-            placeholder="输入关键词搜索图片"
+            placeholder={t('input_search')}
             value={searchValue}
             onValueChange={setSearchValue}
             onKeyDown={(e) => onSearchKeydown(e)}
