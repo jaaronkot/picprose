@@ -5,7 +5,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
 import { Open_Sans, Roboto_Mono, Anek_Latin } from 'next/font/google'
 import localFont from 'next/font/local'
- 
+import {NextIntlClientProvider, useMessages} from 'next-intl';
 // Font files can be colocated inside of `app`
 const dingTalkFont = localFont({
   src: 'fonts/DingTalk JinBuTi.ttf',
@@ -59,7 +59,15 @@ export const metadata: Metadata = {
   description: "PicProse is a better cover image generator tool for Medium, YouTube, BiliBili, Blog and more.",
 };
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default function RootLayout({
+    children,
+    params: {locale}
+  }: {
+    children: React.ReactNode;
+    params: {locale: string};
+  }) {
+
+  const messages = useMessages();
   return (
     <html lang="en" className={`${openSans.variable} ${robotoMono.variable} ${ankeLatin.variable} ${dingTalkFont.variable} ${kingsoftFont.variable} ${xinYiGuanHeiFont.variable} ${alibabaFont.variable} font-sans light`}>
       <head>
@@ -72,9 +80,11 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <meta name="theme-color" content="#ffffff"/>
       </head>
       <body>
+      <NextIntlClientProvider messages={messages}>
         <Providers>
           {children}
         </Providers>
+      </NextIntlClientProvider>
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} />
       <Script defer src="https://us.umami.is/script.js" data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID!}></Script>

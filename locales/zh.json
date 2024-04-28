@@ -1,0 +1,19 @@
+{
+    "LeftResourcePanel": {
+        "powered_by": "Powered by ",
+        "search_end" : "No more image...",
+        "input_search" : "搜索"
+    },
+    "RightPropertyPanel": {
+        "property": "属性",
+        "aspect": "比例",
+        "mask": "遮罩",
+        "transparence": "浓度",
+        "font": "字体",
+        "icon": "图标",
+        "title": "标题",
+        "title_place": "Please input title",
+        "author": "作者",
+        "download": "下载"
+    }
+}
