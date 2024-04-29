@@ -75,4 +75,4 @@ docker run -d --name picprose -e NEXT_PUBLIC_UNSPLASH_API_KEY=xxx -p 3000:3000 h
 ```
 
 ## License
-PicProse is open-source under the GNU Affero General Public License v3.0 (AGPL-3.0), you will find more information about the license and how to comply with it [here](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
+PicProse is open-source under the [MIT License](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
