@@ -46,7 +46,7 @@ export const RightPropertyPanel = (props) => {
   const titleArr = config.title;
 
   const [titleValue, setTitleValue] = React.useState(
-    titleArr[Math.floor(Math.random() * 4)]
+    titleArr[Math.floor(Math.random() * 13)]
   );
   const [subTitleValue, setSubTitleValue] = React.useState(config.subTitle);
   const [authorValue, setAuthorValue] = React.useState(config.author);
@@ -310,12 +310,12 @@ export const RightPropertyPanel = (props) => {
                 color="primary"
                 variant="flat"
                 target="_blank"
-                href="https://github.com/gezhaoyou/picprose"
+                href="https://zzflybird.com"
               >
                 <i
                   className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}
                 />
-                GitHub
+                Blog
               </Button>
             </NavbarItem>
           </NavbarContent>
@@ -404,14 +404,14 @@ export const RightPropertyPanel = (props) => {
           step={5}
           className="max-w-md my-2"
         />
-        {/* <Slider
+        <Slider
           label="模糊"
           value={blurValue}
           onChange={setBlurValue}
           size="sm"
           step={20}
           className="max-w-md py-2"
-        /> */}
+        />
 
         <Divider />
         <Select
