@@ -11,6 +11,8 @@
         "transparence": "浓度",
         "font": "字体",
         "icon": "图标",
+        "font_size": "标题字体大小",
+        "author_size": "作者字体大小",
         "title": "标题",
         "title_place": "Please input title",
         "author": "作者",

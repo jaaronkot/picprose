@@ -51,6 +51,8 @@ export const RightPropertyPanel = (props) => {
   const [subTitleValue, setSubTitleValue] = React.useState(config.subTitle);
   const [authorValue, setAuthorValue] = React.useState(config.author);
   const [fontValue, setFontValue] = React.useState(config.font);
+  const [fontSizeValue, setFontSizeValue] = React.useState<SliderValue>(config.fontSize);
+  const [authorFontSizeValue, setAuthorFontSizeValue] = React.useState<SliderValue>(config.authorFontSize);
   const [iconValue, setIconValue] = React.useState(config.icon);
   const [backColor, setBackColor] = React.useState(config.backColor);
   const [backBlurLevel, setBackBlurLevel] = React.useState(config.backBlurLevel);
@@ -87,6 +89,8 @@ export const RightPropertyPanel = (props) => {
 
   const [propertyInfo, setPropertyInfo] = React.useState({
     font: "",
+    fontSizeValue: "",
+    authorFontSizeValue:"",
     title: "",
     subTitle: "",
     author: "",
@@ -126,6 +130,21 @@ export const RightPropertyPanel = (props) => {
       font: fontValue,
     }));
   }, [fontValue]);
+
+  React.useEffect(() => {
+    setPropertyInfo((preValue) => ({
+      ...preValue,
+      fontSizeValue: fontSizeValue,
+    }));
+  }, [fontSizeValue]);
+
+  React.useEffect(() => {
+    setPropertyInfo((preValue) => ({
+      ...preValue,
+      authorFontSizeValue: authorFontSizeValue,
+    }));
+  }, [authorFontSizeValue]);
+
 
   React.useEffect(() => {
     setPropertyInfo((preValue) => ({
@@ -538,6 +557,17 @@ export const RightPropertyPanel = (props) => {
           onValueChange={setTitleValue}
         />
 
+        <Slider
+          label={t("font_size")}
+          value={fontSizeValue}
+          onChange={setFontSizeValue}
+          size="sm"
+          step={1}
+          min={10}
+          max={100}
+          className="max-w-md my-2"
+      />
+
         <Input
           label={t("author")}
           type="search"
@@ -546,6 +576,17 @@ export const RightPropertyPanel = (props) => {
           value={authorValue}
           onValueChange={setAuthorValue}
         />
+
+        <Slider
+          label={t("author_size")}
+          value={authorFontSizeValue}
+          onChange={setAuthorFontSizeValue}
+          size="sm"
+          step={1}
+          min={10}
+          max={100}
+          className="max-w-md my-2"
+      />
       </div>
       <Divider />
       <div className="w-full mt-4 px-4">
