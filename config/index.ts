@@ -19,6 +19,8 @@ export const config = {
   blur: 0,
   blurTrans: 60,
   logoPosition: "default",
+  fontSize: 40,
+  authorFontSize: 25,
 };
 
 export type Config = typeof config;

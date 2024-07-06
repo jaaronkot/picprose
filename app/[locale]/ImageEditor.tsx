@@ -16,6 +16,8 @@ export const ImageEditor = (props) => {
     icon,
     devicon,
     font,
+    fontSizeValue,
+    authorFontSizeValue,
     color,
     logoPosition,
   } = props.propertyInfo;
@@ -119,6 +121,7 @@ export const ImageEditor = (props) => {
                   " leading-tight text-center text-5xl font-bold  text-white " +
                   font
                 }
+                style={{ fontSize: `${fontSizeValue}px` }}
               >
                 {getTitle()}
               </h1>
@@ -127,6 +130,7 @@ export const ImageEditor = (props) => {
                   className={
                     "text-xl font-semibold text-left text-white " + font
                   }
+                  style={{ fontSize: `${authorFontSizeValue}px` }}
                 >
                   {getAuthor()}
                 </h2>
