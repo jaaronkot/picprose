@@ -341,7 +341,7 @@ export const RightPropertyPanel = (props) => {
                 color="primary"
                 variant="flat"
                 target="_blank"
-                href="https://github.com/gezhaoyou/picprose"
+                href="https://github.com/jaaronkot/picprose"
               >
                 <i
                   className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}

@@ -1,20 +1,21 @@
 <h1 align="center">PicProse</h1>
 
 <p align="center">
-   <a href="https://github.com/gezhaoyou/picprose/stargazers"><img alt="PicProse Stars" src="https://img.shields.io/github/stars/gezhaoyou/picprose?style=social"/></a>
-    <a href="https://github.com/gezhaoyou/picprose/releases/latest"><img alt="PicProse Release" src="https://img.shields.io/github/v/release/gezhaoyou/picprose"/></a>
+   <a href="https://github.com/jaaronkot/picprose/stargazers"><img alt="PicProse Stars" src="https://img.shields.io/github/stars/jaaronkot/picprose?style=social"/></a>
+    <a href="https://github.com/jaaronkot/picprose/releases/latest"><img alt="PicProse Release" src="https://img.shields.io/github/v/release/jaaronkot/picprose"/></a>
       <a href="#"><img alt="PicProse" src="https://img.shields.io/badge/Stack-React_%7C_Next.JS_%7C_NextUI_%7C_Tailwind CSS-green"/></a>
-    <a href="https://github.com/gezhaoyou/picprose/blob/main/LICENSE"><img alt="PicProse Stars" src="https://img.shields.io/github/license/gezhaoyou/picprose"/></a>  
+    <a href="https://github.com/jaaronkot/picprose/blob/main/LICENSE"><img alt="PicProse Stars" src="https://img.shields.io/github/license/jaaronkot/picprose"/></a>  
 </p>
+
+> 🧸❗️ This is a small practice project I wrote to learn React. Looking at the code now, it's quite messy and only functional. Don't refer to the code logic. I don't have time to optimize it now, but if anyone with the ability can make the code prettier, feel free to submit a merge request.
 
 ## Intro
 PicProse is a article cover image generator tool for Medium, Wordpress, Wechat and other blog post
-
+ 
 **Preview:** 
 
 [https://picprose.net](https://picprose.net)
-
-[https://picprose.pixpark.net/](https://picprose.pixpark.net/)(Chinese mainland)
+ 
 
 **Showcase:**
 
@@ -66,7 +67,7 @@ You can start by creating your own Nextra site and deploying to Vercel by clicki
 
 <a className="mt-3 inline-flex"
   target="_blank"
-  href="https://vercel.com/new/clone?s=https://github.com/gezhaoyou/picprose&showOptionalTeamCreation=false">![](https://vercel.com/button)</a>
+  href="https://vercel.com/new/clone?s=https://github.com/jaaronkot/picprose&showOptionalTeamCreation=false">![](https://vercel.com/button)</a>
 
 ## Deploy with Docker
 
@@ -75,4 +76,4 @@ docker run -d --name picprose -e NEXT_PUBLIC_UNSPLASH_API_KEY=xxx -p 3000:3000 h
 ```
 
 ## License
-PicProse is open-source under the [MIT License](https://github.com/gezhaoyou/picprose/blob/main/LICENSE).
+PicProse is open-source under the [MIT License](https://github.com/jaaronkot/picprose/blob/main/LICENSE).
