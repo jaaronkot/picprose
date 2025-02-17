@@ -41,7 +41,8 @@ import { MiddleIcon } from "./icons/MiddleIcon";
 import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
 import { config } from "@/config";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from "next-intl";
+
 export const RightPropertyPanel = (props) => {
   const titleArr = config.title;
 
@@ -53,21 +54,49 @@ export const RightPropertyPanel = (props) => {
   const [fontValue, setFontValue] = React.useState(config.font);
   const [iconValue, setIconValue] = React.useState(config.icon);
   const [backColor, setBackColor] = React.useState(config.backColor);
-  const [backBlurLevel, setBackBlurLevel] = React.useState(config.backBlurLevel);
+  const [backBlurLevel, setBackBlurLevel] = React.useState(
+    config.backBlurLevel
+  );
   const [deviconValue, setDevIconValue] = React.useState<Selection>(
     new Set(config.deviconValue)
   );
   const [aspectValue, setAspectValue] = React.useState(config.aspect);
   const [blurValue, setBlurValue] = React.useState<SliderValue>(config.blur);
-  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(config.blurTrans);
+  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(
+    config.blurTrans
+  );
   const inputRef = React.useRef(null);
+  const inputFontRef = React.useRef(null);
   const [logoPosition, setLogoPosition] = React.useState(config.logoPosition);
-  const t = useTranslations('RightPropertyPanel');
+  const t = useTranslations("RightPropertyPanel");
   const handleFileChange = (event) => {
     if (event.target.files[0] != null) {
       const file = URL.createObjectURL(event.target.files[0]);
       setIconValue(file);
       setDevIconValue(new Set([""]));
+    }
+  };
+  const loadFont = (fontName: string, fontUrl: string) => {
+    const font = new FontFace(fontName, `url(${fontUrl})`);
+    font
+      .load()
+      .then(() => {
+        document.fonts.add(font);
+        document.documentElement.style.setProperty("--font-custom", fontName);
+        // document.body.style.fontFamily = fontName
+      })
+      .catch((error) => {
+        console.error("Font loading failed:", error);
+      });
+  };
+  const handleFontFileChange = (event) => {
+    if (event.target.files[0] != null) {
+      const file = URL.createObjectURL(event.target.files[0]);
+      // 使用时加载字体
+      loadFont("--font-custom", file);
+      setFontValue("font-custom");
+      // setIconValue(file)
+      // setDevIconValue(new Set(['']))
     }
   };
 
@@ -281,7 +310,9 @@ export const RightPropertyPanel = (props) => {
           }}
         >
           <NavbarBrand>
-            <p className="text-gray-350 font-bold text-inherit">{t("property")}</p>
+            <p className="text-gray-350 font-bold text-inherit">
+              {t("property")}
+            </p>
           </NavbarBrand>
 
           <NavbarContent justify="end">
@@ -304,7 +335,7 @@ export const RightPropertyPanel = (props) => {
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap px-4">
         <Select
-          label={t('aspect')}
+          label={t("aspect")}
           className="max-w-xs py-2"
           defaultSelectedKeys={["aspect-[16/9]"]}
           onChange={handleAspectSelectionChange}
@@ -329,56 +360,15 @@ export const RightPropertyPanel = (props) => {
           <div className="w-4/5">
             <Input
               type="url"
-              label={t('mask')}
+              label={t("mask")}
               value={backColor}
               placeholder={backColor}
             />
           </div>
           <div className="flex-grow" />
-          <div className="w-1/6 ml-2 mt-1">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  isIconOnly
-                  color="primary"
-                  variant="bordered"
-                  size="lg"
-                  style={backStyle}
-                ></Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Single selection example"
-                variant="flat"
-                disallowEmptySelection
-                selectionMode="single"
-              >
-                <DropdownItem key="text">
-                  <div className="m-2">
-                    <CirclePicker
-                      colors={[
-                        "#1f2937",
-                        "#e91e63",
-                        "#9c27b0",
-                        "#673ab7",
-                        "#3f51b5",
-                        "#2196f3",
-                        "#03a9f4",
-                        "#00bcd4",
-                        "#009688",
-                        "#4caf50",
-                        "#8bc34a",
-                        "#cddc39",
-                      ]}
-                      onChangeComplete={handleColorChangeComplete}
-                    />
-                  </div>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
         </div>
         <Slider
-          label={t('transparence')}
+          label={t("transparence")}
           value={blurTransValue}
           onChange={setBlurTransValue}
           size="sm"
@@ -395,23 +385,60 @@ export const RightPropertyPanel = (props) => {
         /> */}
 
         <Divider />
-        <Select
-          label={t("font")}
-          className="max-w-xs py-2"
-          onChange={onFontSelectChange}
-          defaultSelectedKeys={["font-anke"]}
-        >
-          {font_list.map((font) => (
-            <SelectItem key={font.value} value={font.value}>
-              {font.label}
-            </SelectItem>
-          ))}
-        </Select>
+        <div className="flex w-full py-2">
+          <div className="w-4/5">
+            <Select
+              label={t("font")}
+              onChange={onFontSelectChange}
+              defaultSelectedKeys={["font-anke"]}
+            >
+              {font_list.map((font) => (
+                <SelectItem key={font.value} value={font.value}>
+                  {font.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="flex-grow" />
+          <div className="w-1/6 ml-2 mt-1">
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleFontFileChange}
+              ref={inputFontRef}
+            />
+            <Button
+              isIconOnly
+              color="primary"
+              variant="flat"
+              size="lg"
+              onClick={() => inputFontRef.current.click()}
+            >
+              <svg
+                className="w-5 h-5 text-[#2F6EE7] dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.3"
+                  d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"
+                />
+              </svg>
+            </Button>
+          </div>
+        </div>
 
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Select
-              label={t('icon')}
+              label={t("icon")}
               items={deviconList}
               onSelectionChange={setDevIconValue}
               defaultSelectedKeys={["aarch64-plain"]}
