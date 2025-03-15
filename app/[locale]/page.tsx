@@ -40,8 +40,16 @@ export default function Home() {
     icon: { x: 0, y: 0, visible: true },
     image: { x: 0, y: 0 }
   });
-  const [history, setHistory] = React.useState<EditorElements[]>([]);
-  const [historyIndex, setHistoryIndex] = React.useState(-1);
+  
+  // 初始化历史记录，包含初始状态
+  const initialElements = {
+    title: { x: 0, y: 0, visible: true },
+    author: { x: 0, y: 0, visible: true },
+    icon: { x: 0, y: 0, visible: true },
+    image: { x: 0, y: 0 }
+  };
+  const [history, setHistory] = React.useState<EditorElements[]>([initialElements]);
+  const [historyIndex, setHistoryIndex] = React.useState(0);
 
   // 处理下载图片的方法
   const handleDownload = (format: string) => {
@@ -51,14 +59,15 @@ export default function Home() {
 
   // 重置所有编辑器状态
   const handleResetLayout = () => {
-    setElements({
+    const resetElements = {
       title: { x: 0, y: 0, visible: true },
       author: { x: 0, y: 0, visible: true },
       icon: { x: 0, y: 0, visible: true },
       image: { x: 0, y: 0 }
-    });
-    setHistory([]);
-    setHistoryIndex(-1);
+    };
+    setElements(resetElements);
+    setHistory([resetElements]);
+    setHistoryIndex(0);
     setIsDragMode(false);
   };
 

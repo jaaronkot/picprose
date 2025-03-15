@@ -62,31 +62,33 @@ export const ImageEditor = ({
     logoPosition,
   } = propertyInfo;
 
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
   React.useEffect(() => {
     if(imageInfo.url) {
       setIsLoading(true);
     }
   }, [imageInfo.url]);
 
-  // 处理图片的水平和垂直拖动
-  const handleImageMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+  // 使用useCallback优化事件处理函数
+  const handleImageMouseDown = React.useCallback((e: React.MouseEvent<HTMLImageElement>) => {
+    console.log("图片收到点击事件");
     if (!isDragMode) return;
     setIsDragging(true);
     setDragStartY(e.clientY - imagePosition);
+    // 不再需要记录水平方向的起始位置
     setDragStart({ 
-      x: e.clientX - imageHorizontalPosition, 
+      x: e.clientX, // 仍然需要记录x，因为其他元素可能需要
       y: e.clientY - imagePosition 
     });
     e.stopPropagation();
-  };
+  }, [isDragMode, imagePosition]);
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging && imageRef.current) {
-      // 支持双向拖动
+      console.log("拖动中...", e.clientY);
       const newVerticalPosition = e.clientY - dragStartY;
-      const newHorizontalPosition = e.clientX - dragStart.x;
       
-      // 添加边界限制
       const container = containerRef.current;
       const image = imageRef.current;
       
@@ -94,20 +96,31 @@ export const ImageEditor = ({
         const containerRect = container.getBoundingClientRect();
         const imageRect = image.getBoundingClientRect();
         
-        // 确保图片不会完全拖出视图
-        const minX = containerRect.width - imageRect.width;
-        const maxX = 0;
-        const minY = containerRect.height - imageRect.height;
-        const maxY = 0;
+        // 确保图片可以在容器内移动的范围
+        // 如果图片高度小于容器，则不限制上下移动
+        const imageHeight = imageRect.height;
+        const containerHeight = containerRect.height;
         
-        const boundedX = Math.max(minX, Math.min(maxX, newHorizontalPosition));
+        console.log("尺寸:", {imageHeight, containerHeight});
+        
+        let minY, maxY;
+        if (imageHeight <= containerHeight) {
+          // 如果图片小于容器，允许少量移动以测试
+          minY = -50;
+          maxY = 50;
+        } else {
+          // 图片大于容器时的正常计算
+          minY = containerHeight - imageHeight;
+          maxY = 0;
+        }
+        
         const boundedY = Math.max(minY, Math.min(maxY, newVerticalPosition));
+        console.log("边界计算:", {minY, maxY, newPosition: newVerticalPosition, bounded: boundedY});
         
         setImagePosition(boundedY);
-        setImageHorizontalPosition(boundedX);
+        forceUpdate();
       } else {
         setImagePosition(newVerticalPosition);
-        setImageHorizontalPosition(newHorizontalPosition);
       }
     }
     
@@ -217,21 +230,56 @@ export const ImageEditor = ({
     }
   };
 
+  // 添加一个处理容器级别鼠标事件的函数
+  const handleContainerMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragMode) return;
+    
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) {
+      const isClickOnDraggableElement = e.target !== containerRef.current;
+      
+      if (!isClickOnDraggableElement) {
+        // 触发图片拖动逻辑，但只考虑垂直方向
+        setIsDragging(true);
+        setDragStartY(e.clientY - imagePosition);
+        setDragStart({ 
+          x: e.clientX, // 仍然记录x坐标用于其他元素
+          y: e.clientY - imagePosition 
+        });
+      }
+    }
+  };
+
+  // 在渲染函数中添加
+  console.log("渲染时的图片位置:", imagePosition);
+
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
       <div
         ref={containerRef}
-        style={{ maxHeight: "90vh", overflow: "hidden", position: "relative" }}
+        style={{ 
+          maxHeight: "90vh", 
+          minHeight: "50vh",
+          overflow: "hidden", 
+          position: "relative",
+          pointerEvents: "auto"
+        }}
         className={aspect == "" ? "aspect-[16/9]" : aspect}
+        onMouseDown={isDragMode ? handleContainerMouseDown : undefined}
       >
         <img
           ref={imageRef}
           src={imageInfo.url}
           alt="Image"
-          className={`rounded-md object-cover h-full w-full ${isDragMode ? 'cursor-move' : ''}`}
+          className={`rounded-md w-full ${isDragMode ? 'cursor-move' : ''}`}
           style={{ 
-            transform: `translate(${imageHorizontalPosition}px, ${imagePosition}px)`,
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+            position: 'absolute',
+            top: `${imagePosition}px`, // 使用绝对定位替代transform
+            left: 0,
+            width: '100%',
+            height: 'auto', // 允许图片保持原始宽高比
+            objectFit: 'cover',
+            transition: isDragging ? 'none' : 'top 0.1s ease-out',
           }}
           onLoad={() => setIsLoading(false)}
           onMouseDown={handleImageMouseDown}
@@ -261,13 +309,17 @@ export const ImageEditor = ({
       <div
         style={{
           backgroundColor: color == "" ? "#1F293799" : color + blurTrans,
-          pointerEvents: isDragMode ? 'none' : 'auto'
+          pointerEvents: isDragMode ? 'none' : 'auto',
+          zIndex: 1
         }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
-        {/* 使用统一的绝对定位容器 */}
-        <div className="absolute inset-0" style={{ pointerEvents: isDragMode ? 'auto' : 'none' }}>
-          {/* 标题元素 */}
+        {/* 使用统一的绝对定位容器 - 修改这里的pointerEvents逻辑 */}
+        <div className="absolute inset-0" style={{ 
+          pointerEvents: isDragMode ? 'none' : 'none',
+          // 只有元素本身需要拦截事件，不要让容器拦截所有事件
+        }}>
+          {/* 然后在各个可拖动元素上单独设置pointerEvents */}
           <div 
             className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
             style={{ 
@@ -276,6 +328,7 @@ export const ImageEditor = ({
               transform: `translate(-50%, -50%) translate(${elements.title.x}px, ${elements.title.y}px)`,
               transition: draggingElement === 'title' ? 'none' : 'transform 0.1s ease-out',
               padding: isDragMode ? '8px' : '0',
+              pointerEvents: isDragMode ? 'auto' : 'none', // 只有在拖动模式时才拦截事件
             }}
             onMouseDown={(e) => handleElementDragStart('title', e)}
           >
@@ -296,6 +349,7 @@ export const ImageEditor = ({
               transform: `translate(-50%, -50%) translate(${elements.author.x}px, ${elements.author.y}px)`,
               transition: draggingElement === 'author' ? 'none' : 'transform 0.1s ease-out',
               padding: isDragMode ? '8px' : '0',
+              pointerEvents: isDragMode ? 'auto' : 'none', // 只有在拖动模式时才拦截事件
             }}
             onMouseDown={(e) => handleElementDragStart('author', e)}
           >
@@ -316,6 +370,7 @@ export const ImageEditor = ({
               transform: `translate(${logoPosition === "default" ? '-50%, -50%' : '0, 0'}) translate(${elements.icon.x}px, ${elements.icon.y}px)`,
               transition: draggingElement === 'icon' ? 'none' : 'transform 0.1s ease-out',
               padding: isDragMode ? '8px' : '0',
+              pointerEvents: isDragMode ? 'auto' : 'none', // 只有在拖动模式时才拦截事件
             }}
             onMouseDown={(e) => handleElementDragStart('icon', e)}
           >
