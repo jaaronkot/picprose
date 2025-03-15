@@ -17,7 +17,6 @@ import {
 } from "@nextui-org/react";
 import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
-import { PicproseLogo } from "./PicproseLogo";
 import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {useTranslations} from 'next-intl';
@@ -189,9 +188,9 @@ export const LeftResourcePanel = () => {
           }}
         >
           <NavbarBrand>
-            <PicproseLogo />
+            <img className="w-7" src="logo.png" alt="Picprose Logo" />
+            <p className="font-bold text-inherit">PicProse</p>
           </NavbarBrand>
-
           <NavbarContent justify="end">
             <NavbarItem>
               <Avatar
