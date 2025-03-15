@@ -1,63 +1,58 @@
-<h1 align="center">PicProse</h1>
+# PicProse - Better Cover Image Generator
 
-<p align="center">
-   <a href="https://github.com/jaaronkot/picprose/stargazers"><img alt="PicProse Stars" src="https://img.shields.io/github/stars/jaaronkot/picprose?style=social"/></a>
-    <a href="https://github.com/jaaronkot/picprose/releases/latest"><img alt="PicProse Release" src="https://img.shields.io/github/v/release/jaaronkot/picprose"/></a>
-      <a href="#"><img alt="PicProse" src="https://img.shields.io/badge/Stack-React_%7C_Next.JS_%7C_NextUI_%7C_Tailwind CSS-green"/></a>
-    <a href="https://github.com/jaaronkot/picprose/blob/main/LICENSE"><img alt="PicProse Stars" src="https://img.shields.io/github/license/jaaronkot/picprose"/></a>  
-</p>
+[![GitHub stars](https://img.shields.io/github/stars/jaaronkot/picprose)](https://github.com/jaaronkot/picprose/stargazers)
+[![License](https://img.shields.io/github/license/jaaronkot/picprose)](https://github.com/jaaronkot/picprose/blob/main/LICENSE)
 
-> 🧸❗️ This is a small practice project I wrote to learn React. Looking at the code now, it's quite messy and only functional. Don't refer to the code logic. I don't have time to optimize it now, but if anyone with the ability can make the code prettier, feel free to submit a merge request.
+## Overview
 
-## Intro
-PicProse is a article cover image generator tool for Medium, Wordpress, Wechat and other blog post
- 
-**Preview:** 
-[https://picprose.pixpark.net](https://picprose.pixpark.net)
+PicProse is a powerful cover image generator designed for bloggers, content creators, developers, and designers. Create professional and stunning cover images in just a few steps for Medium, YouTube, BiliBili, personal blogs, and other platforms.
 
-**Showcase:**
+![PicProse Preview](./doc/screenshot.png)
 
-[https://pixpark.net](https://pixpark.net)
+## ✨ Key Features
 
-![preview](./doc/screenshot.png)
+- 🖼️ **Rich Image Resources** - Access high-quality images directly through the Unsplash API
+- 🎨 **Flexible Editing** - Customize titles, author info, fonts, colors, and transparency
+- 📱 **Multiple Aspect Ratios** - Support for both landscape and portrait formats for different platforms
+- 🔍 **Real-time Preview** - See all changes instantly with a WYSIWYG interface
+- 🌈 **Developer Icons** - Built-in tech-related icons perfect for technical article covers
+- 📥 **Multiple Export Formats** - Support for JPG, PNG, and SVG exports
+- 🌐 **Multilingual Support** - Interface available in multiple languages
+- 🎯 **Responsive Design** - Perfectly adapts to both desktop and mobile devices
 
-## Getting Started
+## 🚀 Getting Started
 
-**Step 1:**
+### Installation
 
-config Unsplash key
+```bash
+# Clone the repository
+git clone https://github.com/jaaronkot/picprose.git
 
-💡 create file `.env.local`, put in your unsplash key 
+# Navigate to the project directory
+cd picprose
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
+
+### Environment Variables
+
+Create a `.env.local` file with the following content:
+
+```bash
 NEXT_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 ```
 Refer: [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
-
-**Step 2:**
-
-Run the development server:
-
-```bash
-npm install
-npm run dev
-# or
-yarn install
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
 ## Deploy Static
 
 Run
- ```bash
+```bash
 npm run build
- ```
+```
 static file generate to `out` dir
 
 ## Deploy to Vercel
