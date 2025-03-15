@@ -23,5 +23,12 @@
         "title_place": "Please input title",
         "author": "作者",
         "download": "生成"
+    },
+    "ImageEditorToolbar": {
+        "edit": "编辑",
+        "lock": "锁定",
+        "undo": "撤销",
+        "redo": "重做",
+        "reset": "重置"
     }
 }

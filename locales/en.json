@@ -23,5 +23,12 @@
         "title_place": "Please input title",
         "author": "Author",
         "download": "Download"
+    },
+    "ImageEditorToolbar": {
+        "edit": "Edit",
+        "lock": "Lock",
+        "undo": "Undo",
+        "redo": "Redo",
+        "reset": "Reset"
     }
 }

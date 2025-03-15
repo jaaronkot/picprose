@@ -70,6 +70,47 @@ export const ImageEditor = ({
     }
   }, [imageInfo.url]);
 
+  // 添加新的useEffect钩子来处理图片加载后的垂直居中
+  React.useEffect(() => {
+    // 创建一个函数来计算并设置图片居中位置
+    const centerImageVertically = () => {
+      if (imageRef.current && containerRef.current) {
+        const containerHeight = containerRef.current.clientHeight;
+        const imageHeight = imageRef.current.clientHeight;
+        
+        // 计算居中位置
+        // 当图片高度大于容器高度时，居中显示
+        // 当图片高度小于等于容器高度时，将其放在顶部
+        if (imageHeight > containerHeight) {
+          const centerPosition = (containerHeight - imageHeight) / 2;
+          setImagePosition(centerPosition);
+        } else {
+          setImagePosition(0); // 小图片放在顶部
+        }
+      }
+    };
+    
+    // 当图片加载完成后设置isLoading为false，并居中图片
+    const handleImageLoad = () => {
+      setIsLoading(false);
+      // 稍微延迟执行居中操作，确保DOM已完全更新
+      setTimeout(centerImageVertically, 10);
+    };
+    
+    // 给图片元素添加加载事件监听
+    const imgElement = imageRef.current;
+    if (imgElement) {
+      imgElement.addEventListener('load', handleImageLoad);
+    }
+    
+    return () => {
+      // 清理事件监听器
+      if (imgElement) {
+        imgElement.removeEventListener('load', handleImageLoad);
+      }
+    };
+  }, [imageInfo.url]); // 当图片URL改变时重新执行
+
   // 使用useCallback优化事件处理函数
   const handleImageMouseDown = React.useCallback((e: React.MouseEvent<HTMLImageElement>) => {
     console.log("图片收到点击事件");
@@ -283,7 +324,6 @@ export const ImageEditor = ({
               objectFit: 'cover',
               transition: isDragging ? 'none' : 'top 0.1s ease-out',
             }}
-            onLoad={() => setIsLoading(false)}
             onMouseDown={handleImageMouseDown}
             draggable={false}
           />
