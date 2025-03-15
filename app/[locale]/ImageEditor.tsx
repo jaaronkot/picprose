@@ -4,8 +4,13 @@ import "./devicon.min.css";
 import {
   Spinner,
 } from "@nextui-org/react";
+import { usePicprose } from "./PicproseContext";
 
-export const ImageEditor = (props) => {
+export const ImageEditor = () => {
+  const { propertyInfo, imageInfo } = usePicprose();
+  const [isLoading, setIsLoading] = React.useState(false);
+  
+  // 直接从Context获取所有属性
   const {
     aspect,
     blur,
@@ -20,38 +25,16 @@ export const ImageEditor = (props) => {
     authorFontSizeValue,
     color,
     logoPosition,
-  } = props.propertyInfo;
-
-  const getImageInfo = () => {
-    return props.message.url
-      ? props.message
-      : {
-          url: "stacked-waves.svg",
-          name: "PicProse",
-          avatar: "default-author.jpg",
-          profile: "default",
-          downloadLink: "",
-        };
-  };
-
-  const [isLoading, setIsLoading] = React.useState(false);
+  } = propertyInfo;
 
   React.useEffect(() => {
-    if(props.message.url != null) {
+    if(imageInfo.url) {
       setIsLoading(true);
     }
-  }, [props.message.url]);
+  }, [imageInfo.url]);
 
-  const getTitle = () => {
-    return title;
-  };
-
-  const getAuthor = () => {
-    return author;
-  };
-
-  const getIcon = () => {
-    if (devicon.length != 0) {
+  const renderIcon = () => {
+    if (devicon.length !== 0) {
       return (
         <div className="m-4 items-center justify-center flex">
           <i className={`devicon-${devicon} text-white dev-icon text-4xl`}></i>
@@ -72,8 +55,6 @@ export const ImageEditor = (props) => {
     }
   };
 
-  const [customIcon, setCustomIcon] = React.useState("");
-
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
       <div
@@ -81,9 +62,9 @@ export const ImageEditor = (props) => {
         className={aspect == "" ? "aspect-[16/9]" : aspect}
       >
         <img
-          src={getImageInfo().url && getImageInfo().url}
+          src={imageInfo.url}
           alt="Image"
-          className={"rounded-md object-cover h-full w-full"}
+          className="rounded-md object-cover h-full w-full"
           onLoad={() => setIsLoading(false)}
         />
       </div>
@@ -123,7 +104,7 @@ export const ImageEditor = (props) => {
                 }
                 style={{ fontSize: `${fontSizeValue}px` }}
               >
-                {getTitle()}
+                {title}
               </h1>
               <div className="flex flex-col items-center pt-10  ">
                 <h2
@@ -132,15 +113,15 @@ export const ImageEditor = (props) => {
                   }
                   style={{ fontSize: `${authorFontSizeValue}px` }}
                 >
-                  {getAuthor()}
+                  {author}
                 </h2>
-                {logoPosition == "default" && getIcon()}
+                {logoPosition == "default" && renderIcon()}
               </div>
             </div>
           </div>
         </div>
         <div className={"absolute " + logoPosition}>
-          {logoPosition != "default" && getIcon()}
+          {logoPosition != "default" && renderIcon()}
         </div>
 
         {isLoading && <Spinner className={"absolute bottom-8 left-8"} />}
@@ -150,17 +131,17 @@ export const ImageEditor = (props) => {
         <div className=" group-hover:flex hidden items-center">
           <span className="text-sm text-white mx-2">Photo by</span>
           <a
-            href={getImageInfo().profile}
+            href={imageInfo.profile}
             target="_blank"
             rel="noreferrer"
             className="cursor-pointer flex items-center bg-gray-300 rounded-full text-sm"
           >
             <img
-              src={getImageInfo().avatar && getImageInfo().avatar}
-              alt={getImageInfo().name}
+              src={imageInfo.avatar}
+              alt={imageInfo.name}
               className="h-6 w-6 rounded-full mr-2"
             />
-            <span className="pr-2">{getImageInfo().name}</span>
+            <span className="pr-2">{imageInfo.name}</span>
           </a>
 
           <a

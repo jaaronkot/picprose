@@ -21,29 +21,31 @@ import { PicproseLogo } from "./PicproseLogo";
 import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {useTranslations} from 'next-intl';
+import { usePicprose } from "./PicproseContext";
+
 const PHOTO_SPACING = 8;
-const KEY_CODE_ENTERN = 13;
-const PHOTO_COUNT_PER_PAGE = 30;
+const KEY_CODE_ENTER = 13;
+const PHOTOS_PER_PAGE = 30;
 const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
-export const LeftResourcePanel = (props) => {
+export const LeftResourcePanel = () => {
   const t = useTranslations('LeftResourcePanel');
-  const [imageList, setImageList] = React.useState([]);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [isNeedRandomPhoto, setIsNeedRandomPhoto] = React.useState(true);
-  const inputRef = React.useRef(null);
-  const [unsplashPage, setUnsplashPage] = React.useState(1);
-  const [hasMore, setHasMore] = React.useState(true);
-  const [hasSetFirstRandomPhoto, setHasSetFirstRandomPhoto] = React.useState(false);
-
+  const { setImageInfo } = usePicprose();
+  
+  const [photos, setPhotos] = React.useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [shouldFetchRandomPhotos, setShouldFetchRandomPhotos] = React.useState(true);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [hasMorePhotos, setHasMorePhotos] = React.useState(true);
+  const [hasSetInitialPhoto, setHasSetInitialPhoto] = React.useState(false);
   const [windowHeight, setWindowHeight] = React.useState(0);
  
-
-  const handleFileChange = (event) => {
-    if (event.target.files[0] != null) {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
       const file = URL.createObjectURL(event.target.files[0]);
-      props.onData({
+      setImageInfo({
         url: file,
         name: "PicProse",
         avatar: "default-author.jpg",
@@ -53,12 +55,12 @@ export const LeftResourcePanel = (props) => {
     }
   };
 
-  const searchImages = (searchText: string = "dev", pageNum: number = 1) => {
+  const fetchPhotosBySearch = (searchText = "dev", page = 1) => {
     unsplash.search
       .getPhotos({
         query: searchText,
-        page: pageNum,
-        perPage: PHOTO_COUNT_PER_PAGE,
+        page: page,
+        perPage: PHOTOS_PER_PAGE,
       })
       .then((result) => {
         if (result.type === "success") {
@@ -75,13 +77,13 @@ export const LeftResourcePanel = (props) => {
               profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
             };
           });
-          if (photos.length < PHOTO_COUNT_PER_PAGE) {
-            setHasMore(false);
+          if (photos.length < PHOTOS_PER_PAGE) {
+            setHasMorePhotos(false);
           }
-          if (pageNum == 1) {
-            setImageList(photos);
+          if (page == 1) {
+            setPhotos(photos);
           } else {
-            setImageList([...imageList, ...photos]);
+            setPhotos([...photos, ...photos]);
           }
         }
       });
@@ -90,60 +92,64 @@ export const LeftResourcePanel = (props) => {
   const fetchRandomPhotos = () => {
     unsplash.photos
       .getRandom({
-        count: PHOTO_COUNT_PER_PAGE,
+        count: PHOTOS_PER_PAGE,
       })
       .then((result) => {
-        var photos = result.response.map((item) => {
-          return {
-            src: item.urls.small,
-            url: item.urls.regular,
-            key: item.id,
-            alt: item.alt_description,
-            width: item.width,
-            height: item.height,
-            name: item.user.name,
-            avatar: item.user.profile_image.small,
-            profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
-          };
-        });
-        if (photos.length < PHOTO_COUNT_PER_PAGE) {
-          setHasMore(false);
+        if (result && result.response) {
+          const responseArray = Array.isArray(result.response) 
+            ? result.response 
+            : [result.response];
+            
+          var photos = responseArray.map((item: any) => {
+            return {
+              src: item.urls.small,
+              url: item.urls.regular,
+              key: item.id,
+              alt: item.alt_description,
+              width: item.width,
+              height: item.height,
+              name: item.user.name,
+              avatar: item.user.profile_image.small,
+              profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
+            };
+          });
+          if (photos.length < PHOTOS_PER_PAGE) {
+            setHasMorePhotos(false);
+          }
+          if(!hasSetInitialPhoto) {
+            setHasSetInitialPhoto(true)
+            selectPhoto(Math.floor(Math.random() * 20), photos)
+          }
+          setPhotos([...photos, ...photos]);
         }
-        if(!hasSetFirstRandomPhoto) {
-          setHasSetFirstRandomPhoto(true)
-          selectImage(Math.floor(Math.random() * 20), photos)
-        }
-        setImageList([...imageList, ...photos]);
       });
   };
 
-  const onSearchKeydown = (e) => {
-    if (e.keyCode === KEY_CODE_ENTERN) {
-      fetchImage();
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.keyCode === KEY_CODE_ENTER) {
+      handleSearch();
     }
   };
 
-  const fetchImage = () => {
-    if (searchValue === "") {
+  const handleSearch = () => {
+    if (searchQuery === "") {
       return;
     }
 
-    setIsNeedRandomPhoto(false);
-    setHasMore(true);
-    const pageNum = 1;
-    setUnsplashPage(pageNum);
-    searchImages(searchValue, pageNum);
+    setShouldFetchRandomPhotos(false);
+    setHasMorePhotos(true);
+    const page = 1;
+    setCurrentPage(page);
+    fetchPhotosBySearch(searchQuery, page);
   };
 
-  const onScrollToBottom = () => {
-    if (isNeedRandomPhoto) {
-      // fetch more random image
+  const handleLoadMore = () => {
+    if (shouldFetchRandomPhotos) {
       fetchRandomPhotos();
     } else {
-      // search more image
-      const pageNum = unsplashPage + 1;
-      setUnsplashPage(pageNum);
-      searchImages(searchValue, pageNum);
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      fetchPhotosBySearch(searchQuery, nextPage);
     }
   };
 
@@ -164,10 +170,14 @@ export const LeftResourcePanel = (props) => {
     };
   }, []);
 
+  const selectPhoto = (index: number, photoList: any[]) => {
+    setImageInfo(photoList[index]);
+  };
 
-  //
-  const selectImage = (index: number, imageList:[]) => {
-    props.onData(imageList[index]);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   return (
@@ -195,10 +205,10 @@ export const LeftResourcePanel = (props) => {
       <div className="flex-grow relative">
         <InfiniteScroll
           className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
-          dataLength={imageList.length}
+          dataLength={photos.length}
           height={windowHeight - 130}
-          next={onScrollToBottom}
-          hasMore={hasMore}
+          next={handleLoadMore}
+          hasMore={hasMorePhotos}
           loader={
             <div className="grid justify-items-center ">
               <Spinner className="my-4" />
@@ -211,12 +221,12 @@ export const LeftResourcePanel = (props) => {
           }
         >
           <PhotoAlbum
-            photos={imageList}
+            photos={photos}
             layout="rows"
             targetRowHeight={TARGET_ROW_HEIGHT}
             rowConstraints={ROW_CONSTRAINTS}
             spacing={PHOTO_SPACING}
-            onClick={({ index }) => selectImage(index, imageList)}
+            onClick={({ index }) => selectPhoto(index, photos)}
           />
         </InfiniteScroll>
         <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65  rounded-xl">
@@ -243,16 +253,16 @@ export const LeftResourcePanel = (props) => {
             type="file"
             className="hidden"
             onChange={handleFileChange}
-            ref={inputRef}
+            ref={fileInputRef}
           />
           <Button
             variant="flat"
             color="primary"
             isIconOnly
-            onClick={() => inputRef.current.click()}
+            onClick={handleButtonClick}
           >
             <svg
-              className="w-5 h-5 text-[#2F6EE7] dark:text-white"
+              className="w-5 h-5 text-[#2F6EE7] dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -272,9 +282,9 @@ export const LeftResourcePanel = (props) => {
           <Input
             type="search"
             placeholder={t('input_search')}
-            value={searchValue}
-            onValueChange={setSearchValue}
-            onKeyDown={(e) => onSearchKeydown(e)}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            onKeyDown={(e) => handleSearchKeyDown(e)}
           />
 
           <NavbarContent justify="end">
@@ -283,9 +293,7 @@ export const LeftResourcePanel = (props) => {
                 isIconOnly
                 variant="flat"
                 color="primary"
-                onClick={() => {
-                  fetchImage();
-                }}
+                onClick={handleSearch}
               >
                 <SearchIcon className="text-[#2F6EE7] mb-0.5 dark:text-white/90 text-slate-450 pointer-events-none flex-shrink-0" />
               </Button>

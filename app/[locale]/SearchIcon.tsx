@@ -1,5 +1,8 @@
 import React from "react";
-export const SearchIcon = (props) => (
+
+interface SearchIconProps extends React.SVGProps<SVGSVGElement> {}
+
+export const SearchIcon: React.FC<SearchIconProps> = (props) => (
   <svg
     aria-hidden="true"
     fill="none"

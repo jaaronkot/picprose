@@ -19,12 +19,13 @@ import { RightPropertyPanel } from "./RightPropertyPanel";
 import { users } from "./data";
 import { ImageEditor } from "./ImageEditor";
 import { ComponentToImg } from "./ComponentToImg";
+import { PicproseProvider } from "./PicproseContext";
 
 export default function Home() {
   const child1Ref = React.useRef<ComponentToImg>(null);
-  const [message, setMessage] = React.useState({});
+  const [selectedImage, setSelectedImage] = React.useState({});
 
-  const [propertyInfo, setPropertyInfo] = React.useState({
+  const [editorProperties, setEditorProperties] = React.useState({
     font: "",
     title: "",
     subTitle: "",
@@ -38,37 +39,39 @@ export default function Home() {
     logoPosition: "",
   });
 
-  const onChildData = (data: {}) => {
-    setMessage(data);
+  const handleImageSelect = (data: any) => {
+    setSelectedImage(data);
   };
-  const onImageDowloadClick = (imgFormat: string) => {
+
+  const handleImageDownload = (format: string) => {
     if (child1Ref.current) {
-      child1Ref.current.downloadImage(imgFormat);
+      child1Ref.current.downloadImage(format);
     }
   };
 
-  const onPropInfoChange = (propInfo) => {
-    setPropertyInfo(propInfo);
+  const handlePropertiesChange = (properties: any) => {
+    setEditorProperties(properties);
+  };
+
+  // 处理下载图片的方法
+  const handleDownload = (format: string) => {
+    console.log(`Downloading image as ${format}`);
+    // ... 实现下载逻辑 ...
   };
 
   return (
-    <div className="flex overflow-x-hidden">
-      <div className="min-w-80 max-w-80">
-        <LeftResourcePanel onData={onChildData} />
-      </div>
-      <div className="flex-grow bg-gray-100 overflow-x-auto ">
-        <div className="flex justify-center items-center h-full w-full min-w-[800px] px-5 ">
-          <ComponentToImg ref={child1Ref}>
-            <ImageEditor message={message} propertyInfo={propertyInfo} />
-          </ComponentToImg>
+    <PicproseProvider onDownload={handleDownload}>
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-12 h-screen max-h-screen">
+        <div className="lg:col-span-3 h-screen overflow-hidden">
+          <LeftResourcePanel />
+        </div>
+        <div className="lg:col-span-6 flex justify-center items-center bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden">
+          <ImageEditor />
+        </div>
+        <div className="lg:col-span-3 h-screen overflow-hidden">
+          <RightPropertyPanel />
         </div>
       </div>
-      <div className="min-w-80 max-w-80">
-        <RightPropertyPanel
-          onImageDowloadClick={onImageDowloadClick}
-          onPropInfoChange={onPropInfoChange}
-        />
-      </div>
-    </div>
+    </PicproseProvider>
   );
 }

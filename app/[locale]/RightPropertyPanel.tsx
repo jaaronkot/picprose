@@ -42,42 +42,24 @@ import { BottomRightIcon } from "./icons/BottomRightIcon";
 import { TopRightIcon } from "./icons/TopRightIcon";
 import { config } from "@/config";
 import { useTranslations } from "next-intl";
+import { usePicprose } from "./PicproseContext";
 
-export const RightPropertyPanel = (props) => {
-  const titleArr = config.title;
-
-  const [titleValue, setTitleValue] = React.useState(
-    titleArr[Math.floor(Math.random() * 4)]
-  );
-  const [subTitleValue, setSubTitleValue] = React.useState(config.subTitle);
-  const [authorValue, setAuthorValue] = React.useState(config.author);
-  const [fontValue, setFontValue] = React.useState(config.font);
-  const [fontSizeValue, setFontSizeValue] = React.useState<SliderValue>(config.fontSize);
-  const [authorFontSizeValue, setAuthorFontSizeValue] = React.useState<SliderValue>(config.authorFontSize);
-  const [iconValue, setIconValue] = React.useState(config.icon);
-  const [backColor, setBackColor] = React.useState(config.backColor);
-  const [backBlurLevel, setBackBlurLevel] = React.useState(
-    config.backBlurLevel
-  );
-  const [deviconValue, setDevIconValue] = React.useState<Selection>(
-    new Set(config.deviconValue)
-  );
-  const [aspectValue, setAspectValue] = React.useState(config.aspect);
-  const [blurValue, setBlurValue] = React.useState<SliderValue>(config.blur);
-  const [blurTransValue, setBlurTransValue] = React.useState<SliderValue>(
-    config.blurTrans
-  );
-  const inputRef = React.useRef(null);
-  const inputFontRef = React.useRef(null);
-  const [logoPosition, setLogoPosition] = React.useState(config.logoPosition);
+export const RightPropertyPanel = () => {
   const t = useTranslations("RightPropertyPanel");
-  const handleFileChange = (event) => {
-    if (event.target.files[0] != null) {
+  const { propertyInfo, updateProperty, downloadImage } = usePicprose();
+  
+  const titleOptions = config.title;
+  const iconInputRef = React.useRef(null);
+  const fontInputRef = React.useRef(null);
+
+  const handleIconUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.[0]) {
       const file = URL.createObjectURL(event.target.files[0]);
-      setIconValue(file);
-      setDevIconValue(new Set([""]));
+      updateProperty("icon", file);
+      updateProperty("devicon", "");
     }
   };
+
   const loadFont = (fontName: string, fontUrl: string) => {
     const font = new FontFace(fontName, `url(${fontUrl})`);
     font
@@ -85,173 +67,72 @@ export const RightPropertyPanel = (props) => {
       .then(() => {
         document.fonts.add(font);
         document.documentElement.style.setProperty("--font-custom", fontName);
-        // document.body.style.fontFamily = fontName
       })
       .catch((error) => {
         console.error("Font loading failed:", error);
       });
   };
-  const handleFontFileChange = (event) => {
-    if (event.target.files[0] != null) {
+
+  const handleFontUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.[0]) {
       const file = URL.createObjectURL(event.target.files[0]);
-      // 使用时加载字体
       loadFont("--font-custom", file);
-      setFontValue("font-custom");
-      // setIconValue(file)
-      // setDevIconValue(new Set(['']))
+      updateProperty("font", "font-custom");
     }
   };
 
-  const handleAspectSelectionChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setAspectValue(e.target.value);
+  const handleAspectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateProperty("aspect", e.target.value);
   };
 
-  const onFontSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFontValue(e.target.value);
+  const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateProperty("font", e.target.value);
   };
 
-  const getColorPlaceHolder = () => {
-    backColor.replace("#", "");
+  const handleColorChange = (color: any) => {
+    updateProperty("color", color.hex.toUpperCase());
   };
 
-  const [propertyInfo, setPropertyInfo] = React.useState({
-    font: "",
-    fontSizeValue: "",
-    authorFontSizeValue:"",
-    title: "",
-    subTitle: "",
-    author: "",
-    icon: "",
-    devicon: "",
-    color: "",
-    aspect: "",
-    blur: "",
-    blurTrans: "",
-    logoPosition: "",
-  });
+  const handleBlurLevelChange = (level: any) => {
+    updateProperty("backBlurLevel", level);
+  };
 
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      author: authorValue,
-    }));
-  }, [authorValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      title: titleValue,
-    }));
-  }, [titleValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      icon: iconValue,
-    }));
-  }, [iconValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      font: fontValue,
-    }));
-  }, [fontValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      fontSizeValue: fontSizeValue,
-    }));
-  }, [fontSizeValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      authorFontSizeValue: authorFontSizeValue,
-    }));
-  }, [authorFontSizeValue]);
-
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      logoPosition: logoPosition,
-    }));
-  }, [logoPosition]);
-
-  React.useEffect(() => {
-    var icon = "";
-    if (deviconValue.size > 0) {
-      icon = Array.from(deviconValue)[0].toString();
+  const handleDeviconChange = (selection: Selection) => {
+    let icon = "";
+    if (selection && selection.size > 0) {
+      icon = Array.from(selection)[0].toString();
     }
-
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      devicon: icon,
-    }));
-  }, [deviconValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      color: backColor,
-    }));
-  }, [backColor]);
-
-  React.useEffect(() => {
-    let trans = Math.floor(
-      2.55 * parseInt(blurTransValue.toString(10))
-    ).toString(16);
-
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      blurTrans: trans,
-    }));
-  }, [blurTransValue]);
-
-  React.useEffect(() => {
-    var blurLevel: string = "backdrop-blur-none";
-    if (typeof blurValue === "number") {
-      if (blurValue == 0) {
-        blurLevel = "backdrop-blur-none";
-      } else if (blurValue == 20) {
-        blurLevel = "backdrop-blur-sm";
-      } else if (blurValue == 40) {
-        blurLevel = "backdrop-blur";
-      } else if (blurValue == 60) {
-        blurLevel = "backdrop-blur-md";
-      } else if (blurValue == 80) {
-        blurLevel = "backdrop-blur-lg";
-      } else if (blurValue == 100) {
-        blurLevel = "backdrop-blur-xl";
-      }
-    }
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      blur: blurLevel,
-    }));
-  }, [blurValue]);
-
-  React.useEffect(() => {
-    setPropertyInfo((preValue) => ({
-      ...preValue,
-      aspect: aspectValue,
-    }));
-  }, [aspectValue]);
-
-  React.useEffect(() => {
-    props.onPropInfoChange(propertyInfo);
-  }, [propertyInfo]);
-
-  const dowloadImage = (imgFormat: string) => {
-    props.onImageDowloadClick(imgFormat);
+    updateProperty("devicon", icon);
   };
 
-  const img_aspect_x_list = [
-    // 横屏
+  const handleBlurTransChange = (value: SliderValue) => {
+    updateProperty("blurTrans", value.toString());
+  };
+
+  const handleIconButtonClick = () => {
+    if (iconInputRef.current) {
+      iconInputRef.current.click();
+    }
+  };
+
+  const handleFontButtonClick = () => {
+    if (fontInputRef.current) {
+      fontInputRef.current.click();
+    }
+  };
+
+  const colorBackgroundStyle = {
+    fontSize: "20px",
+    backgroundColor: propertyInfo.color,
+    borderWidth: "6px",
+    borderColor: "#E9E9EB",
+  };
+
+  const handleImageDownload = (format: string) => {
+    downloadImage(format);
+  };
+
+  const horizontalAspectOptions = [
     { label: "1 : 1", value: "aspect-square", description: "900x450" },
     { label: "2 : 1", value: "aspect-[2/1]", description: "900x450" },
     { label: "3 : 2", value: "aspect-[3/2]", description: "900x450" },
@@ -259,15 +140,14 @@ export const RightPropertyPanel = (props) => {
     { label: "16: 9", value: "aspect-[16/9]", description: "900x450" },
   ];
 
-  const img_aspect_y_list = [
-    //  竖屏
+  const verticalAspectOptions = [
     { label: "1:2", value: "aspect-[1/2]", description: "900x450" },
     { label: "2:3", value: "aspect-[2/3]", description: "900x450" },
     { label: "3:4", value: "aspect-[3/4]", description: "900x450" },
     { label: "9:16", value: "aspect-[9/16]", description: "900x450" },
   ];
 
-  const font_list = [
+  const fontOptions = [
     {
       label: "Font-DingTalk",
       value: "font-dingtalk",
@@ -304,21 +184,6 @@ export const RightPropertyPanel = (props) => {
       description: "The largest land animal",
     },
   ];
-
-  const backStyle = {
-    fontSize: "20px",
-    backgroundColor: backColor,
-    borderWidth: "6px",
-    borderColor: "#E9E9EB",
-  };
-
-  const handleColorChangeComplete = (color) => {
-    setBackColor(color.hex.toUpperCase());
-  };
-
-  const handleColorBlurChangeComplete = (level) => {
-    setBackBlurLevel(level);
-  };
 
   return (
     <div className="w-full flex flex-col h-screen">
@@ -357,17 +222,18 @@ export const RightPropertyPanel = (props) => {
           label={t("aspect")}
           className="max-w-xs py-2"
           defaultSelectedKeys={["aspect-[16/9]"]}
-          onChange={handleAspectSelectionChange}
+          onChange={handleAspectChange}
+          selectedKeys={[propertyInfo.aspect]}
         >
           <SelectSection showDivider title="横屏">
-            {img_aspect_x_list.map((item) => (
+            {horizontalAspectOptions.map((item) => (
               <SelectItem key={item.value} value={item.value}>
                 {item.label}
               </SelectItem>
             ))}
           </SelectSection>
           <SelectSection showDivider title="竖屏">
-            {img_aspect_y_list.map((item) => (
+            {verticalAspectOptions.map((item) => (
               <SelectItem key={item.value} value={item.value}>
                 {item.label}
               </SelectItem>
@@ -380,38 +246,30 @@ export const RightPropertyPanel = (props) => {
             <Input
               type="url"
               label={t("mask")}
-              value={backColor}
-              placeholder={backColor}
+              value={propertyInfo.color}
+              placeholder={propertyInfo.color}
+              onChange={(e) => updateProperty("color", e.target.value)}
             />
           </div>
           <div className="flex-grow" />
         </div>
         <Slider
           label={t("transparence")}
-          value={blurTransValue}
-          onChange={setBlurTransValue}
+          value={Number(parseInt(propertyInfo.blurTrans, 16) / 2.55)}
+          onChange={handleBlurTransChange}
           size="sm"
           step={5}
           className="max-w-md my-2"
         />
-        {/* <Slider
-          label="模糊"
-          value={blurValue}
-          onChange={setBlurValue}
-          size="sm"
-          step={20}
-          className="max-w-md py-2"
-        /> */}
-
         <Divider />
         <div className="flex w-full py-2">
           <div className="w-4/5">
             <Select
               label={t("font")}
-              onChange={onFontSelectChange}
+              onChange={handleFontChange}
               defaultSelectedKeys={["font-anke"]}
             >
-              {font_list.map((font) => (
+              {fontOptions.map((font) => (
                 <SelectItem key={font.value} value={font.value}>
                   {font.label}
                 </SelectItem>
@@ -423,15 +281,15 @@ export const RightPropertyPanel = (props) => {
             <input
               type="file"
               className="hidden"
-              onChange={handleFontFileChange}
-              ref={inputFontRef}
+              onChange={handleFontUpload}
+              ref={fontInputRef}
             />
             <Button
               isIconOnly
               color="primary"
               variant="flat"
               size="lg"
-              onClick={() => inputFontRef.current.click()}
+              onClick={handleFontButtonClick}
             >
               <svg
                 className="w-5 h-5 text-[#2F6EE7] dark:text-white"
@@ -459,7 +317,7 @@ export const RightPropertyPanel = (props) => {
             <Select
               label={t("icon")}
               items={deviconList}
-              onSelectionChange={setDevIconValue}
+              onSelectionChange={handleDeviconChange}
               defaultSelectedKeys={["aarch64-plain"]}
               renderValue={(items) => {
                 return items.map((item) => (
@@ -492,15 +350,15 @@ export const RightPropertyPanel = (props) => {
             <input
               type="file"
               className="hidden"
-              onChange={handleFileChange}
-              ref={inputRef}
+              onChange={handleIconUpload}
+              ref={iconInputRef}
             />
             <Button
               isIconOnly
               color="primary"
               variant="flat"
               size="lg"
-              onClick={() => inputRef.current.click()}
+              onClick={handleIconButtonClick}
             >
               <svg
                 className="w-5 h-5 text-[#2F6EE7] dark:text-white"
@@ -529,8 +387,8 @@ export const RightPropertyPanel = (props) => {
             tab: "w-[47px] h-12",
           }}
           aria-label="Options"
-          selectedKey={logoPosition}
-          onSelectionChange={setLogoPosition}
+          selectedKey={propertyInfo.logoPosition}
+          onSelectionChange={(key) => updateProperty("logoPosition", key)}
         >
           <Tab
             key="top-4 left-4"
@@ -580,47 +438,47 @@ export const RightPropertyPanel = (props) => {
           label={t("title")}
           placeholder={t("title_place")}
           className="max-w-xs py-2"
-          value={titleValue}
-          onValueChange={setTitleValue}
+          value={propertyInfo.title}
+          onValueChange={(value) => updateProperty("title", value)}
         />
 
         <Slider
           label={t("font_size")}
-          value={fontSizeValue}
-          onChange={setFontSizeValue}
+          value={Number(propertyInfo.fontSizeValue)}
+          onChange={(value) => updateProperty("fontSizeValue", value)}
           size="sm"
           step={1}
           min={10}
           max={100}
           className="max-w-md my-2"
-      />
+        />
 
         <Input
           label={t("author")}
           type="search"
           className="py-2"
           placeholder="输入作者"
-          value={authorValue}
-          onValueChange={setAuthorValue}
+          value={propertyInfo.author}
+          onValueChange={(value) => updateProperty("author", value)}
         />
 
         <Slider
           label={t("author_size")}
-          value={authorFontSizeValue}
-          onChange={setAuthorFontSizeValue}
+          value={Number(propertyInfo.authorFontSizeValue)}
+          onChange={(value) => updateProperty("authorFontSizeValue", value)}
           size="sm"
           step={1}
           min={10}
           max={100}
           className="max-w-md my-2"
-      />
+        />
       </div>
       <Divider />
       <div className="w-full mt-4 px-4">
         <div className="text-gray-400 text-sm">{t("download")}</div>
         <div className="flex justify-between my-3">
           <Button
-            onClick={() => dowloadImage("jpg")}
+            onClick={() => handleImageDownload("jpg")}
             as={Link}
             color="primary"
             variant="flat"
@@ -628,7 +486,7 @@ export const RightPropertyPanel = (props) => {
             JPG
           </Button>
           <Button
-            onClick={() => dowloadImage("png")}
+            onClick={() => handleImageDownload("png")}
             as={Link}
             color="primary"
             variant="flat"
@@ -636,7 +494,7 @@ export const RightPropertyPanel = (props) => {
             PNG
           </Button>
           <Button
-            onClick={() => dowloadImage("svg")}
+            onClick={() => handleImageDownload("svg")}
             as={Link}
             color="primary"
             variant="flat"
