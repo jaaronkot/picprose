@@ -40,7 +40,9 @@ export const LeftResourcePanel = () => {
   const [hasMorePhotos, setHasMorePhotos] = React.useState(true);
   const [hasSetInitialPhoto, setHasSetInitialPhoto] = React.useState(false);
   const [windowHeight, setWindowHeight] = React.useState(0);
- 
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const scrollPositionRef = React.useRef(0);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -55,6 +57,10 @@ export const LeftResourcePanel = () => {
   };
 
   const fetchPhotosBySearch = (searchText = "dev", page = 1) => {
+    if (scrollContainerRef.current) {
+      scrollPositionRef.current = scrollContainerRef.current.scrollTop;
+    }
+    
     unsplash.search
       .getPhotos({
         query: searchText,
@@ -81,8 +87,18 @@ export const LeftResourcePanel = () => {
           }
           if (page == 1) {
             setPhotos(photos);
+            setTimeout(() => {
+              if (scrollContainerRef.current) {
+                scrollContainerRef.current.scrollTop = 0;
+              }
+            }, 0);
           } else {
             setPhotos(prevPhotos => [...prevPhotos, ...photos]);
+            setTimeout(() => {
+              if (scrollContainerRef.current) {
+                scrollContainerRef.current.scrollTop = scrollPositionRef.current;
+              }
+            }, 0);
           }
         }
       });
@@ -218,15 +234,18 @@ export const LeftResourcePanel = () => {
               <div className="my-4">{t('search_end')}</div>
             </div>
           }
+          scrollableTarget="scrollableDiv"
         >
-          <PhotoAlbum
-            photos={photos}
-            layout="rows"
-            targetRowHeight={TARGET_ROW_HEIGHT}
-            rowConstraints={ROW_CONSTRAINTS}
-            spacing={PHOTO_SPACING}
-            onClick={({ index }) => selectPhoto(index, photos)}
-          />
+          <div id="scrollableDiv" ref={scrollContainerRef} style={{ height: '100%', overflow: 'auto' }}>
+            <PhotoAlbum
+              photos={photos}
+              layout="rows"
+              targetRowHeight={TARGET_ROW_HEIGHT}
+              rowConstraints={ROW_CONSTRAINTS}
+              spacing={PHOTO_SPACING}
+              onClick={({ index }) => selectPhoto(index, photos)}
+            />
+          </div>
         </InfiniteScroll>
         <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65  rounded-xl">
           <div className="flex items-center ml-2">
