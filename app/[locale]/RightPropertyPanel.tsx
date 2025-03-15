@@ -49,8 +49,8 @@ export const RightPropertyPanel = () => {
   const { propertyInfo, updateProperty, downloadImage } = usePicprose();
   
   const titleOptions = config.title;
-  const iconInputRef = React.useRef(null);
-  const fontInputRef = React.useRef(null);
+  const iconInputRef = React.useRef<HTMLInputElement>(null);
+  const fontInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleIconUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
@@ -99,14 +99,14 @@ export const RightPropertyPanel = () => {
 
   const handleDeviconChange = (selection: Selection) => {
     let icon = "";
-    if (selection && selection.size > 0) {
+    if (selection && typeof selection !== "string" && selection.size > 0) {
       icon = Array.from(selection)[0].toString();
     }
     updateProperty("devicon", icon);
   };
 
   const handleBlurTransChange = (value: SliderValue) => {
-    updateProperty("blurTrans", value.toString());
+    updateProperty("blurTrans", typeof value === "number" ? value.toString() : value[0].toString());
   };
 
   const handleIconButtonClick = () => {
@@ -186,7 +186,7 @@ export const RightPropertyPanel = () => {
   ];
 
   return (
-    <div className="w-full flex flex-col h-screen">
+    <div className="w-full flex flex-col h-screen max-w-md mx-auto">
       <div className="w-full">
         <Navbar
           classNames={{
@@ -217,10 +217,10 @@ export const RightPropertyPanel = () => {
           </NavbarContent>
         </Navbar>
       </div>
-      <div className="flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap px-4">
+      <div className="flex-grow overflow-y-auto overflow-x-hidden flex flex-col px-4">
         <Select
           label={t("aspect")}
-          className="max-w-xs py-2"
+          className="w-full py-2"
           defaultSelectedKeys={["aspect-[16/9]"]}
           onChange={handleAspectChange}
           selectedKeys={[propertyInfo.aspect]}
@@ -241,17 +241,15 @@ export const RightPropertyPanel = () => {
           </SelectSection>
         </Select>
         <Divider />
-        <div className="flex w-full py-2">
-          <div className="w-4/5">
-            <Input
-              type="url"
-              label={t("mask")}
-              value={propertyInfo.color}
-              placeholder={propertyInfo.color}
-              onChange={(e) => updateProperty("color", e.target.value)}
-            />
-          </div>
-          <div className="flex-grow" />
+        <div className="w-full py-2">
+          <Input
+            type="url"
+            label={t("mask")}
+            className="w-full"
+            value={propertyInfo.color}
+            placeholder={propertyInfo.color}
+            onChange={(e) => updateProperty("color", e.target.value)}
+          />
         </div>
         <Slider
           label={t("transparence")}
@@ -259,13 +257,14 @@ export const RightPropertyPanel = () => {
           onChange={handleBlurTransChange}
           size="sm"
           step={5}
-          className="max-w-md my-2"
+          className="w-full my-2"
         />
         <Divider />
-        <div className="flex w-full py-2">
-          <div className="w-4/5">
+        <div className="flex w-full py-2 items-end gap-2">
+          <div className="flex-grow">
             <Select
               label={t("font")}
+              className="w-full"
               onChange={handleFontChange}
               defaultSelectedKeys={["font-anke"]}
             >
@@ -276,8 +275,7 @@ export const RightPropertyPanel = () => {
               ))}
             </Select>
           </div>
-          <div className="flex-grow" />
-          <div className="w-1/6 ml-2 mt-1">
+          <div>
             <input
               type="file"
               className="hidden"
@@ -311,11 +309,11 @@ export const RightPropertyPanel = () => {
             </Button>
           </div>
         </div>
-
-        <div className="flex w-full py-2">
-          <div className="w-4/5">
+        <div className="flex w-full py-2 items-end gap-2">
+          <div className="flex-grow">
             <Select
               label={t("icon")}
+              className="w-full"
               items={deviconList}
               onSelectionChange={handleDeviconChange}
               defaultSelectedKeys={["aarch64-plain"]}
@@ -325,7 +323,7 @@ export const RightPropertyPanel = () => {
                     <i
                       className={`devicon-${item.key} text-black dev-icon text-base`}
                     ></i>
-                    <div className="flex flex-col">{item.data.name}</div>
+                    <div className="flex flex-col">{item.data?.name}</div>
                   </div>
                 ));
               }}
@@ -345,8 +343,7 @@ export const RightPropertyPanel = () => {
               )}
             </Select>
           </div>
-          <div className="flex-grow" />
-          <div className="w-1/6 ml-2 mt-1">
+          <div>
             <input
               type="file"
               className="hidden"
@@ -380,7 +377,6 @@ export const RightPropertyPanel = () => {
             </Button>
           </div>
         </div>
-
         <Tabs
           classNames={{
             tabList: "w-full my-2",
@@ -437,7 +433,7 @@ export const RightPropertyPanel = () => {
         <Textarea
           label={t("title")}
           placeholder={t("title_place")}
-          className="max-w-xs py-2"
+          className="w-full py-2"
           value={propertyInfo.title}
           onValueChange={(value) => updateProperty("title", value)}
         />
@@ -445,18 +441,18 @@ export const RightPropertyPanel = () => {
         <Slider
           label={t("font_size")}
           value={Number(propertyInfo.fontSizeValue)}
-          onChange={(value) => updateProperty("fontSizeValue", value)}
+          onChange={(value) => updateProperty("fontSizeValue", typeof value === "number" ? value.toString() : value[0].toString())}
           size="sm"
           step={1}
-          min={10}
-          max={100}
-          className="max-w-md my-2"
+          minValue={10}
+          maxValue={100}
+          className="w-full my-2"
         />
 
         <Input
           label={t("author")}
           type="search"
-          className="py-2"
+          className="w-full py-2"
           placeholder="输入作者"
           value={propertyInfo.author}
           onValueChange={(value) => updateProperty("author", value)}
@@ -465,12 +461,12 @@ export const RightPropertyPanel = () => {
         <Slider
           label={t("author_size")}
           value={Number(propertyInfo.authorFontSizeValue)}
-          onChange={(value) => updateProperty("authorFontSizeValue", value)}
+          onChange={(value) => updateProperty("authorFontSizeValue", typeof value === "number" ? value.toString() : value[0].toString())}
           size="sm"
           step={1}
-          min={10}
-          max={100}
-          className="max-w-md my-2"
+          minValue={10}
+          maxValue={100}
+          className="w-full my-2"
         />
       </div>
       <Divider />
