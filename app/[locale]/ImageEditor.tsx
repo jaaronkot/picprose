@@ -9,6 +9,11 @@ import { usePicprose } from "./PicproseContext";
 export const ImageEditor = () => {
   const { propertyInfo, imageInfo } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [imagePosition, setImagePosition] = React.useState(0);
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [dragStartY, setDragStartY] = React.useState(0);
+  const [isDragMode, setIsDragMode] = React.useState(false);
+  const imageRef = React.useRef<HTMLImageElement>(null);
   
   // 直接从Context获取所有属性
   const {
@@ -32,6 +37,39 @@ export const ImageEditor = () => {
       setIsLoading(true);
     }
   }, [imageInfo.url]);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+    if (!isDragMode) return;
+    setIsDragging(true);
+    setDragStartY(e.clientY - imagePosition);
+    e.stopPropagation();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging && imageRef.current) {
+      const newPosition = e.clientY - dragStartY;
+      setImagePosition(newPosition);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragStartY]);
 
   const renderIcon = () => {
     if (devicon.length !== 0) {
@@ -58,20 +96,66 @@ export const ImageEditor = () => {
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
       <div
-        style={{ maxHeight: "90vh" }}
+        style={{ maxHeight: "90vh", overflow: "hidden", position: "relative" }}
         className={aspect == "" ? "aspect-[16/9]" : aspect}
       >
         <img
+          ref={imageRef}
           src={imageInfo.url}
           alt="Image"
-          className="rounded-md object-cover h-full w-full"
+          className={`rounded-md object-cover h-full w-full ${isDragMode ? 'cursor-move' : ''}`}
+          style={{ 
+            transform: `translateY(${imagePosition}px)`,
+            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+          }}
           onLoad={() => setIsLoading(false)}
+          onMouseDown={handleMouseDown}
+          draggable={false}
         />
+
+        <button 
+          className="absolute bottom-4 left-4 bg-white/70 hover:bg-white/90 text-black p-2 rounded-full z-10 group-hover:flex hidden items-center justify-center"
+          onClick={() => setIsDragMode(!isDragMode)}
+          title={isDragMode ? "退出调整图片位置模式" : "调整图片位置"}
+        >
+          <svg 
+            className="w-5 h-5" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {isDragMode ? (
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M5 13l4 4L19 7" 
+              />
+            ) : (
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" 
+              />
+            )}
+          </svg>
+        </button>
+        
+        {isDragMode && (
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
+            <div className="bg-white/80 text-black px-4 py-2 rounded-lg">
+              上下拖动图片调整位置
+            </div>
+          </div>
+        )}
       </div>
 
       <div
         style={{
           backgroundColor: color == "" ? "#1F293799" : color + blurTrans,
+          pointerEvents: isDragMode ? 'none' : 'auto'
         }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
