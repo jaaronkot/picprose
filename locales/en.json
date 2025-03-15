@@ -5,6 +5,8 @@
         "search_end": "You've reached the end",
         "images_tab": "Images",
         "colors_tab": "Colors",
+        "patterns_tab": "Patterns",
+        "patterns": "Patterns",
         "solid_colors": "Solid Colors",
         "gradient_colors": "Gradient Colors"
     },

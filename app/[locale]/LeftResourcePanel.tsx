@@ -55,6 +55,190 @@ const GRADIENT_COLORS = [
   "linear-gradient(to right, #0f0c29, #302b63, #24243e)"
 ];
 
+// 添加纹理图标组件
+export const PatternIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="24"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="24"
+      {...props}
+    >
+      <path
+        d="M22 2L2 22"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M18 6L6 18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M14 2L2 14"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M22 10L10 22"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+// 纹理背景预设
+const PATTERN_BACKGROUNDS = [
+  // 点状图案
+  {
+    name: "点状图案",
+    value: "radial-gradient(#444cf7 1px, transparent 1px) 0 0 / 20px 20px",
+    bgColor: "#ffffff"
+  },
+  // 网格线
+  {
+    name: "网格线",
+    value: "linear-gradient(#444cf7 1px, transparent 1px) 0 0 / 20px 20px, linear-gradient(90deg, #444cf7 1px, transparent 1px) 0 0 / 20px 20px",
+    bgColor: "#ffffff"
+  },
+  // 对角线
+  {
+    name: "对角线",
+    value: "repeating-linear-gradient(45deg, #444cf7, #444cf7 5px, transparent 5px, transparent 25px)",
+    bgColor: "#ffffff"
+  },
+  // 波浪图案
+  {
+    name: "波浪图案",
+    value: "repeating-radial-gradient(#444cf7, #444cf7 1px, transparent 1px, transparent 13px)",
+    bgColor: "#ffffff"
+  },
+  // 条纹图案
+  {
+    name: "条纹图案",
+    value: "repeating-linear-gradient(-45deg, #f472b6, #f472b6 10px, #ffffff 10px, #ffffff 20px)",
+    bgColor: "#ffffff"
+  },
+  // 植物图案
+  {
+    name: "植物图案",
+    value: "radial-gradient(circle at 0% 50%, rgba(96, 165, 250, 0.2) 9px, transparent 10px), radial-gradient(at 100% 100%, rgba(52, 211, 153, 0.2) 15px, transparent 16px)",
+    bgColor: "#f8fafc"
+  },
+  // 方块拼图
+  {
+    name: "方块拼图",
+    value: "linear-gradient(135deg, #f7acbc 25%, transparent 25%) -20px 0, linear-gradient(225deg, #f7acbc 25%, transparent 25%) -20px 0, linear-gradient(315deg, #f7acbc 25%, transparent 25%), linear-gradient(45deg, #f7acbc 25%, transparent 25%)",
+    bgColor: "#ffb6c1"
+  },
+  // 六边形
+  {
+    name: "六边形",
+    value: "radial-gradient(circle, transparent 20%, #f8b195 20%, #f8b195 40%, transparent 40%, transparent 60%, #f8b195 60%, #f8b195 80%, transparent 80%) 0 0 / 60px 60px, radial-gradient(circle, transparent 20%, #f67280 20%, #f67280 40%, transparent 40%, transparent 60%, #f67280 60%, #f67280 80%, transparent 80%) 30px 30px / 60px 60px",
+    bgColor: "#ffffff"
+  },
+  // 圆点阵列
+  {
+    name: "圆点阵列",
+    value: "radial-gradient(#c06c84 20%, transparent 20%) 0 0 / 20px 20px, radial-gradient(#c06c84 20%, transparent 20%) 10px 10px / 20px 20px",
+    bgColor: "#ffffff"
+  },
+  // 几何三角形
+  {
+    name: "几何三角形",
+    value: "linear-gradient(30deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(150deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(30deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(150deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(60deg, #a78bfa 25%, transparent 25.5%, transparent 75%, #a78bfa 75%, #a78bfa), linear-gradient(60deg, #a78bfa 25%, transparent 25.5%, transparent 75%, #a78bfa 75%, #a78bfa)",
+    bgColor: "#ffffff"
+  },
+  // 交叉线条
+  {
+    name: "交叉线条",
+    value: "repeating-linear-gradient(0deg, #38bdf8, #38bdf8 2px, transparent 2px, transparent 20px), repeating-linear-gradient(90deg, #38bdf8, #38bdf8 2px, transparent 2px, transparent 20px)",
+    bgColor: "#ffffff" 
+  },
+  // 霓虹斑点
+  {
+    name: "霓虹斑点",
+    value: "radial-gradient(circle at 50% 0%, #fb7185 10%, #4f46e5 15%, transparent 60%), radial-gradient(circle at 85% 30%, #2dd4bf 15%, #8b5cf6 30%, transparent 55%), radial-gradient(circle at 10% 70%, #f59e0b 5%, #ec4899 15%, transparent 35%)",
+    bgColor: "#0f172a"
+  },
+  // 棋盘格
+  {
+    name: "棋盘格",
+    value: "linear-gradient(45deg, #444cf722 25%, transparent 25%) 0 0 / 20px 20px, linear-gradient(-45deg, #444cf722 25%, transparent 25%) 0 0 / 20px 20px, linear-gradient(45deg, transparent 75%, #444cf722 75%) 0 0 / 20px 20px, linear-gradient(-45deg, transparent 75%, #444cf722 75%) 0 0 / 20px 20px",
+    bgColor: "#ffffff"
+  },
+  // 马赛克
+  {
+    name: "马赛克",
+    value: "linear-gradient(135deg, #eab308 21px, #fef08a 22px, #fef08a 24px, transparent 24px, transparent 67px, #fef08a 67px, #fef08a 69px, transparent 69px), linear-gradient(225deg, #eab308 21px, #fef08a 22px, #fef08a 24px, transparent 24px, transparent 67px, #fef08a 67px, #fef08a 69px, transparent 69px) 0 64px",
+    bgColor: "#eab308"
+  },
+  // 像素点
+  {
+    name: "像素点",
+    value: "linear-gradient(90deg, rgba(166, 173, 186, 0.2) 2px, transparent 0), linear-gradient(180deg, rgba(166, 173, 186, 0.2) 2px, transparent 0)",
+    bgColor: "#f1f5f9"
+  },
+  // 纸张纹理
+  {
+    name: "纸张纹理",
+    value: "linear-gradient(135deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03) 75%, transparent 75%, transparent)",
+    bgColor: "#f5f5f4"
+  },
+  // 彩色泡泡
+  {
+    name: "彩色泡泡",
+    value: "radial-gradient(circle at 33% 33%, #f43f5e 5%, transparent 5.5%), radial-gradient(circle at 72% 64%, #8b5cf6 5%, transparent 5.5%), radial-gradient(circle at 45% 85%, #3b82f6 5%, transparent 5.5%), radial-gradient(circle at 75% 20%, #06b6d4 5%, transparent 5.5%), radial-gradient(circle at 20% 60%, #22c55e 5%, transparent 5.5%)",
+    bgColor: "#ffffff"
+  }
+];
+
+// 纹理选择组件
+const PatternPanel = () => {
+  const { setBackgroundType, setBackgroundPattern } = usePicprose();
+  const t = useTranslations('LeftResourcePanel');
+
+  const handlePatternSelect = (pattern: string, bgColor: string) => {
+    setBackgroundType('pattern');
+    setBackgroundPattern(`${pattern}|${bgColor}`); // 使用|分隔背景图案和背景色
+  };
+
+  return (
+    <div className="p-4">
+      <h3 className="text-lg font-medium mb-4">{t('patterns')}</h3>
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        {PATTERN_BACKGROUNDS.map((pattern, index) => (
+          <div 
+            key={index}
+            className="w-full h-32 rounded-md cursor-pointer hover:scale-105 transition-transform border border-gray-300 dark:border-gray-700"
+            style={{ background: pattern.value, backgroundColor: pattern.bgColor }}
+            onClick={() => handlePatternSelect(pattern.value, pattern.bgColor)}
+          >
+            <div className="w-full h-full flex items-end justify-start p-2">
+              <span className="bg-black/70 text-white text-xs px-2 py-1 rounded">
+                {pattern.name}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const GalleryIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
@@ -91,65 +275,7 @@ export const GalleryIcon = (props: React.SVGProps<SVGSVGElement>) => {
     </svg>
   );
 };
-
-export const MusicIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="24"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="24"
-      {...props}
-    >
-      <path
-        d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M16.5 6.6998L14.87 8.3298C14.34 8.8598 13.5 8.8598 12.97 8.3298L11.34 6.6998"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M12 17.9999C14.2091 17.9999 16 16.2091 16 13.9999C16 11.7908 14.2091 9.99988 12 9.99988C9.79086 9.99988 8 11.7908 8 13.9999C8 16.2091 9.79086 17.9999 12 17.9999Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-};
-
-export const VideoIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="24"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="24"
-      {...props}
-    >
-      <path d="M14.7295 2H9.26953V6.36H14.7295V2Z" fill="currentColor" />
-      <path d="M16.2305 2V6.36H21.8705C21.3605 3.61 19.3305 2.01 16.2305 2Z" fill="currentColor" />
-      <path
-        d="M2 7.85938V16.1894C2 19.8294 4.17 21.9994 7.81 21.9994H16.19C19.83 21.9994 22 19.8294 22 16.1894V7.85938H2ZM14.44 16.1794L12.36 17.3794C11.92 17.6294 11.49 17.7594 11.09 17.7594C10.79 17.7594 10.52 17.6894 10.27 17.5494C9.69 17.2194 9.37 16.5394 9.37 15.6594V13.2594C9.37 12.3794 9.69 11.6994 10.27 11.3694C10.85 11.0294 11.59 11.0894 12.36 11.5394L14.44 12.7394C15.21 13.1794 15.63 13.7994 15.63 14.4694C15.63 15.1394 15.2 15.7294 14.44 16.1794Z"
-        fill="currentColor"
-      />
-      <path d="M7.76891 2C4.66891 2.01 2.63891 3.61 2.12891 6.36H7.76891V2Z" fill="currentColor" />
-    </svg>
-  );
-};
-
+  
 // 添加颜色选择图标
 export const PaletteIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -408,20 +534,20 @@ export const LeftResourcePanel = () => {
 
   // 图片面板内容
   const renderImagePanel = () => (
-    <div className="flex-grow relative">
+    <div className="flex-grow relative overflow-auto">
       <InfiniteScroll
         className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
         dataLength={photos.length}
-        height={windowHeight - 180} // 调整高度以适应标签页
+        height={windowHeight - 220} // 调整高度给底部导航留出空间
         next={handleLoadMore}
         hasMore={hasMorePhotos}
         loader={
-          <div className="grid justify-items-center ">
+          <div className="grid justify-items-center">
             <Spinner className="my-4" />
           </div>
         }
         endMessage={
-          <div className="grid justify-items-center ">
+          <div className="grid justify-items-center">
             <div className="my-4">{t('search_end')}</div>
           </div>
         }
@@ -456,16 +582,26 @@ export const LeftResourcePanel = () => {
 
   // 颜色面板内容
   const renderColorPanel = () => (
-    <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 180 }}>
+    <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
       <ScrollShadow className="h-full">
         <ColorPanel />
       </ScrollShadow>
     </div>
   );
 
+  // 纹理面板内容
+  const renderPatternPanel = () => (
+    <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
+      <ScrollShadow className="h-full">
+        <PatternPanel />
+      </ScrollShadow>
+    </div>
+  );
+
   return (
     <div className="w-full flex flex-col h-screen">
-      <div className="w-full">
+      {/* 头部导航 */}
+      <div className="w-full flex-none">
         <Navbar
           classNames={{
             wrapper: "px-4",
@@ -486,14 +622,18 @@ export const LeftResourcePanel = () => {
         </Navbar>
       </div>
       
-      {/* 添加标签页 */}
-      <div className="px-2 pt-2">
+      {/* 标签页容器 - 使用flex-grow填充可用空间但不超出 */}
+      <div className="px-2 pt-2 flex-grow overflow-hidden flex flex-col">
         <Tabs 
           selectedKey={activeTab} 
           onSelectionChange={(key) => setActiveTab(key as string)}
           color="default"
           variant="solid"
           fullWidth
+          classNames={{
+            base: "flex flex-col flex-grow overflow-hidden",
+            panel: "flex-grow overflow-hidden"
+          }}
         >
           <Tab 
             key="images" 
@@ -517,10 +657,22 @@ export const LeftResourcePanel = () => {
           >
             {renderColorPanel()}
           </Tab>
+          <Tab 
+            key="patterns" 
+            title={
+              <div className="flex items-center gap-2">
+                <PatternIcon />
+                <span>{t('patterns_tab')}</span>
+              </div>
+            }
+          >
+            {renderPatternPanel()}
+          </Tab>
         </Tabs>
       </div>
       
-      <div className="w-full mt-auto">
+      {/* 底部导航 - 使用flex-none确保不会被挤压 */}
+      <div className="w-full flex-none mt-auto">
         <Navbar
           classNames={{
             wrapper: "px-4",

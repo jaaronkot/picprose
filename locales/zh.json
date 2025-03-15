@@ -5,6 +5,8 @@
         "search_end": "已经到底了",
         "images_tab": "图片",
         "colors_tab": "颜色",
+        "patterns_tab": "纹理",
+        "patterns": "纹理",
         "solid_colors": "纯色",
         "gradient_colors": "渐变色"
     },
@@ -20,6 +22,6 @@
         "title": "标题",
         "title_place": "Please input title",
         "author": "作者",
-        "download": "下载"
+        "download": "生成"
     }
 }

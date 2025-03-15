@@ -30,7 +30,7 @@ export const ImageEditor = ({
   setElements,
   saveHistory
 }: ImageEditorProps) => {
-  const { propertyInfo, imageInfo, backgroundType, backgroundColor } = usePicprose();
+  const { propertyInfo, imageInfo, backgroundType, backgroundColor, backgroundPattern } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePosition, setImagePosition] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -287,7 +287,7 @@ export const ImageEditor = ({
             onMouseDown={handleImageMouseDown}
             draggable={false}
           />
-        ) : (
+        ) : backgroundType === 'color' ? (
           <div
             className="rounded-md w-full h-full"
             style={{ 
@@ -297,7 +297,18 @@ export const ImageEditor = ({
               left: 0
             }}
           />
-        )}
+        ) : backgroundType === 'pattern' ? (
+          <div
+            className="rounded-md w-full h-full"
+            style={{ 
+              background: backgroundPattern.split('|')[0], // 提取纹理部分
+              backgroundColor: backgroundPattern.split('|')[1] || '#ffffff', // 提取背景色部分，默认为白色
+              position: 'absolute',
+              top: 0,
+              left: 0
+            }}
+          />
+        ) : null}
 
         {/* 网格辅助线 */}
         {isDragMode && (
