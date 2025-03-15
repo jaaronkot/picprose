@@ -9,6 +9,10 @@
 
 PicProse is a powerful cover image generator designed for bloggers, content creators, developers, and designers. Create professional and stunning cover images in just a few steps for Medium, YouTube, BiliBili, personal blogs, and other platforms.
 
+**Preview:** [picprose.pixpark.net](https://picprose.pixpark.net/)
+
+
+
 ![PicProse Preview](./doc/screenshot.jpg )
 
 ![PicProse Preview](./doc/screenshot2.jpg )
