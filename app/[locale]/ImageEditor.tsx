@@ -7,7 +7,7 @@ import {
 import { usePicprose } from "./PicproseContext";
 
 export const ImageEditor = () => {
-  const { propertyInfo, imageInfo } = usePicprose();
+  const { propertyInfo, imageInfo, resetToDefaults } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePosition, setImagePosition] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -70,6 +70,15 @@ export const ImageEditor = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging, dragStartY]);
+
+  const handleResetLayout = () => {
+    // 重置图片位置
+    setImagePosition(0);
+    // 关闭拖动模式
+    setIsDragMode(false);
+    // 调用context中的重置方法
+    resetToDefaults();
+  };
 
   const renderIcon = () => {
     if (devicon.length !== 0) {
@@ -159,7 +168,11 @@ export const ImageEditor = () => {
         }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
-        <button className="absolute  top-2 right-2 cursor-pointer">
+        <button 
+          className="absolute top-2 right-2 cursor-pointer" 
+          onClick={handleResetLayout}
+          title="恢复默认布局"
+        >
           <svg
             className="group-hover:inline-block hidden w-8 h-8 text-gray-800 bg-white p-2 rounded-full z-10"
             fill="none"
