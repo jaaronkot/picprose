@@ -30,7 +30,7 @@ export const ImageEditor = ({
   setElements,
   saveHistory
 }: ImageEditorProps) => {
-  const { propertyInfo, imageInfo } = usePicprose();
+  const { propertyInfo, imageInfo, backgroundType, backgroundColor } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePosition, setImagePosition] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -267,24 +267,37 @@ export const ImageEditor = ({
         className={aspect == "" ? "aspect-[16/9]" : aspect}
         onMouseDown={isDragMode ? handleContainerMouseDown : undefined}
       >
-        <img
-          ref={imageRef}
-          src={imageInfo.url}
-          alt="Image"
-          className={`rounded-md w-full ${isDragMode ? 'cursor-move' : ''}`}
-          style={{ 
-            position: 'absolute',
-            top: `${imagePosition}px`, // 使用绝对定位替代transform
-            left: 0,
-            width: '100%',
-            height: 'auto', // 允许图片保持原始宽高比
-            objectFit: 'cover',
-            transition: isDragging ? 'none' : 'top 0.1s ease-out',
-          }}
-          onLoad={() => setIsLoading(false)}
-          onMouseDown={handleImageMouseDown}
-          draggable={false}
-        />
+        {/* 根据背景类型渲染不同背景 */}
+        {backgroundType === 'image' ? (
+          <img
+            ref={imageRef}
+            src={imageInfo.url}
+            alt="Image"
+            className={`rounded-md w-full ${isDragMode ? 'cursor-move' : ''}`}
+            style={{ 
+              position: 'absolute',
+              top: `${imagePosition}px`,
+              left: 0,
+              width: '100%',
+              height: 'auto',
+              objectFit: 'cover',
+              transition: isDragging ? 'none' : 'top 0.1s ease-out',
+            }}
+            onLoad={() => setIsLoading(false)}
+            onMouseDown={handleImageMouseDown}
+            draggable={false}
+          />
+        ) : (
+          <div
+            className="rounded-md w-full h-full"
+            style={{ 
+              background: backgroundColor,
+              position: 'absolute',
+              top: 0,
+              left: 0
+            }}
+          />
+        )}
 
         {/* 网格辅助线 */}
         {isDragMode && (
@@ -299,7 +312,7 @@ export const ImageEditor = ({
         {isDragMode && (
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
             <div className="bg-white/80 text-black px-4 py-2 rounded-lg">
-              拖动模式：可拖动图片、标题、作者和图标
+              拖动模式：可拖动{backgroundType === 'image' ? '图片、' : ''}标题、作者和图标
             </div>
           </div>
         )}
@@ -381,32 +394,35 @@ export const ImageEditor = ({
         {isLoading && <Spinner className={"absolute bottom-8 left-8"} />}
       </div>
 
-      <div className="absolute  bottom-4 right-4 opacity-80">
-        <div className=" group-hover:flex hidden items-center">
-          <span className="text-sm text-white mx-2">Photo by</span>
-          <a
-            href={imageInfo.profile}
-            target="_blank"
-            rel="noreferrer"
-            className="cursor-pointer flex items-center bg-gray-300 rounded-full text-sm"
-          >
-            <img
-              src={imageInfo.avatar}
-              alt={imageInfo.name}
-              className="h-6 w-6 rounded-full mr-2"
-            />
-            <span className="pr-2">{imageInfo.name}</span>
-          </a>
+      {/* 仅在使用图片背景时显示图片作者信息 */}
+      {backgroundType === 'image' && (
+        <div className="absolute bottom-4 right-4 opacity-80">
+          <div className="group-hover:flex hidden items-center">
+            <span className="text-sm text-white mx-2">Photo by</span>
+            <a
+              href={imageInfo.profile}
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-pointer flex items-center bg-gray-300 rounded-full text-sm"
+            >
+              <img
+                src={imageInfo.avatar}
+                alt={imageInfo.name}
+                className="h-6 w-6 rounded-full mr-2"
+              />
+              <span className="pr-2">{imageInfo.name}</span>
+            </a>
 
-          <a
-            href="https://unsplash.com/?utm_source=PicProse&utm_medium=referral"
-            target="_blank"
-            className="text-sm text-white mx-2"
-          >
-            Unsplash
-          </a>
+            <a
+              href="https://unsplash.com/?utm_source=PicProse&utm_medium=referral"
+              target="_blank"
+              className="text-sm text-white mx-2"
+            >
+              Unsplash
+            </a>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

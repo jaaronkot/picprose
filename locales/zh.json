@@ -1,8 +1,12 @@
 {
     "LeftResourcePanel": {
         "powered_by": "Powered by ",
-        "search_end" : "No more image...",
-        "input_search" : "搜索"
+        "input_search": "搜索图片...",
+        "search_end": "已经到底了",
+        "images_tab": "图片",
+        "colors_tab": "颜色",
+        "solid_colors": "纯色",
+        "gradient_colors": "渐变色"
     },
     "RightPropertyPanel": {
         "property": "属性",

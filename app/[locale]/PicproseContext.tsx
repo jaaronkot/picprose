@@ -33,6 +33,9 @@ interface PropertyInfo {
   logoPosition: string;
 }
 
+// 定义背景类型
+type BackgroundType = 'image' | 'color';
+
 // 定义Context的类型
 interface PicproseContextType {
   // 图片信息
@@ -45,6 +48,12 @@ interface PicproseContextType {
   
   // 下载图片
   downloadImage: (format: string) => void;
+  
+  // 背景类型和颜色
+  backgroundType: BackgroundType;
+  setBackgroundType: (type: BackgroundType) => void;
+  backgroundColor: string;
+  setBackgroundColor: (color: string) => void;
 }
 
 // 创建默认图片信息
@@ -86,6 +95,12 @@ export function PicproseProvider({
 }) {
   const [imageInfo, setImageInfo] = useState<ImageInfo>(defaultImageInfo);
   const [propertyInfo, setPropertyInfo] = useState<PropertyInfo>(defaultPropertyInfo);
+  const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
+  const [backgroundColor, setBackgroundColor] = useState<string>('#1F2937');
+  
+  // 添加两个状态来分别保存图片模式和颜色模式下的遮罩浓度
+  const [imageBlurTrans, setImageBlurTrans] = useState<string>((Math.floor(2.55 * config.blurTrans)).toString(16));
+  const [colorBlurTrans, setColorBlurTrans] = useState<string>("00"); // 颜色模式默认透明
 
   // 更新单个属性
   const updateProperty = <K extends keyof PropertyInfo>(key: K, value: PropertyInfo[K]) => {
@@ -93,6 +108,33 @@ export function PicproseProvider({
       ...prev,
       [key]: value
     }));
+    
+    // 如果用户正在更新遮罩透明度，同时根据当前背景类型保存到对应的状态
+    if (key === "blurTrans" && typeof value === "string") {
+      if (backgroundType === 'image') {
+        setImageBlurTrans(value);
+      } else {
+        setColorBlurTrans(value);
+      }
+    }
+  };
+
+  // 修改背景类型设置函数，当切换背景类型时，也切换对应的遮罩透明度
+  const handleBackgroundTypeChange = (type: BackgroundType) => {
+    // 记录切换前的状态
+    const prevType = backgroundType;
+    
+    // 更新背景类型
+    setBackgroundType(type);
+    
+    // 根据新的背景类型应用相应的遮罩透明度
+    if (type === 'color') {
+      // 切换到颜色背景，应用颜色模式下的遮罩设置
+      updateProperty("blurTrans", colorBlurTrans);
+    } else {
+      // 切换到图片背景，应用图片模式下的遮罩设置
+      updateProperty("blurTrans", imageBlurTrans);
+    }
   };
 
   // 处理模糊属性特殊逻辑
@@ -139,7 +181,11 @@ export function PicproseProvider({
         setImageInfo, 
         propertyInfo, 
         updateProperty,
-        downloadImage
+        downloadImage,
+        backgroundType,
+        setBackgroundType: handleBackgroundTypeChange,
+        backgroundColor,
+        setBackgroundColor
       }}
     >
       {children}

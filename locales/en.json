@@ -1,8 +1,12 @@
 {
     "LeftResourcePanel": {
-        "powered_by": "Powered by ",
-        "search_end" : "No more image...",
-        "input_search" : "Search"
+        "powered_by": "Powered by",
+        "input_search": "Search images...",
+        "search_end": "You've reached the end",
+        "images_tab": "Images",
+        "colors_tab": "Colors",
+        "solid_colors": "Solid Colors",
+        "gradient_colors": "Gradient Colors"
     },
     "RightPropertyPanel": {
         "property": "Property",
