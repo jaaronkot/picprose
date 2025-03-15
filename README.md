@@ -1,7 +1,9 @@
 # PicProse - Better Cover Image Generator
 
 [![GitHub stars](https://img.shields.io/github/stars/jaaronkot/picprose)](https://github.com/jaaronkot/picprose/stargazers)
-[![License](https://img.shields.io/github/license/jaaronkot/picprose)](https://github.com/jaaronkot/picprose/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/jaaronkot/picprose)](https://github.com/jaaronkot/picprose/blob/main/LICENSE) 
+
+<a href="./README.md">English</a> | <a href="./README_CN.md">简体中文</a>
 
 ## Overview
 
