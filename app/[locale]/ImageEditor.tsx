@@ -6,14 +6,44 @@ import {
 } from "@nextui-org/react";
 import { usePicprose } from "./PicproseContext";
 
-export const ImageEditor = () => {
-  const { propertyInfo, imageInfo, resetToDefaults } = usePicprose();
+// 添加Props类型定义
+interface ImageEditorProps {
+  isDragMode: boolean;
+  elements: {
+    title: { x: number; y: number; visible: boolean };
+    author: { x: number; y: number; visible: boolean };
+    icon: { x: number; y: number; visible: boolean };
+    image: { x: number; y: number };
+  };
+  setElements: React.Dispatch<React.SetStateAction<{
+    title: { x: number; y: number; visible: boolean };
+    author: { x: number; y: number; visible: boolean };
+    icon: { x: number; y: number; visible: boolean };
+    image: { x: number; y: number };
+  }>>;
+  saveHistory: (elements: any) => void;
+}
+
+export const ImageEditor = ({ 
+  isDragMode, 
+  elements, 
+  setElements,
+  saveHistory
+}: ImageEditorProps) => {
+  const { propertyInfo, imageInfo } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePosition, setImagePosition] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartY, setDragStartY] = React.useState(0);
-  const [isDragMode, setIsDragMode] = React.useState(false);
+  const [imageHorizontalPosition, setImageHorizontalPosition] = React.useState(0);
   const imageRef = React.useRef<HTMLImageElement>(null);
+  
+  // 拖动状态
+  const [draggingElement, setDraggingElement] = React.useState<string | null>(null);
+  const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
+  
+  // 添加拖动边界检测
+  const containerRef = React.useRef<HTMLDivElement>(null);
   
   // 直接从Context获取所有属性
   const {
@@ -38,26 +68,81 @@ export const ImageEditor = () => {
     }
   }, [imageInfo.url]);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+  // 处理图片的水平和垂直拖动
+  const handleImageMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!isDragMode) return;
     setIsDragging(true);
     setDragStartY(e.clientY - imagePosition);
+    setDragStart({ 
+      x: e.clientX - imageHorizontalPosition, 
+      y: e.clientY - imagePosition 
+    });
     e.stopPropagation();
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging && imageRef.current) {
-      const newPosition = e.clientY - dragStartY;
-      setImagePosition(newPosition);
+      // 支持双向拖动
+      const newVerticalPosition = e.clientY - dragStartY;
+      const newHorizontalPosition = e.clientX - dragStart.x;
+      
+      // 添加边界限制
+      const container = containerRef.current;
+      const image = imageRef.current;
+      
+      if (container && image) {
+        const containerRect = container.getBoundingClientRect();
+        const imageRect = image.getBoundingClientRect();
+        
+        // 确保图片不会完全拖出视图
+        const minX = containerRect.width - imageRect.width;
+        const maxX = 0;
+        const minY = containerRect.height - imageRect.height;
+        const maxY = 0;
+        
+        const boundedX = Math.max(minX, Math.min(maxX, newHorizontalPosition));
+        const boundedY = Math.max(minY, Math.min(maxY, newVerticalPosition));
+        
+        setImagePosition(boundedY);
+        setImageHorizontalPosition(boundedX);
+      } else {
+        setImagePosition(newVerticalPosition);
+        setImageHorizontalPosition(newHorizontalPosition);
+      }
+    }
+    
+    // 处理其他元素拖动
+    if (draggingElement && isDragMode) {
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+      
+      if (draggingElement === 'title' || draggingElement === 'author' || 
+          draggingElement === 'icon' || draggingElement === 'image') {
+        handleElementDragImpl(draggingElement, deltaX, deltaY);
+      }
+      
+      setDragStart({ x: e.clientX, y: e.clientY });
     }
   };
 
   const handleMouseUp = () => {
+    if (isDragging || draggingElement) {
+      saveHistory(elements); // 保存操作历史
+    }
     setIsDragging(false);
+    setDraggingElement(null);
+  };
+
+  // 元素拖动开始处理
+  const handleElementDragStart = (element: string, e: React.MouseEvent) => {
+    if (!isDragMode) return;
+    e.stopPropagation();
+    setDraggingElement(element);
+    setDragStart({ x: e.clientX, y: e.clientY });
   };
 
   React.useEffect(() => {
-    if (isDragging) {
+    if (isDragging || draggingElement) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     } else {
@@ -69,27 +154,57 @@ export const ImageEditor = () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragStartY]);
+  }, [isDragging, dragStartY, draggingElement, dragStart, isDragMode]);
 
-  const handleResetLayout = () => {
-    // 重置图片位置
-    setImagePosition(0);
-    // 关闭拖动模式
-    setIsDragMode(false);
-    // 调用context中的重置方法
-    resetToDefaults();
+  // 修复TypeScript错误的元素拖动处理函数
+  const handleElementDragImpl = (elementKey: 'title' | 'author' | 'icon' | 'image', deltaX: number, deltaY: number) => {
+    setElements(prev => {
+      const newElements = {...prev};
+      if (elementKey === 'title') {
+        newElements.title = {
+          ...newElements.title,
+          x: newElements.title.x + deltaX,
+          y: newElements.title.y + deltaY
+        };
+      } else if (elementKey === 'author') {
+        newElements.author = {
+          ...newElements.author,
+          x: newElements.author.x + deltaX,
+          y: newElements.author.y + deltaY
+        };
+      } else if (elementKey === 'icon') {
+        newElements.icon = {
+          ...newElements.icon,
+          x: newElements.icon.x + deltaX,
+          y: newElements.icon.y + deltaY
+        };
+      } else if (elementKey === 'image') {
+        newElements.image = {
+          ...newElements.image,
+          x: newElements.image.x + deltaX,
+          y: newElements.image.y + deltaY
+        };
+      }
+      return newElements;
+    });
   };
 
   const renderIcon = () => {
     if (devicon.length !== 0) {
       return (
-        <div className="m-4 items-center justify-center flex">
+        <div 
+          className={`m-4 items-center justify-center flex ${isDragMode ? 'cursor-move' : ''}`}
+          onMouseDown={(e) => handleElementDragStart('icon', e)}
+        >
           <i className={`devicon-${devicon} text-white dev-icon text-4xl`}></i>
         </div>
       );
     } else if (icon.length > 0) {
       return (
-        <div className=" ">
+        <div 
+          className={`${isDragMode ? 'cursor-move' : ''}`}
+          onMouseDown={(e) => handleElementDragStart('icon', e)}
+        >
           <img
             src={icon}
             alt="img"
@@ -105,6 +220,7 @@ export const ImageEditor = () => {
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
       <div
+        ref={containerRef}
         style={{ maxHeight: "90vh", overflow: "hidden", position: "relative" }}
         className={aspect == "" ? "aspect-[16/9]" : aspect}
       >
@@ -114,53 +230,34 @@ export const ImageEditor = () => {
           alt="Image"
           className={`rounded-md object-cover h-full w-full ${isDragMode ? 'cursor-move' : ''}`}
           style={{ 
-            transform: `translateY(${imagePosition}px)`,
+            transform: `translate(${imageHorizontalPosition}px, ${imagePosition}px)`,
             transition: isDragging ? 'none' : 'transform 0.1s ease-out'
           }}
           onLoad={() => setIsLoading(false)}
-          onMouseDown={handleMouseDown}
+          onMouseDown={handleImageMouseDown}
           draggable={false}
         />
 
-        <button 
-          className="absolute bottom-4 left-4 bg-white/70 hover:bg-white/90 text-black p-2 rounded-full z-10 group-hover:flex hidden items-center justify-center"
-          onClick={() => setIsDragMode(!isDragMode)}
-          title={isDragMode ? "退出调整图片位置模式" : "调整图片位置"}
-        >
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {isDragMode ? (
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M5 13l4 4L19 7" 
-              />
-            ) : (
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" 
-              />
-            )}
-          </svg>
-        </button>
+        {/* 网格辅助线 */}
+        {isDragMode && (
+          <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
+            {[...Array(9)].map((_, i) => (
+              <div key={i} className="border border-white/10"></div>
+            ))}
+          </div>
+        )}
         
+        {/* 拖动模式提示 */}
         {isDragMode && (
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
             <div className="bg-white/80 text-black px-4 py-2 rounded-lg">
-              上下拖动图片调整位置
+              拖动模式：可拖动图片、标题、作者和图标
             </div>
           </div>
         )}
       </div>
 
+      {/* 内容覆盖层 */}
       <div
         style={{
           backgroundColor: color == "" ? "#1F293799" : color + blurTrans,
@@ -168,57 +265,62 @@ export const ImageEditor = () => {
         }}
         className={"absolute top-0 right-0 left-0 rounded-md h-full " + blur}
       >
-        <button 
-          className="absolute top-2 right-2 cursor-pointer" 
-          onClick={handleResetLayout}
-          title="恢复默认布局"
-        >
-          <svg
-            className="group-hover:inline-block hidden w-8 h-8 text-gray-800 bg-white p-2 rounded-full z-10"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+        {/* 使用统一的绝对定位容器 */}
+        <div className="absolute inset-0" style={{ pointerEvents: isDragMode ? 'auto' : 'none' }}>
+          {/* 标题元素 */}
+          <div 
+            className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
+            style={{ 
+              left: '50%',
+              top: '40%',
+              transform: `translate(-50%, -50%) translate(${elements.title.x}px, ${elements.title.y}px)`,
+              transition: draggingElement === 'title' ? 'none' : 'transform 0.1s ease-out',
+              padding: isDragMode ? '8px' : '0',
+            }}
+            onMouseDown={(e) => handleElementDragStart('title', e)}
           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
-            />
-          </svg>
-        </button>
-        <div className="flex justify-center items-center h-full w-full">
-          <div>
-            <div
-              className={"px-10 text-left rounded-xl h-full p-4 flex flex-col"}
+            <h1
+              className={`leading-tight text-center text-5xl font-bold text-white ${font}`}
+              style={{ fontSize: `${fontSizeValue}px` }}
             >
-              <h1
-                className={
-                  " leading-tight text-center text-5xl font-bold  text-white " +
-                  font
-                }
-                style={{ fontSize: `${fontSizeValue}px` }}
-              >
-                {title}
-              </h1>
-              <div className="flex flex-col items-center pt-10  ">
-                <h2
-                  className={
-                    "text-xl font-semibold text-left text-white " + font
-                  }
-                  style={{ fontSize: `${authorFontSizeValue}px` }}
-                >
-                  {author}
-                </h2>
-                {logoPosition == "default" && renderIcon()}
-              </div>
-            </div>
+              {title}
+            </h1>
           </div>
-        </div>
-        <div className={"absolute " + logoPosition}>
-          {logoPosition != "default" && renderIcon()}
+          
+          {/* 作者元素 */}
+          <div 
+            className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
+            style={{ 
+              left: '50%',
+              top: '60%',
+              transform: `translate(-50%, -50%) translate(${elements.author.x}px, ${elements.author.y}px)`,
+              transition: draggingElement === 'author' ? 'none' : 'transform 0.1s ease-out',
+              padding: isDragMode ? '8px' : '0',
+            }}
+            onMouseDown={(e) => handleElementDragStart('author', e)}
+          >
+            <h2
+              className={`text-xl font-semibold text-center text-white ${font}`}
+              style={{ fontSize: `${authorFontSizeValue}px` }}
+            >
+              {author}
+            </h2>
+          </div>
+          
+          {/* 图标容器 */}
+          <div 
+            className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
+            style={{ 
+              left: logoPosition === "default" ? '50%' : '0',
+              top: logoPosition === "default" ? '70%' : '0',
+              transform: `translate(${logoPosition === "default" ? '-50%, -50%' : '0, 0'}) translate(${elements.icon.x}px, ${elements.icon.y}px)`,
+              transition: draggingElement === 'icon' ? 'none' : 'transform 0.1s ease-out',
+              padding: isDragMode ? '8px' : '0',
+            }}
+            onMouseDown={(e) => handleElementDragStart('icon', e)}
+          >
+            {renderIcon()}
+          </div>
         </div>
 
         {isLoading && <Spinner className={"absolute bottom-8 left-8"} />}
@@ -253,3 +355,19 @@ export const ImageEditor = () => {
     </div>
   );
 };
+
+// 添加类型定义以支持window对象扩展
+declare global {
+  interface Window {
+    ImageEditorState?: {
+      isDragMode: boolean;
+      setIsDragMode: (value: boolean) => void;
+      handleResetLayout: () => void;
+      history: any[];
+      historyIndex: number;
+      setElements: (elements: any) => void;
+      setHistoryIndex: (index: number) => void;
+      saveHistory: () => void;
+    };
+  }
+}

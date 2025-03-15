@@ -18,45 +18,54 @@ import { LeftResourcePanel } from "./LeftResourcePanel";
 import { RightPropertyPanel } from "./RightPropertyPanel";
 import { users } from "./data";
 import { ImageEditor } from "./ImageEditor";
-import { ComponentToImg } from "./ComponentToImg";
+import { ImageEditorToolbar } from "./ImageEditorToolbar";
 import { PicproseProvider } from "./PicproseContext";
 
+// 定义编辑器状态类型
+type EditorElements = {
+  title: { x: number; y: number; visible: boolean };
+  author: { x: number; y: number; visible: boolean };
+  icon: { x: number; y: number; visible: boolean };
+  image: { x: number; y: number };
+};
+
 export default function Home() {
-  const child1Ref = React.useRef<ComponentToImg>(null);
   const [selectedImage, setSelectedImage] = React.useState({});
-
-  const [editorProperties, setEditorProperties] = React.useState({
-    font: "",
-    title: "",
-    subTitle: "",
-    author: "",
-    icon: "",
-    color: "",
-    devicon: "",
-    aspect: "",
-    blur: "",
-    blurTrans: "",
-    logoPosition: "",
+  
+  // 提升所有状态到最顶层组件
+  const [isDragMode, setIsDragMode] = React.useState(false);
+  const [elements, setElements] = React.useState<EditorElements>({
+    title: { x: 0, y: 0, visible: true },
+    author: { x: 0, y: 0, visible: true },
+    icon: { x: 0, y: 0, visible: true },
+    image: { x: 0, y: 0 }
   });
-
-  const handleImageSelect = (data: any) => {
-    setSelectedImage(data);
-  };
-
-  const handleImageDownload = (format: string) => {
-    if (child1Ref.current) {
-      child1Ref.current.downloadImage(format);
-    }
-  };
-
-  const handlePropertiesChange = (properties: any) => {
-    setEditorProperties(properties);
-  };
+  const [history, setHistory] = React.useState<EditorElements[]>([]);
+  const [historyIndex, setHistoryIndex] = React.useState(-1);
 
   // 处理下载图片的方法
   const handleDownload = (format: string) => {
     console.log(`Downloading image as ${format}`);
     // ... 实现下载逻辑 ...
+  };
+
+  // 重置所有编辑器状态
+  const handleResetLayout = () => {
+    setElements({
+      title: { x: 0, y: 0, visible: true },
+      author: { x: 0, y: 0, visible: true },
+      icon: { x: 0, y: 0, visible: true },
+      image: { x: 0, y: 0 }
+    });
+    setHistory([]);
+    setHistoryIndex(-1);
+    setIsDragMode(false);
+  };
+
+  // 保存历史记录
+  const saveHistory = (currentElements: EditorElements) => {
+    setHistory(prev => [...prev.slice(0, historyIndex + 1), {...currentElements}]);
+    setHistoryIndex(prev => prev + 1);
   };
 
   return (
@@ -65,8 +74,27 @@ export default function Home() {
         <div className="lg:col-span-3 h-screen overflow-hidden">
           <LeftResourcePanel />
         </div>
-        <div className="lg:col-span-6 flex justify-center items-center bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden">
-          <ImageEditor />
+        <div className="lg:col-span-6 flex flex-col bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden relative">
+          {/* 图片编辑器占据整个空间 */}
+          <div className="flex-1 flex justify-center items-center">
+            <ImageEditor 
+              isDragMode={isDragMode}
+              elements={elements}
+              setElements={setElements}
+              saveHistory={saveHistory}
+            />
+          </div>
+          
+          {/* 工具栏浮动在上方 */}
+          <ImageEditorToolbar 
+            isDragMode={isDragMode}
+            setIsDragMode={setIsDragMode}
+            handleResetLayout={handleResetLayout}
+            history={history}
+            historyIndex={historyIndex}
+            setElements={setElements}
+            setHistoryIndex={setHistoryIndex}
+          />
         </div>
         <div className="lg:col-span-3 h-screen overflow-hidden">
           <RightPropertyPanel />
