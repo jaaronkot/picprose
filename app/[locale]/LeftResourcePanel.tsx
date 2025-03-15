@@ -83,7 +83,7 @@ export const LeftResourcePanel = () => {
           if (page == 1) {
             setPhotos(photos);
           } else {
-            setPhotos([...photos, ...photos]);
+            setPhotos(prevPhotos => [...prevPhotos, ...photos]);
           }
         }
       });
@@ -120,7 +120,7 @@ export const LeftResourcePanel = () => {
             setHasSetInitialPhoto(true)
             selectPhoto(Math.floor(Math.random() * 20), photos)
           }
-          setPhotos([...photos, ...photos]);
+          setPhotos(prevPhotos => [...prevPhotos, ...photos]);
         }
       });
   };
