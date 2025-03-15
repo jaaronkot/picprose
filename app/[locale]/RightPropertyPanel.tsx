@@ -241,15 +241,58 @@ export const RightPropertyPanel = () => {
           </SelectSection>
         </Select>
         <Divider />
-        <div className="w-full py-2">
-          <Input
-            type="url"
-            label={t("mask")}
-            className="w-full"
-            value={propertyInfo.color}
-            placeholder={propertyInfo.color}
-            onChange={(e) => updateProperty("color", e.target.value)}
-          />
+        <div className="flex w-full py-2">
+          <div className="w-4/5">
+            <Input
+              type="url"
+              label={t("mask")}
+              value={propertyInfo.color}
+              placeholder={propertyInfo.color}
+              onChange={(e) => updateProperty("color", e.target.value)}
+            />
+          </div>
+          <div className="flex-grow" />
+          <div className="w-1/6 ml-2 mt-1">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  isIconOnly
+                  color="primary"
+                  variant="bordered"
+                  size="lg"
+                  style={colorBackgroundStyle}
+                ></Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Single selection example"
+                variant="flat"
+                disallowEmptySelection
+                selectionMode="single"
+              >
+                <DropdownItem key="text">
+                  <div className="m-2">
+                    <CirclePicker
+                      colors={[
+                        "#1f2937",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#2196f3",
+                        "#03a9f4",
+                        "#00bcd4",
+                        "#009688",
+                        "#4caf50",
+                        "#8bc34a",
+                        "#cddc39",
+                      ]}
+                      onChangeComplete={handleColorChange}
+                    />
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         <Slider
           label={t("transparence")}
