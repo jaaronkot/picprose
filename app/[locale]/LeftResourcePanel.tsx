@@ -36,7 +36,6 @@ export const LeftResourcePanel = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [shouldFetchRandomPhotos, setShouldFetchRandomPhotos] = React.useState(true);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const scrollRef = React.useRef<any>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [hasMorePhotos, setHasMorePhotos] = React.useState(true);
   const [hasSetInitialPhoto, setHasSetInitialPhoto] = React.useState(false);
@@ -136,10 +135,6 @@ export const LeftResourcePanel = () => {
       return;
     }
 
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo(0, 0);
-    }
-
     setShouldFetchRandomPhotos(false);
     setHasMorePhotos(true);
     const page = 1;
@@ -208,7 +203,6 @@ export const LeftResourcePanel = () => {
       </div>
       <div className="flex-grow relative">
         <InfiniteScroll
-          ref={scrollRef}
           className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
           dataLength={photos.length}
           height={windowHeight - 130}
