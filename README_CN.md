@@ -7,7 +7,9 @@
 
 PicProse 是一款强大的封面图片生成工具，专为博客作者、内容创作者、开发者和设计师打造。只需几步操作，即可创建专业精美的封面图片，适用于 Medium、YouTube、BiliBili、个人博客等多种平台。
 
-![PicProse 预览](./doc/screenshot.png)
+![PicProse Preview](./doc/screenshot.jpg )
+
+![PicProse Preview](./doc/screenshot2.jpg )
 
 ## ✨ 主要特点
 
