@@ -20,6 +20,7 @@ import { users } from "./data";
 import { ImageEditor } from "./ImageEditor";
 import { ImageEditorToolbar } from "./ImageEditorToolbar";
 import { PicproseProvider } from "./PicproseContext";
+import { ComponentToImg } from "./ComponentToImg";
 
 // 定义编辑器状态类型
 type EditorElements = {
@@ -51,10 +52,16 @@ export default function Home() {
   const [history, setHistory] = React.useState<EditorElements[]>([initialElements]);
   const [historyIndex, setHistoryIndex] = React.useState(0);
 
-  // 处理下载图片的方法
+  // 添加对 ComponentToImg 的引用
+  const componentToImgRef = React.useRef(null);
+  
+  // 修改下载图片的方法
   const handleDownload = (format: string) => {
     console.log(`Downloading image as ${format}`);
-    // ... 实现下载逻辑 ...
+    // 调用 ComponentToImg 的下载方法
+    if (componentToImgRef.current) {
+      componentToImgRef.current.downloadImage(format);
+    }
   };
 
   // 重置所有编辑器状态
@@ -84,15 +91,17 @@ export default function Home() {
           <LeftResourcePanel />
         </div>
         <div className="lg:col-span-6 flex flex-col bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden relative">
-          {/* 图片编辑器占据整个空间 */}
-          <div className="flex-1 flex justify-center items-center">
-            <ImageEditor 
-              isDragMode={isDragMode}
-              elements={elements}
-              setElements={setElements}
-              saveHistory={saveHistory}
-            />
-          </div>
+            <div className="flex-1 flex justify-center items-center">
+            <ComponentToImg ref={componentToImgRef}>
+              <ImageEditor 
+                isDragMode={isDragMode}
+                elements={elements}
+                setElements={setElements}
+                saveHistory={saveHistory}
+              />
+              </ComponentToImg>
+            </div>
+         
           
           {/* 工具栏浮动在上方 */}
           <ImageEditorToolbar 

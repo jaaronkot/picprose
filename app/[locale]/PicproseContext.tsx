@@ -31,6 +31,9 @@ interface PropertyInfo {
   blur: string;
   blurTrans: string;
   logoPosition: string;
+  customWidth: number;
+  customHeight: number;
+  isCustomAspect: boolean;
 }
 
 // 定义背景类型
@@ -84,6 +87,9 @@ const defaultPropertyInfo: PropertyInfo = {
   blur: "backdrop-blur-none",
   blurTrans: (Math.floor(2.55 * config.blurTrans)).toString(16),
   logoPosition: config.logoPosition,
+  customWidth: 1920,
+  customHeight: 1080,
+  isCustomAspect: false,
 };
 
 // 创建Context

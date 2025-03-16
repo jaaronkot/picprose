@@ -303,9 +303,73 @@ export const ImageEditor = ({
           minHeight: "50vh",
           overflow: "hidden", 
           position: "relative",
-          pointerEvents: "auto"
+          pointerEvents: "auto",
+          width: (() => {
+            // 对空值或无效值进行处理
+            if (!aspect || !aspect.includes('/')) {
+              return '90vh'; // 无效比例时默认为90vh
+            }
+            
+            try {
+              const ratioStr = aspect.replace('aspect-[', '').replace(']', '');
+              const [w, h] = ratioStr.split('/').map(n => parseFloat(n.trim()));
+              
+              // 检查是否为有效数字
+              if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
+                console.log("无效的宽高比值:", w, h);
+                return '90vh';
+              }
+              
+              // 1:1比例或接近1:1的比例
+              if (Math.abs(w - h) < 0.01) {
+                console.log("检测到1:1比例");
+                return '90vh';
+              } else if (h > w) {
+                // 竖屏比例
+                return `${90 * w / h}vh`;
+              } else {
+                // 横屏比例
+                return '90vh';
+              }
+            } catch (e) {
+              console.error("解析宽高比出错:", e);
+              return '90vh';
+            }
+          })(),
+          height: (() => {
+            // 对空值或无效值进行处理
+            if (!aspect || !aspect.includes('/')) {
+              return '90vh'; // 无效比例时默认为90vh  
+            }
+            
+            try {
+              const ratioStr = aspect.replace('aspect-[', '').replace(']', '');
+              const [w, h] = ratioStr.split('/').map(n => parseFloat(n.trim()));
+              
+              // 检查是否为有效数字
+              if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
+                console.log("无效的宽高比值:", w, h);
+                return '90vh';
+              }
+              
+              // 1:1比例或接近1:1的比例
+              if (Math.abs(w - h) < 0.01) {
+                console.log("检测到1:1比例");
+                return '90vh';
+              } else if (w > h) {
+                // 横屏比例
+                return `${90 * h / w}vh`;
+              } else {
+                // 竖屏比例
+                return '90vh';
+              }
+            } catch (e) {
+              console.error("解析宽高比出错:", e);
+              return '90vh';
+            }
+          })(),
         }}
-        className={aspect == "" ? "aspect-[16/9]" : aspect}
+        className="rounded-md"
         onMouseDown={isDragMode ? handleContainerMouseDown : undefined}
       >
         {/* 根据背景类型渲染不同背景 */}
@@ -314,15 +378,16 @@ export const ImageEditor = ({
             ref={imageRef}
             src={imageInfo.url}
             alt="Image"
-            className={`rounded-md w-full ${isDragMode ? 'cursor-move' : ''}`}
+            className={`rounded-md ${isDragMode ? 'cursor-move' : ''}`}
             style={{ 
               position: 'absolute',
-              top: `${imagePosition}px`,
+              top: 0,
               left: 0,
               width: '100%',
-              height: 'auto',
+              height: '100%',
               objectFit: 'cover',
-              transition: isDragging ? 'none' : 'top 0.1s ease-out',
+              objectPosition: `50% ${imagePosition}px`,
+              transition: isDragging ? 'none' : 'all 0.1s ease-out',
             }}
             onMouseDown={handleImageMouseDown}
             draggable={false}
