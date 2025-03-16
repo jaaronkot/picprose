@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { config } from "@/config";
+import { SVG_BACKGROUNDS } from "./svgBackgrounds";
 
 // 定义图片信息接口
 interface ImageInfo {
@@ -37,7 +38,51 @@ interface PropertyInfo {
 }
 
 // 定义背景类型
-type BackgroundType = 'image' | 'color' | 'pattern';
+type BackgroundType = 'image' | 'color' | 'pattern' | 'svg';
+
+// 修改SvgParams类型定义
+interface SvgParams {
+  color1: string;
+  color2: string;
+  backgroundColor: string;
+  height?: number;
+  amplitude?: number;
+  frequency?: number;
+  layers?: number;
+  speed?: number;
+  rotation?: number;
+  contrast?: number;
+  wavesOpacity?: number;
+  style?: string;
+  direction?: string;
+  useGradientBg?: boolean;
+  
+  // 角落图案的参数
+  cornerRadius?: number;
+  cornerCount?: number;
+  strokeWidth?: number;
+  position?: string[];
+  mirrorEdges?: boolean;
+  balance?: number;
+  velocity?: number;
+  layerDistance?: number;
+  offsetX?: number;
+  offsetY?: number;
+  radius?: number;
+  shadowColor?: string;
+}
+
+// 添加SVG模板参数类型定义
+interface SvgTemplateParams {
+  [key: string]: any;
+}
+
+// 添加SVG模板类型定义
+interface SvgTemplate {
+  name: string;
+  svgTemplate: (params: SvgTemplateParams) => string;
+  defaultParams: SvgTemplateParams;
+}
 
 // 定义Context的类型
 interface PicproseContextType {
@@ -61,6 +106,14 @@ interface PicproseContextType {
   // 新增纹理背景相关属性
   backgroundPattern: string;
   setBackgroundPattern: (pattern: string) => void;
+  
+  // 添加SVG相关属性
+  selectedSvgIndex: number | null;
+  setSelectedSvgIndex: (index: number | null) => void;
+  svgPatternParams: SvgTemplateParams;
+  setSvgPatternParams: (params: SvgTemplateParams) => void;
+  showSvgPanel: boolean;
+  setShowSvgPanel: (show: boolean) => void;
 }
 
 // 创建默认图片信息
@@ -113,6 +166,11 @@ export function PicproseProvider({
   const [imageBlurTrans, setImageBlurTrans] = useState<string>((Math.floor(2.55 * config.blurTrans)).toString(16));
   const [colorBlurTrans, setColorBlurTrans] = useState<string>("00"); // 颜色模式默认透明
   const [patternBlurTrans, setPatternBlurTrans] = useState<string>("99"); // 纹理模式默认60%浓度 (153/255 ≈ 0.6 = 60%)
+
+  // 新增SVG相关状态
+  const [selectedSvgIndex, setSelectedSvgIndex] = useState<number | null>(null);
+  const [svgPatternParams, setSvgPatternParams] = useState<SvgTemplateParams>({});
+  const [showSvgPanel, setShowSvgPanel] = useState(false);
 
   // 更新单个属性
   const updateProperty = <K extends keyof PropertyInfo>(key: K, value: PropertyInfo[K]) => {
@@ -185,6 +243,77 @@ export function PicproseProvider({
     }
   };
 
+  // 将这些方法更新为支持多个SVG模板
+  const randomizeSvgParams = (index: number) => {
+    if (index >= 0 && index < SVG_BACKGROUNDS.length) {
+      const svgTemplate = SVG_BACKGROUNDS[index];
+      const params = {...svgTemplate.defaultParams};
+      
+      // 随机参数设置...
+      // 这部分已在RightPropertyPanel中实现
+      
+      setSvgPatternParams(params);
+      setSelectedSvgIndex(index);
+      
+      const svgPattern = svgTemplate.svgTemplate(params);
+      const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
+      setBackgroundPattern(encodedSvg);
+      setBackgroundType('svg');
+    }
+  };
+
+  // 只需确保保留Heazy波浪相关的随机生成逻辑
+  const randomizeHeazyWave = () => {
+    // 确认是Heazy波浪（索引为1）
+    const heazyWaveIndex = 1;
+    const heazyWave = SVG_BACKGROUNDS[heazyWaveIndex];
+    
+    // 创建新参数对象，保留默认值结构
+    const params = {...heazyWave.defaultParams};
+    
+    // 随机颜色 - 生成鲜艳的颜色
+    const hue1 = Math.floor(Math.random() * 360);
+    const hue2 = (hue1 + 40 + Math.floor(Math.random() * 140)) % 360;
+    
+    params.color1 = `hsl(${hue1}, 80%, 60%)`;
+    params.color2 = `hsl(${hue2}, 80%, 60%)`;
+    
+    // 随机设置参数
+    params.amplitude = Math.floor(Math.random() * 95) + 10; // 10-105
+    params.frequency = (Math.random() * 0.045) + 0.005; // 0.005-0.05
+    params.layers = Math.floor(Math.random() * 5) + 1; // 1-5
+    params.speed = (Math.random() * 0.8) + 0.1; // 0.1-0.9
+    params.rotation = Math.floor(Math.random() * 360 / 15) * 15; // 0-345，每15度一个增量
+    params.contrast = Math.floor(Math.random() * 101); // 0-100
+    params.wavesOpacity = (Math.random() * 0.6) + 0.3; // 0.3-0.9
+    
+    // 随机选择方向
+    const directions = ['left', 'right', 'none'];
+    params.direction = directions[Math.floor(Math.random() * directions.length)];
+    
+    // 随机选择样式
+    params.style = Math.random() > 0.5 ? 'solid' : 'outline';
+    
+    // 随机选择是否使用渐变背景
+    params.useGradientBg = Math.random() > 0.3; // 70%概率使用渐变背景
+    
+    if (!params.useGradientBg) {
+      // 如果不使用渐变，随机生成背景色（深色系）
+      const bgHue = Math.floor(Math.random() * 360);
+      params.backgroundColor = `hsl(${bgHue}, 70%, 10%)`;
+    }
+    
+    // 更新状态
+    setSvgPatternParams(params);
+    setSelectedSvgIndex(heazyWaveIndex);
+    
+    // 生成SVG
+    const svgPattern = heazyWave.svgTemplate(params);
+    const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
+    setBackgroundPattern(encodedSvg);
+    setBackgroundType('svg');
+  };
+
   return (
     <PicproseContext.Provider 
       value={{ 
@@ -198,7 +327,13 @@ export function PicproseProvider({
         backgroundColor,
         setBackgroundColor,
         backgroundPattern,
-        setBackgroundPattern
+        setBackgroundPattern,
+        selectedSvgIndex,
+        setSelectedSvgIndex,
+        svgPatternParams,
+        setSvgPatternParams,
+        showSvgPanel,
+        setShowSvgPanel
       }}
     >
       {children}

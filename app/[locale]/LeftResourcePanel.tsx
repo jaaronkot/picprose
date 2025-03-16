@@ -23,6 +23,7 @@ import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {useTranslations} from 'next-intl';
 import { usePicprose } from "./PicproseContext";
+import { SVG_BACKGROUNDS } from './svgBackgrounds';
 
 const PHOTO_SPACING = 8;
 const KEY_CODE_ENTER = 13;
@@ -54,51 +55,6 @@ const GRADIENT_COLORS = [
   "linear-gradient(to right, #493240, #f09)",
   "linear-gradient(to right, #0f0c29, #302b63, #24243e)"
 ];
-
-// 添加纹理图标组件
-export const PatternIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="24"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="24"
-      {...props}
-    >
-      <path
-        d="M22 2L2 22"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M18 6L6 18"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M14 2L2 14"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M22 10L10 22"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-};
 
 // 纹理背景预设
 const PATTERN_BACKGROUNDS = [
@@ -206,34 +162,157 @@ const PATTERN_BACKGROUNDS = [
   }
 ];
 
-// 纹理选择组件
-const PatternPanel = () => {
-  const { setBackgroundType, setBackgroundPattern } = usePicprose();
+// 更新SvgPatternPanel组件
+const SvgPatternPanel = () => {
+  const { 
+    setBackgroundType, 
+    setBackgroundPattern,
+    setSelectedSvgIndex,
+    selectedSvgIndex,
+    setSvgPatternParams,
+    setShowSvgPanel 
+  } = usePicprose();
   const t = useTranslations('LeftResourcePanel');
+  
+  // 打印SVG_BACKGROUNDS以检查问题
+  console.log("SVG_BACKGROUNDS:", SVG_BACKGROUNDS);
+  console.log("SVG_BACKGROUNDS长度:", SVG_BACKGROUNDS?.length);
+  
+  // 手动定义角落模板，确保可用
+  const cornerTemplate = (params: any) => {
+    const { backgroundColor, color1, color2, cornerRadius, cornerCount, strokeWidth, rotation } = params;
+    
+    // 简化的角落实现
+    return `<svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+      <rect width="800" height="600" fill="${backgroundColor}" />
+      <g transform="rotate(${rotation || 0}, 400, 300)">
+        <path d="M200,150 Q350,50 500,150 T700,150" 
+              fill="none" stroke="${color1}" stroke-width="${strokeWidth || 30}" />
+        <path d="M100,300 Q250,200 400,300 T600,300" 
+              fill="none" stroke="${color2}" stroke-width="${strokeWidth || 30}" />
+      </g>
+    </svg>`;
+  };
+  
+  // 如果SVG_BACKGROUNDS不完整，手动添加角落模板
+  let svgBgs = [...(SVG_BACKGROUNDS || [])];
+  
+  // 检查是否已经存在角落模板
+  const hasCornerTemplate = svgBgs.some(bg => bg.name === "角落");
+  
+  // 如果没有角落模板，添加一个
+  if (!hasCornerTemplate && svgBgs.length > 0) {
+    svgBgs.push({
+      name: "角落",
+      svgTemplate: cornerTemplate,
+      defaultParams: {
+        color1: "#ff0071ff",
+        color2: "#95ffa1ff",
+        backgroundColor: "#95ffda",
+        cornerRadius: 150,
+        cornerCount: 5,
+        strokeWidth: 30,
+        rotation: 0,
+        contrast: 50
+      }
+    });
+    console.log("手动添加了角落模板");
+  }
+  
+  // 确保有可用的模板
+  if (!svgBgs || svgBgs.length === 0) {
+    return (
+      <div className="p-4">
+        <h3 className="text-lg font-medium mb-4">{t('svg_patterns')}</h3>
+        <div className="text-center p-4 border border-gray-300 dark:border-gray-700 rounded-lg">
+          未找到SVG效果，请确保SVG模板已正确配置
+        </div>
+      </div>
+    );
+  }
+  
+  const handlePatternSelect = (index: number) => {
+    if (index < 0 || index >= svgBgs.length) return;
+    
+    const selectedSvg = svgBgs[index];
+    console.log(`选择了SVG模板: ${selectedSvg.name}，索引: ${index}`);
+    
+    // 克隆默认参数以避免引用问题
+    const defaultParams = JSON.parse(JSON.stringify(selectedSvg.defaultParams));
+    
+    // 设置选中的SVG索引和默认参数
+    setSelectedSvgIndex(index);
+    setSvgPatternParams(defaultParams);
+    setShowSvgPanel(true);
+    
+    try {
+      // 应用默认参数的SVG
+      const svgPattern = selectedSvg.svgTemplate(defaultParams);
+      const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
+      setBackgroundType('svg');
+      setBackgroundPattern(encodedSvg);
+    } catch (error) {
+      console.error("生成SVG时出错:", error);
+    }
+  };
 
-  const handlePatternSelect = (pattern: string, bgColor: string) => {
-    setBackgroundType('pattern');
-    setBackgroundPattern(`${pattern}|${bgColor}`); // 使用|分隔背景图案和背景色
+  // 使用安全的渲染方式
+  const renderSvgPreview = (index: number) => {
+    if (index >= svgBgs.length) {
+      return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">SVG不可用</div>;
+    }
+    
+    const svg = svgBgs[index];
+    
+    if (!svg || !svg.svgTemplate || !svg.defaultParams) {
+      console.error(`svgBgs[${index}]不完整:`, svg);
+      return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">模板无效</div>;
+    }
+    
+    try {
+      const svgString = svg.svgTemplate(svg.defaultParams);
+      return (
+        <div 
+          dangerouslySetInnerHTML={{ __html: svgString }} 
+          style={{ width: '100%', height: '100%' }}
+        />
+      );
+    } catch (error) {
+      console.error(`渲染svgBgs[${index}]出错:`, error);
+      return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">渲染错误</div>;
+    }
   };
 
   return (
     <div className="p-4">
-      <h3 className="text-lg font-medium mb-4">{t('patterns')}</h3>
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {PATTERN_BACKGROUNDS.map((pattern, index) => (
+      <h3 className="text-lg font-medium mb-4">{t('svg_patterns')}</h3>
+      <div className="grid grid-cols-2 gap-4">
+        {/* Heazy波浪SVG模板 */}
+        <div className="flex flex-col items-center">
           <div 
-            key={index}
-            className="w-full h-32 rounded-md cursor-pointer hover:scale-105 transition-transform border border-gray-300 dark:border-gray-700"
-            style={{ background: pattern.value, backgroundColor: pattern.bgColor }}
-            onClick={() => handlePatternSelect(pattern.value, pattern.bgColor)}
+            className={`w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform overflow-hidden ${selectedSvgIndex === 0 ? 'border-2 border-blue-500' : 'border border-gray-300 dark:border-gray-700'}`}
+            onClick={() => handlePatternSelect(0)}
+            style={{ backgroundImage: 'url(waves.svg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
           >
-            <div className="w-full h-full flex items-end justify-start p-2">
-              <span className="bg-black/70 text-white text-xs px-2 py-1 rounded">
-                {pattern.name}
-              </span>
-            </div>
           </div>
-        ))}
+          <div className="text-center text-default-600 mt-2">
+            {svgBgs[0]?.name || "波浪"}
+          </div>
+        </div>
+        
+        {/* 角落SVG模板 */}
+        <div className="flex flex-col items-center">
+          <div 
+            className={`w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform overflow-hidden ${selectedSvgIndex === 1 ? 'border-2 border-blue-500' : 'border border-gray-300 dark:border-gray-700'}`}
+            onClick={() => handlePatternSelect(1)}
+            style={{ backgroundImage: 'url(corners.svg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+          >
+           
+          </div>
+          <div className="text-center text-default-600 mt-2">
+            {svgBgs[1]?.name || "角落"}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -357,6 +436,51 @@ const ColorPanel = () => {
         ))}
       </div>
     </div>
+  );
+};
+
+// 添加 SVG 图标组件
+export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="24"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="24"
+      {...props}
+    >
+      <path
+        d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M15 9.5C15 8.12 13.88 7 12.5 7C11.12 7 10 8.12 10 9.5C10 10.88 11.12 12 12.5 12"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M16.5 14.5C16.5 15.88 15.38 17 14 17C12.62 17 11.5 15.88 11.5 14.5C11.5 13.12 12.62 12 14 12"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M9 15L15 9"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
   );
 };
 
@@ -593,7 +717,7 @@ export const LeftResourcePanel = () => {
   const renderPatternPanel = () => (
     <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
       <ScrollShadow className="h-full">
-        <PatternPanel />
+        <SvgPatternPanel />
       </ScrollShadow>
     </div>
   );
@@ -661,12 +785,16 @@ export const LeftResourcePanel = () => {
             key="patterns" 
             title={
               <div className="flex items-center gap-2">
-                <PatternIcon />
+                <SvgIcon />
                 <span>{t('patterns_tab')}</span>
               </div>
             }
           >
-            {renderPatternPanel()}
+            <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
+              <ScrollShadow className="h-full">
+                <SvgPatternPanel />
+              </ScrollShadow>
+            </div>
           </Tab>
         </Tabs>
       </div>

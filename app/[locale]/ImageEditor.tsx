@@ -440,6 +440,18 @@ export const ImageEditor = ({
               left: 0
             }}
           />
+        ) : backgroundType === 'svg' ? (
+          <div
+            className="rounded-md w-full h-full"
+            style={{ 
+              backgroundImage: backgroundPattern, // SVG背景是作为URL存储的
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
         ) : null}
 
         {/* 增强版网格辅助线 - 10像素步长 */}
