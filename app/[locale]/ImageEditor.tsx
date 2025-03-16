@@ -30,6 +30,12 @@ export const ImageEditor = ({
   setElements,
   saveHistory
 }: ImageEditorProps) => {
+  // 添加网格步长常量
+  const GRID_STEP = 10; // 10像素的步长
+  
+  // 添加网格线数量状态
+  const [gridLines, setGridLines] = React.useState({ horizontal: 0, vertical: 0 });
+  
   const { propertyInfo, imageInfo, backgroundType, backgroundColor, backgroundPattern } = usePicprose();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePosition, setImagePosition] = React.useState(0);
@@ -70,7 +76,7 @@ export const ImageEditor = ({
     }
   }, [imageInfo.url]);
 
-  // 添加新的useEffect钩子来处理图片加载后的垂直居中
+  // 修改图片加载后的垂直居中逻辑
   React.useEffect(() => {
     // 创建一个函数来计算并设置图片居中位置
     const centerImageVertically = () => {
@@ -78,15 +84,8 @@ export const ImageEditor = ({
         const containerHeight = containerRef.current.clientHeight;
         const imageHeight = imageRef.current.clientHeight;
         
-        // 计算居中位置
-        // 当图片高度大于容器高度时，居中显示
-        // 当图片高度小于等于容器高度时，将其放在顶部
-        if (imageHeight > containerHeight) {
-          const centerPosition = (containerHeight - imageHeight) / 2;
-          setImagePosition(centerPosition);
-        } else {
-          setImagePosition(0); // 小图片放在顶部
-        }
+        // 即使图片高度小于容器高度，也将其居中显示
+        setImagePosition(0); // 默认从顶部开始显示
       }
     };
     
@@ -111,6 +110,11 @@ export const ImageEditor = ({
     };
   }, [imageInfo.url]); // 当图片URL改变时重新执行
 
+  // 辅助函数：将值对齐到网格步长
+  const snapToGrid = (value: number): number => {
+    return Math.round(value / GRID_STEP) * GRID_STEP;
+  };
+
   // 使用useCallback优化事件处理函数
   const handleImageMouseDown = React.useCallback((e: React.MouseEvent<HTMLImageElement>) => {
     console.log("图片收到点击事件");
@@ -128,7 +132,8 @@ export const ImageEditor = ({
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging && imageRef.current) {
       console.log("拖动中...", e.clientY);
-      const newVerticalPosition = e.clientY - dragStartY;
+      // 按步长对齐垂直位置
+      const newVerticalPosition = snapToGrid(e.clientY - dragStartY);
       
       const container = containerRef.current;
       const image = imageRef.current;
@@ -138,24 +143,26 @@ export const ImageEditor = ({
         const imageRect = image.getBoundingClientRect();
         
         // 确保图片可以在容器内移动的范围
-        // 如果图片高度小于容器，则不限制上下移动
         const imageHeight = imageRect.height;
         const containerHeight = containerRect.height;
         
         console.log("尺寸:", {imageHeight, containerHeight});
         
         let minY, maxY;
+        
+        // 放宽拖动限制，使图片可以移动更大范围
         if (imageHeight <= containerHeight) {
-          // 如果图片小于容器，允许少量移动以测试
-          minY = -50;
-          maxY = 50;
+          // 放宽小图片的移动范围 - 允许移动图片高度的一半
+          minY = -imageHeight / 2;
+          maxY = containerHeight - imageHeight / 2;
         } else {
-          // 图片大于容器时的正常计算
-          minY = containerHeight - imageHeight;
-          maxY = 0;
+          // 放宽大图片的移动范围 - 允许露出图片的一部分
+          minY = containerHeight - imageHeight * 1.2; // 允许多露出20%的图片
+          maxY = imageHeight * 0.2; // 允许图片顶部部分移动到容器外
         }
         
-        const boundedY = Math.max(minY, Math.min(maxY, newVerticalPosition));
+        // 将最终位置对齐到网格
+        const boundedY = snapToGrid(Math.max(minY, Math.min(maxY, newVerticalPosition)));
         console.log("边界计算:", {minY, maxY, newPosition: newVerticalPosition, bounded: boundedY});
         
         setImagePosition(boundedY);
@@ -167,15 +174,18 @@ export const ImageEditor = ({
     
     // 处理其他元素拖动
     if (draggingElement && isDragMode) {
-      const deltaX = e.clientX - dragStart.x;
-      const deltaY = e.clientY - dragStart.y;
+      // 将每个步进对齐到网格
+      const deltaX = snapToGrid(e.clientX - dragStart.x);
+      const deltaY = snapToGrid(e.clientY - dragStart.y);
       
-      if (draggingElement === 'title' || draggingElement === 'author' || 
-          draggingElement === 'icon' || draggingElement === 'image') {
-        handleElementDragImpl(draggingElement, deltaX, deltaY);
+      if (deltaX !== 0 || deltaY !== 0) { // 只有当变化大于等于一个步长时才更新
+        if (draggingElement === 'title' || draggingElement === 'author' || 
+            draggingElement === 'icon' || draggingElement === 'image') {
+          handleElementDragImpl(draggingElement, deltaX, deltaY);
+        }
+        
+        setDragStart({ x: e.clientX, y: e.clientY });
       }
-      
-      setDragStart({ x: e.clientX, y: e.clientY });
     }
   };
 
@@ -210,33 +220,33 @@ export const ImageEditor = ({
     };
   }, [isDragging, dragStartY, draggingElement, dragStart, isDragMode]);
 
-  // 修复TypeScript错误的元素拖动处理函数
+  // 修改元素拖动实现函数
   const handleElementDragImpl = (elementKey: 'title' | 'author' | 'icon' | 'image', deltaX: number, deltaY: number) => {
     setElements(prev => {
       const newElements = {...prev};
       if (elementKey === 'title') {
         newElements.title = {
           ...newElements.title,
-          x: newElements.title.x + deltaX,
-          y: newElements.title.y + deltaY
+          x: snapToGrid(newElements.title.x + deltaX),
+          y: snapToGrid(newElements.title.y + deltaY)
         };
       } else if (elementKey === 'author') {
         newElements.author = {
           ...newElements.author,
-          x: newElements.author.x + deltaX,
-          y: newElements.author.y + deltaY
+          x: snapToGrid(newElements.author.x + deltaX),
+          y: snapToGrid(newElements.author.y + deltaY)
         };
       } else if (elementKey === 'icon') {
         newElements.icon = {
           ...newElements.icon,
-          x: newElements.icon.x + deltaX,
-          y: newElements.icon.y + deltaY
+          x: snapToGrid(newElements.icon.x + deltaX),
+          y: snapToGrid(newElements.icon.y + deltaY)
         };
       } else if (elementKey === 'image') {
         newElements.image = {
           ...newElements.image,
-          x: newElements.image.x + deltaX,
-          y: newElements.image.y + deltaY
+          x: snapToGrid(newElements.image.x + deltaX),
+          y: snapToGrid(newElements.image.y + deltaY)
         };
       }
       return newElements;
@@ -293,6 +303,23 @@ export const ImageEditor = ({
 
   // 在渲染函数中添加
   console.log("渲染时的图片位置:", imagePosition);
+
+  // 添加一个useEffect来计算网格线数量
+  React.useEffect(() => {
+    if (containerRef.current && isDragMode) {
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
+      
+      // 限制最大线条数量，防止性能问题
+      const MAX_LINES = 1000;
+      
+      // 确保计算出的线条数量是有效的、安全的值
+      const horizontalLines = Math.min(Math.max(Math.floor(height / GRID_STEP), 0), MAX_LINES);
+      const verticalLines = Math.min(Math.max(Math.floor(width / GRID_STEP), 0), MAX_LINES);
+      
+      setGridLines({ horizontal: horizontalLines, vertical: verticalLines });
+    }
+  }, [isDragMode, containerRef.current?.clientWidth, containerRef.current?.clientHeight]);
 
   return (
     <div className="max-h-screen relative flex group rounded-3xl">
@@ -415,22 +442,37 @@ export const ImageEditor = ({
           />
         ) : null}
 
-        {/* 网格辅助线 */}
+        {/* 增强版网格辅助线 - 10像素步长 */}
         {isDragMode && (
-          <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
-            {[...Array(9)].map((_, i) => (
-              <div key={i} className="border border-white/10"></div>
-            ))}
-          </div>
-        )}
-        
-        {/* 拖动模式提示 */}
-        {isDragMode && (
-          <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
-            <div className="bg-white/80 text-black px-4 py-2 rounded-lg">
-              拖动模式：可拖动{backgroundType === 'image' ? '图片、' : ''}标题、作者和图标
+          <>
+            {/* 主网格 - 大区域分隔 */}
+            <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
+              {[...Array(9)].map((_, i) => (
+                <div key={i} className="border border-white/20"></div>
+              ))}
             </div>
-          </div>
+            
+            {/* 细网格 - 10像素对齐辅助线 */}
+            <div className="absolute inset-0 pointer-events-none">
+              {/* 横向线条 - 使用安全计算的网格线数量 */}
+              {Array.from({ length: gridLines.horizontal }).map((_, i) => (
+                <div 
+                  key={`h-${i}`} 
+                  className="absolute left-0 right-0 border-t border-white/10"
+                  style={{ top: `${i * GRID_STEP}px`, height: '1px' }}
+                ></div>
+              ))}
+              
+              {/* 纵向线条 - 使用安全计算的网格线数量 */}
+              {Array.from({ length: gridLines.vertical }).map((_, i) => (
+                <div 
+                  key={`v-${i}`} 
+                  className="absolute top-0 bottom-0 border-l border-white/10" 
+                  style={{ left: `${i * GRID_STEP}px`, width: '1px' }}
+                ></div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

@@ -22,13 +22,23 @@
         "title": "Title",
         "title_place": "Please input title",
         "author": "Author",
-        "download": "Download"
+        "download": "Download",
+        "custom_resolution": "Custom Resolution",
+        "width": "Width",
+        "height": "Height",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "confirm": "Confirm",
+        "select_dimensions": "Select Dimensions"
     },
     "ImageEditorToolbar": {
         "edit": "Edit",
         "lock": "Lock",
         "undo": "Undo",
         "redo": "Redo",
-        "reset": "Reset"
+        "reset": "Reset",
+        "drag_mode_hint": "Drag mode: You can drag {elements}",
+        "image_title_author_icon": "image, title, author and icon",
+        "title_author_icon": "title, author and icon"
     }
 }

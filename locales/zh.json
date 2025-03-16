@@ -22,13 +22,23 @@
         "title": "标题",
         "title_place": "Please input title",
         "author": "作者",
-        "download": "生成"
+        "download": "生成",
+        "custom_resolution": "自定义分辨率",
+        "width": "宽",
+        "height": "高",
+        "landscape": "横屏",
+        "portrait": "竖屏",
+        "confirm": "确认",
+        "select_dimensions": "选择尺寸"
     },
     "ImageEditorToolbar": {
         "edit": "编辑",
         "lock": "锁定",
         "undo": "撤销",
         "redo": "重做",
-        "reset": "重置"
+        "reset": "重置",
+        "drag_mode_hint": "拖动模式：可拖动{elements}",
+        "image_title_author_icon": "图片、标题、作者和图标",
+        "title_author_icon": "标题、作者和图标"
     }
 }

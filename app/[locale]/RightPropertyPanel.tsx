@@ -673,7 +673,7 @@ export const RightPropertyPanel = () => {
                   variant="flat"
                   onPress={() => setShowDimensionsModal(false)}
                 >
-                  确认
+                  {t("confirm") || "确认"}
                 </Button>
               </NavbarItem>
             </NavbarContent>
@@ -682,13 +682,13 @@ export const RightPropertyPanel = () => {
         
         <div className="flex-grow overflow-y-auto overflow-x-hidden flex flex-col px-4">
           <div className="grid grid-cols-1 gap-2 py-2">
-            <p className="text-sm font-medium text-gray-500">自定义分辨率</p>
+            <p className="text-sm font-medium text-gray-500">{t("custom_resolution") || "自定义分辨率"}</p>
             <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
               <div className="flex gap-2 items-center">
                 <Input
                   type="number"
                   min="1"
-                  label="宽"
+                  label={t("width") || "宽"}
                   size="sm"
                   value={String(propertyInfo.customWidth || 1185)}
                   onChange={(e) => {
@@ -703,7 +703,7 @@ export const RightPropertyPanel = () => {
                 <Input
                   type="number"
                   min="1"
-                  label="高"
+                  label={t("height") || "高"}
                   size="sm"
                   value={String(propertyInfo.customHeight || 1185)}
                   onChange={(e) => {
@@ -719,7 +719,7 @@ export const RightPropertyPanel = () => {
 
             <Divider className="my-2" />
             
-            <p className="text-sm font-medium text-gray-500">横屏</p>
+            <p className="text-sm font-medium text-gray-500">{t("landscape") || "横屏"}</p>
             {horizontalAspectOptions.map((option) => (
               <div 
                 key={option.value}
@@ -750,7 +750,7 @@ export const RightPropertyPanel = () => {
               </div>
             ))}
             
-            <p className="text-sm font-medium text-gray-500 mt-2">竖屏</p>
+            <p className="text-sm font-medium text-gray-500 mt-2">{t("portrait") || "竖屏"}</p>
             {verticalAspectOptions.map((option) => (
               <div 
                 key={option.value}
