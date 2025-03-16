@@ -55,13 +55,6 @@ NEXT_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 ```
 Refer: [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
-## Deploy Static
-
-Run
-```bash
-npm run build
-```
-static file generate to `out` dir
 
 ## Deploy to Vercel
 You can start by creating your own Nextra site and deploying to Vercel by clicking the link:
