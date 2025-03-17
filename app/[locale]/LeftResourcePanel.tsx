@@ -516,18 +516,10 @@ export const LeftResourcePanel = () => {
     }
   };
 
-  const fetchPhotosBySearch = (searchText = "dev", page = 1) => {
-    if (scrollContainerRef.current) {
-      scrollPositionRef.current = scrollContainerRef.current.scrollTop;
-    }
-    
-    unsplash.search
-      .getPhotos({
-        query: searchText,
-        page: page,
-        perPage: PHOTOS_PER_PAGE,
-      })
-      .then((result) => {
+  const fetchPhotosBySearch = (searchText, page) => {
+    fetch(`/api/unsplash?query=${encodeURIComponent(searchText)}&page=${page}&perPage=${PHOTOS_PER_PAGE}`)
+      .then(response => response.json())
+      .then(result => {
         if (result.type === "success") {
           var photos = result.response.results.map((item) => {
             return {
@@ -565,11 +557,9 @@ export const LeftResourcePanel = () => {
   };
 
   const fetchRandomPhotos = () => {
-    unsplash.photos
-      .getRandom({
-        count: PHOTOS_PER_PAGE,
-      })
-      .then((result) => {
+    fetch('/api/unsplash')
+      .then(response => response.json())
+      .then(result => {
         if (result && result.response) {
           const responseArray = Array.isArray(result.response) 
             ? result.response 

@@ -39,7 +39,6 @@ import {
   Switch,
   CheckboxIcon,
 } from "@nextui-org/react";
-import unsplash from "./unsplashConfig";
 import { TwitterPicker, CirclePicker } from "react-color";
 import { deviconList } from "./devicon";
 import { TopLeftIcon } from "./icons/TopLeftIcon";
