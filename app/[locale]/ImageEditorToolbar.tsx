@@ -36,10 +36,10 @@ export const ImageEditorToolbar = ({
 
   return (
     <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-30">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center relative">
         {/* 拖动模式提示 - 从ImageEditor移动过来 */}
         {isDragMode && (
-          <div className="bg-white/80 text-black px-4 py-2 rounded-lg mb-3 shadow-lg">
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white/80 text-black px-4 py-2 rounded-lg shadow-lg whitespace-nowrap">
             {t('drag_mode_hint', {
               elements: backgroundType === 'image' 
                 ? t('image_title_author_icon') 
@@ -68,7 +68,6 @@ export const ImageEditorToolbar = ({
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   {isDragMode ? (
-                    // 解锁图标 - 编辑模式开启时显示，表示当前可以编辑
                     <path 
                       strokeLinecap="round" 
                       strokeLinejoin="round" 
@@ -76,7 +75,6 @@ export const ImageEditorToolbar = ({
                       d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
                     />
                   ) : (
-                    // 锁定图标 - 编辑模式关闭时显示，表示当前被锁定
                     <path 
                       strokeLinecap="round" 
                       strokeLinejoin="round" 
@@ -86,7 +84,6 @@ export const ImageEditorToolbar = ({
                   )}
                 </svg>
               </Button>
-              <span className="text-xs mt-1 text-[#2F6EE7]">{isDragMode ? t('lock') : t('edit')}</span>
             </div>
             
             {/* 撤销按钮 - 圆形弯曲箭头样式 */}
@@ -120,7 +117,6 @@ export const ImageEditorToolbar = ({
                   />
                 </svg>
               </Button>
-              <span className="text-xs mt-1 text-[#2F6EE7]">{t('undo')}</span>
             </div>
             
             {/* 重做按钮 - 圆形弯曲箭头样式 */}
@@ -154,7 +150,6 @@ export const ImageEditorToolbar = ({
                   />
                 </svg>
               </Button>
-              <span className="text-xs mt-1 text-[#2F6EE7]">{t('redo')}</span>
             </div>
             
             {/* 重置布局按钮 */}
@@ -182,11 +177,10 @@ export const ImageEditorToolbar = ({
                   />
                 </svg>
               </Button>
-              <span className="text-xs mt-1 text-[#2F6EE7]">{t('reset')}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}; 
+};
