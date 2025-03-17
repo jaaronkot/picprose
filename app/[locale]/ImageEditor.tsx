@@ -130,7 +130,6 @@ export const ImageEditor = ({
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging && imageRef.current) {
-      console.log("拖动中...", e.clientY);
       // 按步长对齐垂直位置
       const newVerticalPosition = snapToGrid(e.clientY - dragStartY);
       
@@ -144,8 +143,6 @@ export const ImageEditor = ({
         // 确保图片可以在容器内移动的范围
         const imageHeight = imageRect.height;
         const containerHeight = containerRect.height;
-        
-        console.log("尺寸:", {imageHeight, containerHeight});
         
         let minY, maxY;
         
@@ -162,7 +159,6 @@ export const ImageEditor = ({
         
         // 将最终位置对齐到网格
         const boundedY = snapToGrid(Math.max(minY, Math.min(maxY, newVerticalPosition)));
-        console.log("边界计算:", {minY, maxY, newPosition: newVerticalPosition, bounded: boundedY});
         
         setImagePosition(boundedY);
         forceUpdate();
@@ -300,9 +296,6 @@ export const ImageEditor = ({
     }
   };
 
-  // 在渲染函数中添加
-  console.log("渲染时的图片位置:", imagePosition);
-
   // 添加一个useEffect来计算网格线数量
   React.useEffect(() => {
     if (containerRef.current && isDragMode) {
@@ -342,13 +335,11 @@ export const ImageEditor = ({
               
               // 检查是否为有效数字
               if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
-                console.log("无效的宽高比值:", w, h);
                 return '90vh';
               }
               
               // 1:1比例或接近1:1的比例
               if (Math.abs(w - h) < 0.01) {
-                console.log("检测到1:1比例");
                 return '90vh';
               } else if (h > w) {
                 // 竖屏比例
@@ -358,7 +349,6 @@ export const ImageEditor = ({
                 return '90vh';
               }
             } catch (e) {
-              console.error("解析宽高比出错:", e);
               return '90vh';
             }
           })(),
@@ -374,13 +364,11 @@ export const ImageEditor = ({
               
               // 检查是否为有效数字
               if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
-                console.log("无效的宽高比值:", w, h);
                 return '90vh';
               }
               
               // 1:1比例或接近1:1的比例
               if (Math.abs(w - h) < 0.01) {
-                console.log("检测到1:1比例");
                 return '90vh';
               } else if (w > h) {
                 // 横屏比例
@@ -390,7 +378,6 @@ export const ImageEditor = ({
                 return '90vh';
               }
             } catch (e) {
-              console.error("解析宽高比出错:", e);
               return '90vh';
             }
           })(),

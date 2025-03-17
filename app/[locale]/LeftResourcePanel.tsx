@@ -174,10 +174,6 @@ const SvgPatternPanel = () => {
   } = usePicprose();
   const t = useTranslations('LeftResourcePanel');
   
-  // 打印SVG_BACKGROUNDS以检查问题
-  console.log("SVG_BACKGROUNDS:", SVG_BACKGROUNDS);
-  console.log("SVG_BACKGROUNDS长度:", SVG_BACKGROUNDS?.length);
-  
   // 手动定义角落模板，确保可用
   const cornerTemplate = (params: any) => {
     const { backgroundColor, color1, color2, cornerRadius, cornerCount, strokeWidth, rotation } = params;
@@ -216,7 +212,6 @@ const SvgPatternPanel = () => {
         contrast: 50
       }
     });
-    console.log("手动添加了角落模板");
   }
   
   // 确保有可用的模板
@@ -235,7 +230,6 @@ const SvgPatternPanel = () => {
     if (index < 0 || index >= svgBgs.length) return;
     
     const selectedSvg = svgBgs[index];
-    console.log(`选择了SVG模板: ${selectedSvg.name}，索引: ${index}`);
     
     // 克隆默认参数以避免引用问题
     const defaultParams = JSON.parse(JSON.stringify(selectedSvg.defaultParams));
@@ -252,7 +246,6 @@ const SvgPatternPanel = () => {
       setBackgroundType('svg');
       setBackgroundPattern(encodedSvg);
     } catch (error) {
-      console.error("生成SVG时出错:", error);
     }
   };
 
@@ -265,7 +258,6 @@ const SvgPatternPanel = () => {
     const svg = svgBgs[index];
     
     if (!svg || !svg.svgTemplate || !svg.defaultParams) {
-      console.error(`svgBgs[${index}]不完整:`, svg);
       return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">模板无效</div>;
     }
     
@@ -278,7 +270,6 @@ const SvgPatternPanel = () => {
         />
       );
     } catch (error) {
-      console.error(`渲染svgBgs[${index}]出错:`, error);
       return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">渲染错误</div>;
     }
   };

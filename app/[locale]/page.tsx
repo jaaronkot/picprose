@@ -57,7 +57,6 @@ export default function Home() {
   
   // 修改下载图片的方法
   const handleDownload = (format: string) => {
-    console.log(`Downloading image as ${format}`);
     // 调用 ComponentToImg 的下载方法
     if (componentToImgRef.current) {
       componentToImgRef.current.downloadImage(format);
@@ -86,12 +85,15 @@ export default function Home() {
 
   return (
     <PicproseProvider onDownload={handleDownload}>
-      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-12 h-screen max-h-screen">
-        <div className="lg:col-span-3 h-screen overflow-hidden">
+      <div className="flex flex-col lg:flex-row h-screen max-h-screen">
+        {/* 左侧面板 - 固定宽度350px */}
+        <div className="lg:w-[350px] flex-shrink-0 h-screen overflow-hidden">
           <LeftResourcePanel />
         </div>
-        <div className="lg:col-span-6 flex flex-col bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden relative">
-            <div className="flex-1 flex justify-center items-center">
+        
+        {/* 中间内容区域 - 自适应填充剩余空间 */}
+        <div className="flex-grow flex flex-col bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden relative">
+          <div className="flex-1 flex justify-center items-center bg-gray-100 dark:bg-gray-800">
             <ComponentToImg ref={componentToImgRef}>
               <ImageEditor 
                 isDragMode={isDragMode}
@@ -99,9 +101,8 @@ export default function Home() {
                 setElements={setElements}
                 saveHistory={saveHistory}
               />
-              </ComponentToImg>
-            </div>
-         
+            </ComponentToImg>
+          </div>
           
           {/* 工具栏浮动在上方 */}
           <ImageEditorToolbar 
@@ -114,7 +115,9 @@ export default function Home() {
             setHistoryIndex={setHistoryIndex}
           />
         </div>
-        <div className="lg:col-span-3 h-screen overflow-hidden">
+        
+        {/* 右侧面板 - 固定宽度350px */}
+        <div className="lg:w-[350px] flex-shrink-0 h-screen overflow-hidden">
           <RightPropertyPanel />
         </div>
       </div>
