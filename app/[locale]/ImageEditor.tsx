@@ -42,7 +42,8 @@ export const ImageEditor = ({
     imageInfo, 
     backgroundType,
     backgroundColor, 
-    backgroundPattern 
+    backgroundPattern,
+    elementsLayout
   } = usePicprose();
   
   // 解构属性
@@ -227,11 +228,24 @@ export const ImageEditor = ({
     
     setElements(prev => {
       const newElements = {...prev};
-      newElements[elementKey] = {
-        ...newElements[elementKey],
-        x: snapToGrid(newElements[elementKey].x + deltaX),
-        y: snapToGrid(newElements[elementKey].y + deltaY)
-      };
+      
+      // 为image元素特殊处理
+      if (elementKey === 'image') {
+        newElements[elementKey] = {
+          ...newElements[elementKey],
+          x: snapToGrid(newElements[elementKey].x + deltaX),
+          y: snapToGrid(newElements[elementKey].y + deltaY)
+        };
+      } else {
+        // 针对带有visible属性的元素
+        newElements[elementKey] = {
+          ...newElements[elementKey],
+          x: snapToGrid(newElements[elementKey].x + deltaX),
+          y: snapToGrid(newElements[elementKey].y + deltaY),
+          visible: (newElements[elementKey] as any).visible // 保留visible属性
+        };
+      }
+      
       return newElements;
     });
   };
@@ -501,6 +515,29 @@ export const ImageEditor = ({
   
   // 计算容器尺寸
   const aspectRatio = calculateAspectRatio();
+  
+  // 监听布局变化并应用
+  useEffect(() => {
+    if (elementsLayout) {
+      setElements(prev => ({
+        ...prev,
+        title: {
+          ...elementsLayout.title,
+        },
+        author: {
+          ...elementsLayout.author,
+        },
+        icon: {
+          ...elementsLayout.icon,
+        },
+        // 保持图片位置不变
+        image: prev.image
+      }));
+      
+      // 保存到历史记录
+      saveHistory(elementsLayout);
+    }
+  }, [elementsLayout]);
   
   return (
     <div className="max-h-screen relative flex group rounded-3xl">

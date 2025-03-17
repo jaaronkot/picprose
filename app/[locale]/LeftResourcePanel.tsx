@@ -103,7 +103,7 @@ const PATTERN_BACKGROUNDS = [
   // 六边形
   {
     name: "六边形",
-    value: "radial-gradient(circle, transparent 20%, #f8b195 20%, #f8b195 40%, transparent 40%, transparent 60%, #f8b195 60%, #f8b195 80%, transparent 80%) 0 0 / 60px 60px, radial-gradient(circle, transparent 20%, #f67280 20%, #f67280 40%, transparent 40%, transparent 60%, #f67280 60%, #f67280 80%, transparent 80%) 30px 30px / 60px 60px",
+    value: "radial-gradient(circle at 33% 33%, #f8b195 5%, transparent 5.5%), radial-gradient(circle at 72% 64%, #8b5cf6 5%, transparent 5.5%), radial-gradient(circle at 45% 85%, #3b82f6 5%, transparent 5.5%), radial-gradient(circle at 75% 20%, #06b6d4 5%, transparent 5.5%), radial-gradient(circle at 20% 60%, #22c55e 5%, transparent 5.5%)",
     bgColor: "#ffffff"
   },
   // 圆点阵列
@@ -475,6 +475,230 @@ export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
   );
 };
 
+// 添加布局图标
+export const LayoutIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="24"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="24"
+      {...props}
+    >
+      <path
+        d="M5 10H7C9 10 10 9 10 7V5C10 3 9 2 7 2H5C3 2 2 3 2 5V7C2 9 3 10 5 10Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M17 10H19C21 10 22 9 22 7V5C22 3 21 2 19 2H17C15 2 14 3 14 5V7C14 9 15 10 17 10Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M17 22H19C21 22 22 21 22 19V17C22 15 21 14 19 14H17C15 14 14 15 14 17V19C14 21 15 22 17 22Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M5 22H7C9 22 10 21 10 19V17C10 15 9 14 7 14H5C3 14 2 15 2 17V19C2 21 3 22 5 22Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+// 创建布局面板组件
+const LayoutPanel = () => {
+  const { setElementsLayout } = usePicprose();
+  const t = useTranslations('LeftResourcePanel');
+
+  // 预设的布局选项 - 更新为独立元素定位
+  const layoutPresets = [
+    {
+      name: t('layout_magazine_cover'),
+      description: t('layout_magazine_cover_desc'),
+      elements: {
+        title: { x: 0, y: -170, visible: true },
+        author: { x: 180, y: -40, visible: true },
+        icon: { x: -180, y: -190, visible: true },
+      },
+      preview: "layout-magazine.svg"
+    },
+    {
+      name: t('layout_movie_poster'),
+      description: t('layout_movie_poster_desc'),
+      elements: {
+        title: { x: 0, y: -120, visible: true },
+        author: { x: 0, y: 20, visible: true },
+        icon: { x: 0, y: 180, visible: true },
+      },
+      preview: "layout-movie.svg"
+    },
+    {
+      name: t('layout_book_cover'),
+      description: t('layout_book_cover_desc'),
+      elements: {
+        title: { x: 0, y: -100, visible: true },
+        author: { x: 0, y: 180, visible: true },
+        icon: { x: 0, y: 40, visible: true },
+      },
+      preview: "layout-book.svg"
+    },
+    {
+      name: t('layout_minimal_poster'),
+      description: t('layout_minimal_poster_desc'),
+      elements: {
+        title: { x: 0, y: 0, visible: true },
+        author: { x: 0, y: 190, visible: true },
+        icon: { x: 200, y: -190, visible: true },
+      },
+      preview: "layout-minimal-poster.svg"
+    },
+    {
+      name: t('layout_asymmetric'),
+      description: t('layout_asymmetric_desc'),
+      elements: {
+        title: { x: -160, y: 140, visible: true },
+        author: { x: 160, y: 140, visible: true },
+        icon: { x: -160, y: -140, visible: true },
+      },
+      preview: "layout-asymmetric.svg"
+    },
+    {
+      name: t('layout_split'),
+      description: t('layout_split_desc'),
+      elements: {
+        title: { x: -170, y: 0, visible: true },
+        author: { x: 170, y: 50, visible: true },
+        icon: { x: 170, y: -50, visible: true },
+      },
+      preview: "layout-split.svg"
+    },
+    {
+      name: t('layout_banner'),
+      description: t('layout_banner_desc'),
+      elements: {
+        title: { x: 0, y: 140, visible: true },
+        author: { x: -180, y: -180, visible: true },
+        icon: { x: 180, y: -180, visible: true },
+      },
+      preview: "layout-banner.svg"
+    },
+    {
+      name: t('layout_thirds'),
+      description: t('layout_thirds_desc'),
+      elements: {
+        title: { x: 0, y: -70, visible: true },
+        author: { x: -150, y: 170, visible: true },
+        icon: { x: 150, y: 170, visible: true },
+      },
+      preview: "layout-thirds.svg"
+    },
+    {
+      name: t('layout_brand'),
+      description: t('layout_brand_desc'),
+      elements: {
+        title: { x: 0, y: 0, visible: true },
+        author: { x: 0, y: 60, visible: true },
+        icon: { x: 0, y: -80, visible: true },
+      },
+      preview: "layout-brand.svg"
+    },
+    {
+      name: t('layout_social_media'),
+      description: t('layout_social_media_desc'),
+      elements: {
+        title: { x: 0, y: -30, visible: true },
+        author: { x: 0, y: 30, visible: true },
+        icon: { x: -150, y: -150, visible: true },
+      },
+      preview: "layout-social.svg"
+    },
+    {
+      name: t('layout_clean_title'),
+      description: t('layout_clean_title_desc'),
+      elements: {
+        title: { x: 0, y: 0, visible: true },
+        author: { x: 0, y: 170, visible: false },
+        icon: { x: 0, y: 90, visible: false },
+      },
+      preview: "layout-clean-title.svg"
+    },
+    {
+      name: t('layout_author_spotlight'),
+      description: t('layout_author_spotlight_desc'),
+      elements: {
+        title: { x: 0, y: -150, visible: true },
+        author: { x: 0, y: 0, visible: true },
+        icon: { x: -150, y: 0, visible: true },
+      },
+      preview: "layout-author-spotlight.svg"
+    }
+  ];
+
+  // 应用布局
+  const applyLayout = (layout: any) => {
+    setElementsLayout(layout.elements);
+  };
+
+  return (
+    <div className="p-4">
+      <h3 className="text-lg font-medium mb-4">{t('layout_presets')}</h3>
+      <div className="grid grid-cols-2 gap-4">
+        {layoutPresets.map((layout, index) => (
+          <div 
+            key={index}
+            className="flex flex-col items-center"
+            onClick={() => applyLayout(layout)}
+          >
+            <div 
+              className="w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform border border-gray-300 dark:border-gray-700 overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800"
+            >
+              <div className="w-full h-full p-2 flex items-center justify-center">
+                <div className="w-full h-full relative bg-gradient-to-b from-gray-700 to-gray-900 rounded-md flex items-center justify-center">
+                  {/* 标题元素预览 */}
+                  <div className="absolute w-16 h-1 bg-white/80 rounded-full" style={{ 
+                    transform: `translate(${layout.elements.title.x/5}px, ${layout.elements.title.y/5}px)`,
+                    opacity: layout.elements.title.visible ? 1 : 0.3
+                  }}></div>
+                  
+                  {/* 作者元素预览 */}
+                  <div className="absolute w-12 h-0.5 bg-white/60 rounded-full" style={{ 
+                    transform: `translate(${layout.elements.author.x/5}px, ${layout.elements.author.y/5}px)`,
+                    opacity: layout.elements.author.visible ? 1 : 0.3
+                  }}></div>
+                  
+                  {/* 图标元素预览 */}
+                  <div className="absolute w-2 h-2 bg-white/60 rounded-full" style={{ 
+                    transform: `translate(${layout.elements.icon.x/5}px, ${layout.elements.icon.y/5}px)`,
+                    opacity: layout.elements.icon.visible ? 1 : 0.3
+                  }}></div>
+                </div>
+              </div>
+            </div>
+            <div className="text-center text-default-600 mt-2">
+              {layout.name}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const LeftResourcePanel = () => {
   const t = useTranslations('LeftResourcePanel');
   const { setImageInfo, setBackgroundType } = usePicprose();
@@ -507,12 +731,12 @@ export const LeftResourcePanel = () => {
     }
   };
 
-  const fetchPhotosBySearch = (searchText, page) => {
+  const fetchPhotosBySearch = (searchText: string, page: number) => {
     fetch(`/api/unsplash?query=${encodeURIComponent(searchText)}&page=${page}&perPage=${PHOTOS_PER_PAGE}`)
       .then(response => response.json())
       .then(result => {
         if (result.type === "success") {
-          var photos = result.response.results.map((item) => {
+          const photos = result.response.results.map((item: any) => {
             return {
               src: item.urls.small,
               url: item.urls.regular,
@@ -525,10 +749,12 @@ export const LeftResourcePanel = () => {
               profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
             };
           });
+          
           if (photos.length < PHOTOS_PER_PAGE) {
             setHasMorePhotos(false);
           }
-          if (page == 1) {
+          
+          if (page === 1) {
             setPhotos(photos);
             setTimeout(() => {
               if (scrollContainerRef.current) {
@@ -700,6 +926,15 @@ export const LeftResourcePanel = () => {
     </div>
   );
 
+  // 添加布局面板内容
+  const renderLayoutPanel = () => (
+    <div className="flex-grow" style={{ height: windowHeight - 220 }}>
+      <ScrollShadow className="h-full overflow-y-auto">
+        <LayoutPanel />
+      </ScrollShadow>
+    </div>
+  );
+
   return (
     <div className="w-full flex flex-col h-screen">
       {/* 头部导航 */}
@@ -735,15 +970,16 @@ export const LeftResourcePanel = () => {
           classNames={{
             base: "flex flex-col flex-grow",
             panel: "flex-grow overflow-hidden",
-            tabList: "mb-0"
+            tabList: "mb-0 text-xs",  // 添加text-xs类来减小整体文本大小
+            tab: "py-1.5 px-1" // 减小标签页内边距
           }}
         >
           <Tab 
             key="images" 
             title={
-              <div className="flex items-center gap-2">
-                <GalleryIcon />
-                <span>{t('images_tab')}</span>
+              <div className="flex items-center gap-1">  {/* gap从2减小到1 */}
+                <GalleryIcon className="w-4 h-4" />  {/* 添加w-4 h-4类来减小图标尺寸 */}
+                <span className="text-xs">{t('images_tab')}</span>  {/* 添加text-xs类明确设置字体大小 */}
               </div>
             }
           >
@@ -752,9 +988,9 @@ export const LeftResourcePanel = () => {
           <Tab 
             key="colors" 
             title={
-              <div className="flex items-center gap-2">
-                <PaletteIcon />
-                <span>{t('colors_tab')}</span>
+              <div className="flex items-center gap-1">
+                <PaletteIcon className="w-4 h-4" />
+                <span className="text-xs">{t('colors_tab')}</span>
               </div>
             }
           >
@@ -763,13 +999,24 @@ export const LeftResourcePanel = () => {
           <Tab 
             key="patterns" 
             title={
-              <div className="flex items-center gap-2">
-                <SvgIcon />
-                <span>{t('patterns_tab')}</span>
+              <div className="flex items-center gap-1">
+                <SvgIcon className="w-4 h-4" />
+                <span className="text-xs">{t('patterns_tab')}</span>
               </div>
             }
           >
             {renderPatternPanel()}
+          </Tab>
+          <Tab 
+            key="layouts" 
+            title={
+              <div className="flex items-center gap-1">
+                <LayoutIcon className="w-4 h-4" />
+                <span className="text-xs">{t('layouts_tab')}</span>
+              </div>
+            }
+          >
+            {renderLayoutPanel()}
           </Tab>
         </Tabs>
       </div>

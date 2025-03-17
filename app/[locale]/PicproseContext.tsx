@@ -85,6 +85,13 @@ interface SvgTemplate {
   defaultParams: SvgTemplateParams;
 }
 
+// 定义元素布局接口
+interface ElementLayout {
+  title: { x: number; y: number; visible: boolean };
+  author: { x: number; y: number; visible: boolean };
+  icon: { x: number; y: number; visible: boolean };
+}
+
 // 定义Context的类型
 interface PicproseContextType {
   // 图片信息
@@ -115,6 +122,10 @@ interface PicproseContextType {
   setSvgPatternParams: (params: SvgTemplateParams) => void;
   showSvgPanel: boolean;
   setShowSvgPanel: (show: boolean) => void;
+  
+  // 添加布局相关属性
+  elementsLayout: ElementLayout;
+  setElementsLayout: (layout: ElementLayout) => void;
 }
 
 // 创建默认图片信息
@@ -145,6 +156,13 @@ const defaultPropertyInfo: PropertyInfo = {
   customHeight: 1080,
   isCustomAspect: false,
   titleWidthValue: 100,
+};
+
+// 创建默认布局配置
+const defaultElementsLayout: ElementLayout = {
+  title: { x: 0, y: 0, visible: true },
+  author: { x: 0, y: 80, visible: true },
+  icon: { x: 0, y: 160, visible: true },
 };
 
 // 创建Context
@@ -182,6 +200,9 @@ export function PicproseProvider({
   const [selectedSvgIndex, setSelectedSvgIndex] = useState<number | null>(null);
   const [svgPatternParams, setSvgPatternParams] = useState<SvgTemplateParams>({});
   const [showSvgPanel, setShowSvgPanel] = useState(false);
+
+  // 添加布局状态
+  const [elementsLayout, setElementsLayout] = useState<ElementLayout>(defaultElementsLayout);
 
   // 使用 useEffect 来设置随机标题，这样只会在客户端执行
   useEffect(() => {
@@ -354,7 +375,9 @@ export function PicproseProvider({
         svgPatternParams,
         setSvgPatternParams,
         showSvgPanel,
-        setShowSvgPanel
+        setShowSvgPanel,
+        elementsLayout,
+        setElementsLayout,
       }}
     >
       {children}
