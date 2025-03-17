@@ -67,7 +67,10 @@
         "background": "背景",
         "gradient": "渐变",
         "solid": "纯色",
-        "randomize_wave": "随机生成"
+        "randomize_wave": "随机生成",
+        "title_width": "标题宽度",
+        "social_media": "社交平台",
+        "devices": "设备"
     },
     "ImageEditorToolbar": {
         "edit": "编辑",

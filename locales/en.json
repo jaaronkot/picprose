@@ -67,7 +67,10 @@
         "background": "Background",
         "gradient": "Gradient",
         "solid": "Solid",
-        "randomize_wave": "Randomize"
+        "randomize_wave": "Randomize",
+        "title_width": "Title Width",
+        "social_media": "Social Media",
+        "devices": "Devices"
     },
     "ImageEditorToolbar": {
         "edit": "Edit",

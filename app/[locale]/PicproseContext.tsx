@@ -35,6 +35,7 @@ interface PropertyInfo {
   customWidth: number;
   customHeight: number;
   isCustomAspect: boolean;
+  titleWidthValue?: number | string;
 }
 
 // 定义背景类型
@@ -143,6 +144,7 @@ const defaultPropertyInfo: PropertyInfo = {
   customWidth: 1920,
   customHeight: 1080,
   isCustomAspect: false,
+  titleWidthValue: 100,
 };
 
 // 创建Context

@@ -60,6 +60,7 @@ export const ImageEditor = ({
     authorFontSizeValue,
     color,
     logoPosition,
+    titleWidthValue,
   } = propertyInfo;
 
   // 状态定义
@@ -331,8 +332,8 @@ export const ImageEditor = ({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              // 确保初始位置为中心，拖动时正确应用位置
-              objectPosition: `center ${imagePosition}px`,
+              // 修改为完全居中显示，左右上下都居中
+              objectPosition: isDragging ? `center ${imagePosition}px` : 'center center',
               transition: isDragging ? 'none' : 'all 0.1s ease-out',
             }}
             onMouseDown={handleImageMouseDown}
@@ -434,13 +435,21 @@ export const ImageEditor = ({
             transition: draggingElement === 'title' ? 'none' : 'transform 0.1s ease-out',
             padding: isDragMode ? '8px' : '0',
             pointerEvents: isDragMode ? 'auto' : 'none',
-            visibility: elements.title.visible ? 'visible' : 'hidden'
+            visibility: elements.title.visible ? 'visible' : 'hidden',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
           onMouseDown={(e) => handleElementDragStart('title', e)}
         >
           <h1
             className={`leading-tight text-center text-5xl font-bold text-white ${font}`}
-            style={{ fontSize: `${fontSizeValue}px` }}
+            style={{ 
+              fontSize: `${fontSizeValue}px`,
+              width: titleWidthValue ? `${titleWidthValue}%` : 'auto',
+              wordWrap: 'break-word'
+            }}
           >
             {title}
           </h1>

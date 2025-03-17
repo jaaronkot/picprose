@@ -168,18 +168,38 @@ export const RightPropertyPanel = () => {
   };
 
   const horizontalAspectOptions = [
-    { label: "1 : 1", value: "aspect-square", description: "1185 × 1185" },
-    { label: "2 : 1", value: "aspect-[2/1]", description: "1185 × 593" },
-    { label: "3 : 2", value: "aspect-[3/2]", description: "1185 × 790" },
-    { label: "4 : 3", value: "aspect-[4/3]", description: "1185 × 889" },
-    { label: "16: 9", value: "aspect-[16/9]", description: "1185 × 667" },
+    { label: "1 : 1", value: "horizontal-square-aspect-square", description: "1185 × 1185", ratio: "aspect-square" },
+    { label: "2 : 1", value: "horizontal-2x1-aspect-[2/1]", description: "1185 × 593", ratio: "aspect-[2/1]" },
+    { label: "3 : 2", value: "horizontal-3x2-aspect-[3/2]", description: "1185 × 790", ratio: "aspect-[3/2]" },
+    { label: "4 : 3", value: "horizontal-4x3-aspect-[4/3]", description: "1185 × 889", ratio: "aspect-[4/3]" },
+    { label: "16: 9", value: "horizontal-16x9-aspect-[16/9]", description: "1185 × 667", ratio: "aspect-[16/9]" },
   ];
 
   const verticalAspectOptions = [
-    { label: "1:2", value: "aspect-[1/2]", description: "593 × 1185" },
-    { label: "2:3", value: "aspect-[2/3]", description: "790 × 1185" },
-    { label: "3:4", value: "aspect-[3/4]", description: "889 × 1185" },
-    { label: "9:16", value: "aspect-[9/16]", description: "667 × 1185" },
+    { label: "1:2", value: "vertical-1x2-aspect-[1/2]", description: "593 × 1185", ratio: "aspect-[1/2]" },
+    { label: "2:3", value: "vertical-2x3-aspect-[2/3]", description: "790 × 1185", ratio: "aspect-[2/3]" },
+    { label: "3:4", value: "vertical-3x4-aspect-[3/4]", description: "889 × 1185", ratio: "aspect-[3/4]" },
+    { label: "9:16", value: "vertical-9x16-aspect-[9/16]", description: "667 × 1185", ratio: "aspect-[9/16]" },
+  ];
+
+  // 修改社交平台预设尺寸 - 为每个选项添加唯一标识符
+  const socialMediaAspectOptions = [
+    { label: "微信公众号", value: "social-wechat-aspect-[900/383]", description: "900 × 383", ratio: "aspect-[900/383]" },
+    { label: "BiliBili", value: "social-bilibili-aspect-[16/9]", description: "1920 × 1080", ratio: "aspect-[16/9]" },
+    { label: "YouTube 频道", value: "social-youtube-channel-aspect-[16/9]", description: "2560 × 1440", ratio: "aspect-[16/9]" },
+    { label: "YouTube 视频", value: "social-youtube-video-aspect-[16/9]", description: "1280 × 720", ratio: "aspect-[16/9]" },
+    { label: "Twitter", value: "social-twitter-aspect-[3/1]", description: "1500 × 500", ratio: "aspect-[3/1]" },
+    { label: "Facebook 桌面", value: "social-facebook-desktop-aspect-[820/312]", description: "820 × 312", ratio: "aspect-[820/312]" },
+    { label: "Facebook 移动", value: "social-facebook-mobile-aspect-[16/9]", description: "640 × 360", ratio: "aspect-[16/9]" },
+  ];
+
+  // 修改设备预设尺寸 - 为每个选项添加唯一标识符
+  const deviceAspectOptions = [
+    { label: "Full HD", value: "device-fullhd-aspect-[16/9]", description: "1920 × 1080", ratio: "aspect-[16/9]" },
+    { label: "MacBook", value: "device-macbook-aspect-[16/10]", description: "2560 × 1600", ratio: "aspect-[16/10]" },
+    { label: "iPhone 13", value: "device-iphone13-aspect-[9/19.5]", description: "1170 × 2532", ratio: "aspect-[9/19.5]" },
+    { label: "Galaxy S10", value: "device-galaxys10-aspect-[9/19]", description: "1440 × 3040", ratio: "aspect-[9/19]" },
+    { label: "iPhone SE", value: "device-iphonese-aspect-[9/16]", description: "750 × 1334", ratio: "aspect-[9/16]" },
   ];
 
   const fontOptions = [
@@ -266,8 +286,15 @@ export const RightPropertyPanel = () => {
       };
     }
     
-    const allOptions = [...horizontalAspectOptions, ...verticalAspectOptions];
-    const selectedOption = allOptions.find(option => option.value === propertyInfo.aspect);
+    // 所有选项合并到一个数组中查找
+    const allOptions = [
+      ...horizontalAspectOptions, 
+      ...verticalAspectOptions,
+      ...socialMediaAspectOptions,
+      ...deviceAspectOptions
+    ];
+    
+    const selectedOption = allOptions.find(option => option.value === propertyInfo.selectedValue);
     
     if (selectedOption) {
       return {
@@ -965,55 +992,6 @@ export const RightPropertyPanel = () => {
           <div className="flex w-full py-2 items-end gap-2">
             <div className="flex-grow">
               <Select
-                label={t("font")}
-                className="w-full"
-                onChange={handleFontChange}
-                defaultSelectedKeys={["font-anke"]}
-              >
-                {fontOptions.map((font) => (
-                  <SelectItem key={font.value} value={font.value}>
-                    {font.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <input
-                type="file"
-                className="hidden"
-                onChange={handleFontUpload}
-                ref={fontInputRef}
-              />
-              <Button
-                isIconOnly
-                color="primary"
-                variant="flat"
-                size="lg"
-                onClick={handleFontButtonClick}
-              >
-                <svg
-                  className="w-5 h-5 text-[#2F6EE7] dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.3"
-                    d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"
-                  />
-                </svg>
-              </Button>
-            </div>
-          </div>
-          <div className="flex w-full py-2 items-end gap-2">
-            <div className="flex-grow">
-              <Select
                 label={t("icon")}
                 className="w-full"
                 items={deviconList}
@@ -1079,59 +1057,56 @@ export const RightPropertyPanel = () => {
               </Button>
             </div>
           </div>
-          <Tabs
-            classNames={{
-              tabList: "w-full my-2",
-              tab: "w-[47px] h-12",
-            }}
-            aria-label="Options"
-            selectedKey={propertyInfo.logoPosition}
-            onSelectionChange={(key) => updateProperty("logoPosition", key.toString())}
-          >
-            <Tab
-              key="top-4 left-4"
-              title={
-                <div className="flex items-center space-x-2">
-                  <TopLeftIcon />
-                </div>
-              }
-            />
-            <Tab
-              key="bottom-4 left-4"
-              title={
-                <div className="flex items-center space-x-2">
-                  <BottomLeftIcon />
-                </div>
-              }
-            />
-            <Tab
-              key="default"
-              title={
-                <div className="flex items-center space-x-2">
-                  <MiddleIcon />
-                </div>
-              }
-            />
-
-            <Tab
-              key="bottom-4 right-4"
-              title={
-                <div className="flex items-center space-x-2">
-                  <BottomRightIcon />
-                </div>
-              }
-            />
-            <Tab
-              key="top-4 right-4"
-              title={
-                <div className="flex items-center space-x-2">
-                  <TopRightIcon />
-                </div>
-              }
-            />
-          </Tabs>
-
           <Divider />
+          <div className="flex w-full py-2 items-end gap-2">
+            <div className="flex-grow">
+              <Select
+                label={t("font")}
+                className="w-full"
+                onChange={handleFontChange}
+                defaultSelectedKeys={["font-anke"]}
+              >
+                {fontOptions.map((font) => (
+                  <SelectItem key={font.value} value={font.value}>
+                    {font.label}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleFontUpload}
+                ref={fontInputRef}
+              />
+              <Button
+                isIconOnly
+                color="primary"
+                variant="flat"
+                size="lg"
+                onClick={handleFontButtonClick}
+              >
+                <svg
+                  className="w-5 h-5 text-[#2F6EE7] dark:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.3"
+                    d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"
+                  />
+                </svg>
+              </Button>
+            </div>
+          </div>
           <Textarea
             label={t("title")}
             placeholder={t("title_place")}
@@ -1150,7 +1125,19 @@ export const RightPropertyPanel = () => {
             maxValue={100}
             className="w-full my-2"
           />
+          
+          <Slider
+            label={t("title_width")}
+            value={Number(propertyInfo.titleWidthValue || 100)}
+            onChange={(value) => updateProperty("titleWidthValue", typeof value === "number" ? value.toString() : value[0].toString())}
+            size="sm"
+            step={5}
+            minValue={50}
+            maxValue={150}
+            className="w-full my-2"
+          />
 
+          <Divider />
           <Input
             label={t("author")}
             type="search"
@@ -1274,7 +1261,8 @@ export const RightPropertyPanel = () => {
               <div 
                 key={option.value}
                 onClick={() => {
-                  updateProperty("aspect", option.value);
+                  updateProperty("aspect", option.ratio);
+                  updateProperty("selectedValue", option.value);
                   updateProperty("isCustomAspect", false);
                   
                   const dimensions = option.description.split(" × ");
@@ -1285,7 +1273,7 @@ export const RightPropertyPanel = () => {
                   updateProperty("customHeight", height);
                 }}
                 className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
-                  propertyInfo.aspect === option.value && !propertyInfo.isCustomAspect 
+                  propertyInfo.selectedValue === option.value
                     ? "bg-primary-100 border border-primary-500" 
                     : "bg-gray-100 dark:bg-gray-800"
                 }`}
@@ -1294,7 +1282,7 @@ export const RightPropertyPanel = () => {
                   <div className="font-medium">{option.label}</div>
                   <div className="text-sm text-gray-500">{option.description}</div>
                 </div>
-                {propertyInfo.aspect === option.value && !propertyInfo.isCustomAspect && (
+                {propertyInfo.selectedValue === option.value && (
                   <CheckboxIcon className="w-5 h-5 text-primary-500" />
                 )}
               </div>
@@ -1305,7 +1293,8 @@ export const RightPropertyPanel = () => {
               <div 
                 key={option.value}
                 onClick={() => {
-                  updateProperty("aspect", option.value);
+                  updateProperty("aspect", option.ratio);
+                  updateProperty("selectedValue", option.value);
                   updateProperty("isCustomAspect", false);
                   
                   const dimensions = option.description.split(" × ");
@@ -1316,7 +1305,7 @@ export const RightPropertyPanel = () => {
                   updateProperty("customHeight", height);
                 }}
                 className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
-                  propertyInfo.aspect === option.value && !propertyInfo.isCustomAspect 
+                  propertyInfo.selectedValue === option.value
                     ? "bg-primary-100 border border-primary-500" 
                     : "bg-gray-100 dark:bg-gray-800"
                 }`}
@@ -1325,7 +1314,73 @@ export const RightPropertyPanel = () => {
                   <div className="font-medium">{option.label}</div>
                   <div className="text-sm text-gray-500">{option.description}</div>
                 </div>
-                {propertyInfo.aspect === option.value && !propertyInfo.isCustomAspect && (
+                {propertyInfo.selectedValue === option.value && (
+                  <CheckboxIcon className="w-5 h-5 text-primary-500" />
+                )}
+              </div>
+            ))}
+            
+            {/* 添加社交平台选项 */}
+            <p className="text-sm font-medium text-gray-500 mt-2">{t("social_media") || "社交平台"}</p>
+            {socialMediaAspectOptions.map((option) => (
+              <div 
+                key={option.value}
+                onClick={() => {
+                  updateProperty("aspect", option.ratio);
+                  updateProperty("selectedValue", option.value);
+                  updateProperty("isCustomAspect", false);
+                  
+                  const dimensions = option.description.split(" × ");
+                  const width = parseInt(dimensions[0]);
+                  const height = parseInt(dimensions[1]);
+                  
+                  updateProperty("customWidth", width);
+                  updateProperty("customHeight", height);
+                }}
+                className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
+                  propertyInfo.selectedValue === option.value
+                    ? "bg-primary-100 border border-primary-500" 
+                    : "bg-gray-100 dark:bg-gray-800"
+                }`}
+              >
+                <div>
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-gray-500">{option.description}</div>
+                </div>
+                {propertyInfo.selectedValue === option.value && (
+                  <CheckboxIcon className="w-5 h-5 text-primary-500" />
+                )}
+              </div>
+            ))}
+            
+            {/* 添加设备选项 */}
+            <p className="text-sm font-medium text-gray-500 mt-2">{t("devices") || "设备"}</p>
+            {deviceAspectOptions.map((option) => (
+              <div 
+                key={option.value}
+                onClick={() => {
+                  updateProperty("aspect", option.ratio);
+                  updateProperty("selectedValue", option.value);
+                  updateProperty("isCustomAspect", false);
+                  
+                  const dimensions = option.description.split(" × ");
+                  const width = parseInt(dimensions[0]);
+                  const height = parseInt(dimensions[1]);
+                  
+                  updateProperty("customWidth", width);
+                  updateProperty("customHeight", height);
+                }}
+                className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
+                  propertyInfo.selectedValue === option.value
+                    ? "bg-primary-100 border border-primary-500" 
+                    : "bg-gray-100 dark:bg-gray-800"
+                }`}
+              >
+                <div>
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-gray-500">{option.description}</div>
+                </div>
+                {propertyInfo.selectedValue === option.value && (
                   <CheckboxIcon className="w-5 h-5 text-primary-500" />
                 )}
               </div>
