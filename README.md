@@ -51,8 +51,8 @@ npm run dev
 Create a `.env.local` file with the following content:
 
 ```bash
-NEXT_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
-NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=你的GA追踪ID
+UNSPLASH_API_KEY = your_unsplash_api_key
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=your_ga_id
 ```
 Refer: [https://unsplash.com/documentation](https://unsplash.com/documentation)
 

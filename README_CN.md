@@ -47,9 +47,8 @@ npm run dev
 创建 `.env.local` 文件并添加以下内容： 
 
 ```
-NEXT_PUBLIC_UNSPLASH_API_KEY=你的Unsplash访问密钥
+UNSPLASH_API_KEY = 你的Unsplash访问密钥
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=你的GA追踪ID
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=你的Umami网站ID
 ```
 
 ## 🔧 使用指南
