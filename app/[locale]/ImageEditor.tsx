@@ -117,7 +117,6 @@ export const ImageEditor = ({
 
   // 使用useCallback优化事件处理函数
   const handleImageMouseDown = React.useCallback((e: React.MouseEvent<HTMLImageElement>) => {
-    console.log("图片收到点击事件");
     if (!isDragMode) return;
     setIsDragging(true);
     setDragStartY(e.clientY - imagePosition);

@@ -658,11 +658,11 @@ export const LeftResourcePanel = () => {
 
   // 图片面板内容
   const renderImagePanel = () => (
-    <div className="flex-grow relative overflow-auto">
+    <div className="flex-grow relative">
       <InfiniteScroll
-        className="overflow-y-scroll scrollbar-thin scrollbar-color-auto px-3"
+        className="overflow-y-auto scrollbar-thin scrollbar-color-auto px-3"
         dataLength={photos.length}
-        height={windowHeight - 220} // 调整高度给底部导航留出空间
+        height={windowHeight - 220}
         next={handleLoadMore}
         hasMore={hasMorePhotos}
         loader={
@@ -675,18 +675,15 @@ export const LeftResourcePanel = () => {
             <div className="my-4">{t('search_end')}</div>
           </div>
         }
-        scrollableTarget="scrollableDiv"
       >
-        <div id="scrollableDiv" ref={scrollContainerRef} style={{ height: '100%', overflow: 'auto' }}>
-          <PhotoAlbum
-            photos={photos}
-            layout="rows"
-            targetRowHeight={TARGET_ROW_HEIGHT}
-            rowConstraints={ROW_CONSTRAINTS}
-            spacing={PHOTO_SPACING}
-            onClick={({ index }) => selectPhoto(index, photos)}
-          />
-        </div>
+        <PhotoAlbum
+          photos={photos}
+          layout="rows"
+          targetRowHeight={TARGET_ROW_HEIGHT}
+          rowConstraints={ROW_CONSTRAINTS}
+          spacing={PHOTO_SPACING}
+          onClick={({ index }) => selectPhoto(index, photos)}
+        />
       </InfiniteScroll>
       <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65 rounded-xl">
         <div className="flex items-center ml-2">
@@ -706,8 +703,8 @@ export const LeftResourcePanel = () => {
 
   // 颜色面板内容
   const renderColorPanel = () => (
-    <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
-      <ScrollShadow className="h-full">
+    <div className="flex-grow" style={{ height: windowHeight - 220 }}>
+      <ScrollShadow className="h-full overflow-y-auto">
         <ColorPanel />
       </ScrollShadow>
     </div>
@@ -715,8 +712,8 @@ export const LeftResourcePanel = () => {
 
   // 纹理面板内容
   const renderPatternPanel = () => (
-    <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
-      <ScrollShadow className="h-full">
+    <div className="flex-grow" style={{ height: windowHeight - 220 }}>
+      <ScrollShadow className="h-full overflow-y-auto">
         <SvgPatternPanel />
       </ScrollShadow>
     </div>
@@ -747,7 +744,7 @@ export const LeftResourcePanel = () => {
       </div>
       
       {/* 标签页容器 - 使用flex-grow填充可用空间但不超出 */}
-      <div className="px-2 pt-2 flex-grow overflow-hidden flex flex-col">
+      <div className="px-2 pt-2 flex-grow flex flex-col">
         <Tabs 
           selectedKey={activeTab} 
           onSelectionChange={(key) => setActiveTab(key as string)}
@@ -755,8 +752,9 @@ export const LeftResourcePanel = () => {
           variant="solid"
           fullWidth
           classNames={{
-            base: "flex flex-col flex-grow overflow-hidden",
-            panel: "flex-grow overflow-hidden"
+            base: "flex flex-col flex-grow",
+            panel: "flex-grow overflow-hidden",
+            tabList: "mb-0"
           }}
         >
           <Tab 
@@ -790,11 +788,7 @@ export const LeftResourcePanel = () => {
               </div>
             }
           >
-            <div className="flex-grow overflow-y-auto" style={{ height: windowHeight - 220 }}>
-              <ScrollShadow className="h-full">
-                <SvgPatternPanel />
-              </ScrollShadow>
-            </div>
+            {renderPatternPanel()}
           </Tab>
         </Tabs>
       </div>

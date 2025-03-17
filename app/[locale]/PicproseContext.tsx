@@ -156,8 +156,17 @@ export function PicproseProvider({
   children: React.ReactNode, 
   onDownload: (format: string) => void 
 }) {
+  // 创建默认属性信息
+  const initialPropertyInfo = React.useMemo(() => {
+    // 使用固定的第一个标题，而不是随机选择
+    return {
+      ...defaultPropertyInfo,
+      title: config.title[0] // 使用固定的第一个标题
+    };
+  }, []);
+
   const [imageInfo, setImageInfo] = useState<ImageInfo>(defaultImageInfo);
-  const [propertyInfo, setPropertyInfo] = useState<PropertyInfo>(defaultPropertyInfo);
+  const [propertyInfo, setPropertyInfo] = useState<PropertyInfo>(initialPropertyInfo);
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [backgroundColor, setBackgroundColor] = useState<string>('#1F2937');
   const [backgroundPattern, setBackgroundPattern] = useState<string>("");
@@ -171,6 +180,16 @@ export function PicproseProvider({
   const [selectedSvgIndex, setSelectedSvgIndex] = useState<number | null>(null);
   const [svgPatternParams, setSvgPatternParams] = useState<SvgTemplateParams>({});
   const [showSvgPanel, setShowSvgPanel] = useState(false);
+
+  // 使用 useEffect 来设置随机标题，这样只会在客户端执行
+  useEffect(() => {
+    // 仅在客户端执行随机选择
+    const randomTitle = config.title[Math.floor(Math.random() * config.title.length)];
+    setPropertyInfo(prev => ({
+      ...prev,
+      title: randomTitle
+    }));
+  }, []);
 
   // 更新单个属性
   const updateProperty = <K extends keyof PropertyInfo>(key: K, value: PropertyInfo[K]) => {
