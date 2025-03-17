@@ -13,8 +13,11 @@ PicProse is a powerful cover image generator designed for bloggers, content crea
 
 
 
-![PicProse Preview](./doc/screenshot.jpg )
+![PicProse Preview](./doc/demo-1.jpg )
 
+![PicProse Preview](./doc/demo-2.jpg )
+
+![PicProse Preview](./doc/demo-3.jpg )
 
 ## ✨ Key Features
 

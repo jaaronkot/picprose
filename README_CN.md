@@ -9,9 +9,12 @@ PicProse 是一款强大的封面图片生成工具，专为博客作者、内�
 
 **在线体验：** [picprose.pixpark.net](https://picprose.pixpark.net/)
 
-![PicProse Preview](./doc/screenshot.jpg )
 
-![PicProse Preview](./doc/screenshot2.jpg )
+![PicProse Preview](./doc/demo-1.jpg )
+
+![PicProse Preview](./doc/demo-2.jpg )
+
+![PicProse Preview](./doc/demo-3.jpg )
 
 ## ✨ 主要特点
 
