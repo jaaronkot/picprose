@@ -69,7 +69,7 @@ You can start by creating your own Nextra site and deploying to Vercel by clicki
 ## Deploy with Docker
 
 ```sh
-docker run -d --name picprose -e NEXT_PUBLIC_UNSPLASH_API_KEY=xxx -p 3000:3000 hausen1012/picprose
+docker run -d --name picprose -e UNSPLASH_API_KEY=xxx -p 3000:3000 hausen1012/picprose
 ```
 
 ## License
