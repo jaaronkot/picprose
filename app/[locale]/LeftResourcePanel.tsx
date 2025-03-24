@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Input,
   ListboxItem,
@@ -17,7 +17,6 @@ import {
   Tabs,
   Tab,
 } from "@nextui-org/react";
-import unsplash from "./unsplashConfig";
 import { SearchIcon } from "./SearchIcon";
 import PhotoAlbum from "react-photo-album";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -196,7 +195,7 @@ const SvgPatternPanel = () => {
   // 检查是否已经存在角落模板
   const hasCornerTemplate = svgBgs.some(bg => bg.name === "角落");
   
-  // 如果没有角落模板，添加一个
+  // 如果没有角落模板，添加一个（确保类型匹配）
   if (!hasCornerTemplate && svgBgs.length > 0) {
     svgBgs.push({
       name: "角落",
@@ -209,7 +208,19 @@ const SvgPatternPanel = () => {
         cornerCount: 5,
         strokeWidth: 30,
         rotation: 0,
-        contrast: 50
+        contrast: 50,
+        // 添加必要的参数以匹配类型要求
+        style: "solid",
+        position: ["center"],
+        mirrorEdges: false,
+        offsetX: 0,
+        offsetY: 0,
+        // 添加缺少的必要参数
+        radius: 100,
+        shadowColor: "#00000033",
+        balance: 0.5,
+        velocity: 0.5,
+        layerDistance: 10
       }
     });
   }
@@ -717,6 +728,9 @@ export const LeftResourcePanel = () => {
   // 添加当前标签页状态
   const [activeTab, setActiveTab] = React.useState("images");
 
+  // 添加一个状态来跟踪已加载的图片ID
+  const [loadedPhotoIds, setLoadedPhotoIds] = useState<Set<string>>(new Set());
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = URL.createObjectURL(event.target.files[0]);
@@ -736,33 +750,45 @@ export const LeftResourcePanel = () => {
       .then(response => response.json())
       .then(result => {
         if (result.type === "success") {
-          const photos = result.response.results.map((item: any) => {
-            return {
-              src: item.urls.small,
-              url: item.urls.regular,
-              key: item.id,
-              alt: item.alt_description,
-              width: item.width,
-              height: item.height,
-              name: item.user.name,
-              avatar: item.user.profile_image.small,
-              profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
-            };
-          });
+          // 过滤掉已经加载的图片ID
+          const newPhotos = result.response.results
+            .filter((item: any) => !loadedPhotoIds.has(item.id))
+            .map((item: any) => {
+              return {
+                src: item.urls.small,
+                url: item.urls.regular,
+                key: item.id,
+                alt: item.alt_description,
+                width: item.width,
+                height: item.height,
+                name: item.user.name,
+                avatar: item.user.profile_image.small,
+                profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
+                downloadLink: item.links?.download || "",
+              };
+            });
           
-          if (photos.length < PHOTOS_PER_PAGE) {
+          // 更新已加载图片ID集合
+          const newIds = new Set(loadedPhotoIds);
+          newPhotos.forEach((photo: any) => {
+            newIds.add(photo.key);
+          });
+          setLoadedPhotoIds(newIds);
+          
+          // 如果过滤后没有新照片或总数小于请求数，设置没有更多照片
+          if (newPhotos.length === 0 || newPhotos.length < PHOTOS_PER_PAGE) {
             setHasMorePhotos(false);
           }
           
           if (page === 1) {
-            setPhotos(photos);
+            setPhotos(newPhotos);
             setTimeout(() => {
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollTop = 0;
               }
             }, 0);
           } else {
-            setPhotos(prevPhotos => [...prevPhotos, ...photos]);
+            setPhotos(prevPhotos => [...prevPhotos, ...newPhotos]);
             setTimeout(() => {
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollTop = scrollPositionRef.current;
@@ -770,11 +796,18 @@ export const LeftResourcePanel = () => {
             }, 0);
           }
         }
+      })
+      .catch(error => {
+        console.error("搜索照片出错：", error);
+        setHasMorePhotos(false);
       });
   };
 
   const fetchRandomPhotos = () => {
-    fetch('/api/unsplash')
+    // 随机请求时添加一个随机参数，以获取不同的图片集
+    const randomSeed = Math.floor(Math.random() * 1000);
+    
+    fetch(`/api/unsplash?random=true&seed=${randomSeed}`)
       .then(response => response.json())
       .then(result => {
         if (result && result.response) {
@@ -782,28 +815,59 @@ export const LeftResourcePanel = () => {
             ? result.response 
             : [result.response];
             
-          var photos = responseArray.map((item: any) => {
-            return {
-              src: item.urls.small,
-              url: item.urls.regular,
-              key: item.id,
-              alt: item.alt_description,
-              width: item.width,
-              height: item.height,
-              name: item.user.name,
-              avatar: item.user.profile_image.small,
-              profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
-            };
-          });
-          if (photos.length < PHOTOS_PER_PAGE) {
+          // 过滤出尚未加载的图片
+          const newPhotos = responseArray
+            .filter((item: any) => !loadedPhotoIds.has(item.id))
+            .map((item: any) => {
+              return {
+                src: item.urls.small,
+                url: item.urls.regular,
+                key: item.id,
+                alt: item.alt_description,
+                width: item.width,
+                height: item.height,
+                name: item.user.name,
+                avatar: item.user.profile_image.small,
+                profile: `${item.user.links.html}?utm_source=PicProse&utm_medium=referral`,
+                downloadLink: item.links?.download || "",
+              };
+            });
+          
+          // 如果过滤后没有新照片，设置没有更多照片可加载
+          if (newPhotos.length === 0) {
             setHasMorePhotos(false);
+            return;
           }
-          if(!hasSetInitialPhoto) {
-            setHasSetInitialPhoto(true)
-            selectPhoto(Math.floor(Math.random() * 20), photos)
-          }
-          setPhotos(prevPhotos => [...prevPhotos, ...photos]);
+          
+          // 更新已加载图片ID集合
+          const newIds = new Set(loadedPhotoIds);
+          newPhotos.forEach((photo: any) => {
+            newIds.add(photo.key);
+          });
+          setLoadedPhotoIds(newIds);
+          
+          // 更新状态，确保照片数组不为空
+          setPhotos(prevPhotos => {
+            const updatedPhotos = [...prevPhotos, ...newPhotos];
+            
+            // 仅在第一次获取照片且有照片时设置初始照片
+            if (!hasSetInitialPhoto && updatedPhotos.length > 0) {
+              setHasSetInitialPhoto(true);
+              // 使用 setTimeout 确保状态更新后再选择照片
+              setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * Math.min(20, updatedPhotos.length));
+                selectPhoto(randomIndex, updatedPhotos);
+              }, 0);
+            }
+            
+            return updatedPhotos;
+          });
         }
+      })
+      .catch(error => {
+        console.error("获取随机照片出错：", error);
+        // 出错时也标记没有更多照片，避免无限重试
+        setHasMorePhotos(false);
       });
   };
 
@@ -820,12 +884,17 @@ export const LeftResourcePanel = () => {
 
     setShouldFetchRandomPhotos(false);
     setHasMorePhotos(true);
+    setLoadedPhotoIds(new Set()); // 重置已加载图片ID集合
     const page = 1;
     setCurrentPage(page);
     fetchPhotosBySearch(searchQuery, page);
   };
 
   const handleLoadMore = () => {
+    if (scrollContainerRef.current) {
+      scrollPositionRef.current = scrollContainerRef.current.scrollTop;
+    }
+    
     if (shouldFetchRandomPhotos) {
       fetchRandomPhotos();
     } else {
@@ -853,8 +922,21 @@ export const LeftResourcePanel = () => {
   }, []);
 
   const selectPhoto = (index: number, photoList: any[]) => {
-    setImageInfo(photoList[index]);
-    setBackgroundType('image'); // 设置背景类型为图片
+    if (index >= 0 && index < photoList.length) {
+      const selectedPhoto = photoList[index];
+      setImageInfo({
+        url: selectedPhoto.url,
+        name: selectedPhoto.name || "未知作者",
+        avatar: selectedPhoto.avatar || "default-author.jpg",
+        profile: selectedPhoto.profile || "#",
+        downloadLink: selectedPhoto.downloadLink || "",
+        width: selectedPhoto.width,
+        height: selectedPhoto.height,
+        key: selectedPhoto.key,
+        alt: selectedPhoto.alt
+      });
+      setBackgroundType('image'); // 设置背景类型为图片
+    }
   };
 
   const handleButtonClick = () => {
@@ -866,32 +948,45 @@ export const LeftResourcePanel = () => {
   // 图片面板内容
   const renderImagePanel = () => (
     <div className="flex-grow relative">
-      <InfiniteScroll
-        className="overflow-y-auto scrollbar-thin scrollbar-color-auto px-3"
-        dataLength={photos.length}
-        height={windowHeight - 220}
-        next={handleLoadMore}
-        hasMore={hasMorePhotos}
-        loader={
-          <div className="grid justify-items-center">
-            <Spinner className="my-4" />
-          </div>
-        }
-        endMessage={
-          <div className="grid justify-items-center">
-            <div className="my-4">{t('search_end')}</div>
-          </div>
-        }
+      <div 
+        id="scrollableDiv"
+        ref={scrollContainerRef}
+        style={{ height: windowHeight - 220, overflow: 'auto' }}
+        className="scrollbar-thin scrollbar-color-auto"
       >
-        <PhotoAlbum
-          photos={photos}
-          layout="rows"
-          targetRowHeight={TARGET_ROW_HEIGHT}
-          rowConstraints={ROW_CONSTRAINTS}
-          spacing={PHOTO_SPACING}
-          onClick={({ index }) => selectPhoto(index, photos)}
-        />
-      </InfiniteScroll>
+        <InfiniteScroll
+          dataLength={photos.length}
+          next={handleLoadMore}
+          hasMore={hasMorePhotos}
+          loader={
+            <div className="grid justify-items-center">
+              <Spinner className="my-4" />
+            </div>
+          }
+          endMessage={
+            <div className="grid justify-items-center">
+              <div className="my-4">{t('search_end')}</div>
+            </div>
+          }
+          scrollableTarget="scrollableDiv"
+          className="px-3"
+        >
+          {photos.length > 0 ? (
+            <PhotoAlbum
+              photos={photos}
+              layout="rows"
+              targetRowHeight={TARGET_ROW_HEIGHT}
+              rowConstraints={ROW_CONSTRAINTS}
+              spacing={PHOTO_SPACING}
+              onClick={({ index }) => selectPhoto(index, photos)}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-40">
+              <Spinner />
+            </div>
+          )}
+        </InfiniteScroll>
+      </div>
       <div className="absolute bottom-0 left-0 m-4 w-40 h-6 bg-black bg-opacity-65 rounded-xl">
         <div className="flex items-center ml-2">
           <span className="leading-6 text-xs text-white text-center">
