@@ -119,7 +119,8 @@
         "solid": "纯色",
         "randomize_wave": "随机生成",
         "title_width": "标题宽度",
-        "devices": "设备"
+        "devices": "设备",
+        "social_media": "社交媒体"
     },
     "ImageEditorToolbar": {
         "edit": "编辑",

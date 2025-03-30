@@ -100,6 +100,7 @@ export default function Home() {
                 elements={elements}
                 setElements={setElements}
                 saveHistory={saveHistory}
+                handleResetLayout={handleResetLayout}
               />
             </ComponentToImg>
           </div>

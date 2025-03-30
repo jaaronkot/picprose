@@ -22,6 +22,7 @@ interface ImageEditorProps {
     image: { x: number; y: number };
   }>>;
   saveHistory: (elements: any) => void;
+  handleResetLayout: () => void;
 }
 
 // 拖动元素类型
@@ -34,7 +35,8 @@ export const ImageEditor = ({
   isDragMode, 
   elements, 
   setElements,
-  saveHistory
+  saveHistory,
+  handleResetLayout
 }: ImageEditorProps) => {
   // 从Context获取配置
   const { 
@@ -92,24 +94,39 @@ export const ImageEditor = ({
     }
   }, [imageInfo.url]);
 
-  // 图片垂直居中和加载处理 - 改进初始位置设置
+  // 图片垂直居中和加载处理
   useEffect(() => {
     const centerImageVertically = () => {
       if (imageRef.current && containerRef.current) {
-        // 对于竖屏图片，将初始位置设置为显示整个图片的中间部分
-        setImagePosition(0);
+        const container = containerRef.current;
+        const image = imageRef.current;
+        
+        // 等待图片加载完成后获取尺寸
+        const checkImageSize = () => {
+          // 在cover模式下，图片居中显示，初始位置为0（对应50%）
+          setImagePosition(0);
+        };
+        
+        // 如果图片已经加载完成，直接计算位置
+        if (image.complete && image.naturalHeight > 0) {
+          checkImageSize();
+        }
       }
     };
     
     const handleImageLoad = () => {
       setIsLoading(false);
       // 图片加载完成后居中图片
-      centerImageVertically();
+      setTimeout(centerImageVertically, 10); // 小延迟确保DOM更新
     };
     
     const imgElement = imageRef.current;
     if (imgElement) {
       imgElement.addEventListener('load', handleImageLoad);
+      // 如果图片已经加载完成，立即处理
+      if (imgElement.complete) {
+        handleImageLoad();
+      }
     }
     
     return () => {
@@ -137,13 +154,13 @@ export const ImageEditor = ({
   const handleImageMouseDown = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
     if (!isDragMode) return;
     setIsDragging(true);
-    setDragStartY(e.clientY - imagePosition);
+    setDragStartY(e.clientY);
     setDragStart({ 
       x: e.clientX,
-      y: e.clientY - imagePosition 
+      y: e.clientY
     });
     e.stopPropagation();
-  }, [isDragMode, imagePosition]);
+  }, [isDragMode]);
 
   // 容器点击处理
   const handleContainerMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -153,10 +170,10 @@ export const ImageEditor = ({
     
     if (!isClickOnDraggableElement) {
       setIsDragging(true);
-      setDragStartY(e.clientY - imagePosition);
+      setDragStartY(e.clientY);
       setDragStart({ 
         x: e.clientX,
-        y: e.clientY - imagePosition 
+        y: e.clientY
       });
     }
   };
@@ -169,44 +186,43 @@ export const ImageEditor = ({
     setDragStart({ x: e.clientX, y: e.clientY });
   };
   
-  // 鼠标移动处理 - 完全重写拖动边界逻辑
+  // 鼠标移动处理 - 修复图片拖拽逻辑
   const handleMouseMove = (e: MouseEvent) => {
     // 处理图片拖动
     if (isDragging && imageRef.current) {
-      // 计算新的垂直位置
-      const newVerticalPosition = e.clientY - dragStartY;
+      // 计算鼠标移动距离
+      const mouseDelta = e.clientY - dragStartY;
       
       const container = containerRef.current;
       const image = imageRef.current;
       
       if (container && image) {
-        const imageHeight = image.getBoundingClientRect().height;
-        const containerHeight = container.getBoundingClientRect().height;
+        // 使用cover模式时，通过object-position控制显示位置
+        // imagePosition的范围应该在合理的百分比范围内
         
-        // 计算图片可移动的范围 - 大幅增加范围
-        let minY, maxY;
+        // 计算新的位置值，基于鼠标移动距离
+        const sensitivity = 2.5; // 拖拽灵敏度，增加响应速度
+        const newPosition = imagePosition + (mouseDelta * sensitivity);
         
-        if (imageHeight <= containerHeight) {
-          // 小图片允许在整个容器内自由移动
-          minY = -imageHeight;  // 允许完全向上移出
-          maxY = containerHeight; // 允许完全向下移出
-        } else {
-          // 大图片增加可移动范围，尤其是对竖屏图片
-          minY = containerHeight - imageHeight * 1.8; // 允许查看更多底部内容
-          maxY = imageHeight * 0.8; // 允许查看更多顶部内容
-        }
+        // 限制范围：允许从显示图片顶部(-300)到底部(300)
+        // 这个范围对应object-position的20%到80%，提供更大的调整空间
+        const minPosition = -300;
+        const maxPosition = 300;
         
-        // 将最终位置对齐到网格
-        const boundedY = snapToGrid(Math.max(minY, Math.min(maxY, newVerticalPosition)));
+        const boundedPosition = Math.max(minPosition, Math.min(maxPosition, newPosition));
         
         // 设置新位置
-        setImagePosition(boundedY);
+        setImagePosition(boundedPosition);
         
-        // 重要：只更新dragStartY，保持相对拖动
-        setDragStartY(e.clientY - boundedY);
+        // 更新拖拽起始点，使拖拽连续
+        setDragStartY(e.clientY);
       } else {
-        setImagePosition(newVerticalPosition);
-        setDragStartY(e.clientY - newVerticalPosition);
+        // 容器或图片不存在时的fallback
+        const sensitivity = 2.5;
+        const newPosition = imagePosition + (mouseDelta * sensitivity);
+        const boundedPosition = Math.max(-300, Math.min(300, newPosition));
+        setImagePosition(boundedPosition);
+        setDragStartY(e.clientY);
       }
     }
     
@@ -273,7 +289,7 @@ export const ImageEditor = ({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragStartY, draggingElement, dragStart, isDragMode]);
+  }, [isDragging, draggingElement, dragStart, isDragMode]);
   
   // 渲染图标
   const renderIcon = () => {
@@ -346,9 +362,8 @@ export const ImageEditor = ({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              // 修改为完全居中显示，左右上下都居中
-              objectPosition: isDragging ? `center ${imagePosition}px` : 'center center',
-              transition: isDragging ? 'none' : 'all 0.1s ease-out',
+              objectPosition: `center ${50 - imagePosition * 0.1}%`,
+              transition: isDragging ? 'none' : 'object-position 0.1s ease-out',
             }}
             onMouseDown={handleImageMouseDown}
             draggable={false}
@@ -538,6 +553,13 @@ export const ImageEditor = ({
       saveHistory(elementsLayout);
     }
   }, [elementsLayout]);
+  
+  // 在组件挂载后自动重置布局
+  useEffect(() => {
+    // 组件挂载后调用重置布局方法
+    handleResetLayout();
+    // 仅在组件挂载时执行一次
+  }, []);
   
   return (
     <div className="max-h-screen relative flex group rounded-3xl">

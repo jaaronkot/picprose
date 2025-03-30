@@ -24,6 +24,13 @@ import {useTranslations} from 'next-intl';
 import { usePicprose } from "./PicproseContext";
 import { SVG_BACKGROUNDS } from './svgBackgrounds';
 
+// 添加SVG模板类型定义
+interface SvgTemplate {
+  name: string;
+  svgTemplate: (params: any) => string;
+  defaultParams: any;
+}
+
 const PHOTO_SPACING = 8;
 const KEY_CODE_ENTER = 13;
 const PHOTOS_PER_PAGE = 30;
@@ -189,14 +196,19 @@ const SvgPatternPanel = () => {
     </svg>`;
   };
   
-  // 如果SVG_BACKGROUNDS不完整，手动添加角落模板
-  let svgBgs = [...(SVG_BACKGROUNDS || [])];
+  // 安全地构建SVG背景数组
+  const svgBgs: SvgTemplate[] = [];
+  
+  // 检查SVG_BACKGROUNDS是否可用，如果可用则使用它
+  if (Array.isArray(SVG_BACKGROUNDS) && SVG_BACKGROUNDS.length > 0) {
+    svgBgs.push(...SVG_BACKGROUNDS);
+  }
   
   // 检查是否已经存在角落模板
   const hasCornerTemplate = svgBgs.some(bg => bg.name === "角落");
   
-  // 如果没有角落模板，添加一个（确保类型匹配）
-  if (!hasCornerTemplate && svgBgs.length > 0) {
+  // 如果没有角落模板，添加一个
+  if (!hasCornerTemplate) {
     svgBgs.push({
       name: "角落",
       svgTemplate: cornerTemplate,
@@ -204,23 +216,22 @@ const SvgPatternPanel = () => {
         color1: "#ff0071ff",
         color2: "#95ffa1ff",
         backgroundColor: "#95ffda",
+        // 添加足够的参数以匹配预期类型
         cornerRadius: 150,
         cornerCount: 5,
         strokeWidth: 30,
         rotation: 0,
         contrast: 50,
-        // 添加必要的参数以匹配类型要求
+        layers: 3,  // 添加必须的layers属性
+        height: 100,
+        amplitude: 50,
+        frequency: 0.02,
+        speed: 0.5,
+        wavesOpacity: 0.7,
+        // 其他可选参数
         style: "solid",
         position: ["center"],
-        mirrorEdges: false,
-        offsetX: 0,
-        offsetY: 0,
-        // 添加缺少的必要参数
-        radius: 100,
-        shadowColor: "#00000033",
-        balance: 0.5,
-        velocity: 0.5,
-        layerDistance: 10
+        mirrorEdges: false
       }
     });
   }
@@ -486,230 +497,6 @@ export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
   );
 };
 
-// 添加布局图标
-export const LayoutIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="24"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="24"
-      {...props}
-    >
-      <path
-        d="M5 10H7C9 10 10 9 10 7V5C10 3 9 2 7 2H5C3 2 2 3 2 5V7C2 9 3 10 5 10Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M17 10H19C21 10 22 9 22 7V5C22 3 21 2 19 2H17C15 2 14 3 14 5V7C14 9 15 10 17 10Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M17 22H19C21 22 22 21 22 19V17C22 15 21 14 19 14H17C15 14 14 15 14 17V19C14 21 15 22 17 22Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M5 22H7C9 22 10 21 10 19V17C10 15 9 14 7 14H5C3 14 2 15 2 17V19C2 21 3 22 5 22Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-};
-
-// 创建布局面板组件
-const LayoutPanel = () => {
-  const { setElementsLayout } = usePicprose();
-  const t = useTranslations('LeftResourcePanel');
-
-  // 预设的布局选项 - 更新为独立元素定位
-  const layoutPresets = [
-    {
-      name: t('layout_magazine_cover'),
-      description: t('layout_magazine_cover_desc'),
-      elements: {
-        title: { x: 0, y: -170, visible: true },
-        author: { x: 180, y: -40, visible: true },
-        icon: { x: -180, y: -190, visible: true },
-      },
-      preview: "layout-magazine.svg"
-    },
-    {
-      name: t('layout_movie_poster'),
-      description: t('layout_movie_poster_desc'),
-      elements: {
-        title: { x: 0, y: -120, visible: true },
-        author: { x: 0, y: 20, visible: true },
-        icon: { x: 0, y: 180, visible: true },
-      },
-      preview: "layout-movie.svg"
-    },
-    {
-      name: t('layout_book_cover'),
-      description: t('layout_book_cover_desc'),
-      elements: {
-        title: { x: 0, y: -100, visible: true },
-        author: { x: 0, y: 180, visible: true },
-        icon: { x: 0, y: 40, visible: true },
-      },
-      preview: "layout-book.svg"
-    },
-    {
-      name: t('layout_minimal_poster'),
-      description: t('layout_minimal_poster_desc'),
-      elements: {
-        title: { x: 0, y: 0, visible: true },
-        author: { x: 0, y: 190, visible: true },
-        icon: { x: 200, y: -190, visible: true },
-      },
-      preview: "layout-minimal-poster.svg"
-    },
-    {
-      name: t('layout_asymmetric'),
-      description: t('layout_asymmetric_desc'),
-      elements: {
-        title: { x: -160, y: 140, visible: true },
-        author: { x: 160, y: 140, visible: true },
-        icon: { x: -160, y: -140, visible: true },
-      },
-      preview: "layout-asymmetric.svg"
-    },
-    {
-      name: t('layout_split'),
-      description: t('layout_split_desc'),
-      elements: {
-        title: { x: -170, y: 0, visible: true },
-        author: { x: 170, y: 50, visible: true },
-        icon: { x: 170, y: -50, visible: true },
-      },
-      preview: "layout-split.svg"
-    },
-    {
-      name: t('layout_banner'),
-      description: t('layout_banner_desc'),
-      elements: {
-        title: { x: 0, y: 140, visible: true },
-        author: { x: -180, y: -180, visible: true },
-        icon: { x: 180, y: -180, visible: true },
-      },
-      preview: "layout-banner.svg"
-    },
-    {
-      name: t('layout_thirds'),
-      description: t('layout_thirds_desc'),
-      elements: {
-        title: { x: 0, y: -70, visible: true },
-        author: { x: -150, y: 170, visible: true },
-        icon: { x: 150, y: 170, visible: true },
-      },
-      preview: "layout-thirds.svg"
-    },
-    {
-      name: t('layout_brand'),
-      description: t('layout_brand_desc'),
-      elements: {
-        title: { x: 0, y: 0, visible: true },
-        author: { x: 0, y: 60, visible: true },
-        icon: { x: 0, y: -80, visible: true },
-      },
-      preview: "layout-brand.svg"
-    },
-    {
-      name: t('layout_social_media'),
-      description: t('layout_social_media_desc'),
-      elements: {
-        title: { x: 0, y: -30, visible: true },
-        author: { x: 0, y: 30, visible: true },
-        icon: { x: -150, y: -150, visible: true },
-      },
-      preview: "layout-social.svg"
-    },
-    {
-      name: t('layout_clean_title'),
-      description: t('layout_clean_title_desc'),
-      elements: {
-        title: { x: 0, y: 0, visible: true },
-        author: { x: 0, y: 170, visible: false },
-        icon: { x: 0, y: 90, visible: false },
-      },
-      preview: "layout-clean-title.svg"
-    },
-    {
-      name: t('layout_author_spotlight'),
-      description: t('layout_author_spotlight_desc'),
-      elements: {
-        title: { x: 0, y: -150, visible: true },
-        author: { x: 0, y: 0, visible: true },
-        icon: { x: -150, y: 0, visible: true },
-      },
-      preview: "layout-author-spotlight.svg"
-    }
-  ];
-
-  // 应用布局
-  const applyLayout = (layout: any) => {
-    setElementsLayout(layout.elements);
-  };
-
-  return (
-    <div className="p-4">
-      <h3 className="text-lg font-medium mb-4">{t('layout_presets')}</h3>
-      <div className="grid grid-cols-2 gap-4">
-        {layoutPresets.map((layout, index) => (
-          <div 
-            key={index}
-            className="flex flex-col items-center"
-            onClick={() => applyLayout(layout)}
-          >
-            <div 
-              className="w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform border border-gray-300 dark:border-gray-700 overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800"
-            >
-              <div className="w-full h-full p-2 flex items-center justify-center">
-                <div className="w-full h-full relative bg-gradient-to-b from-gray-700 to-gray-900 rounded-md flex items-center justify-center">
-                  {/* 标题元素预览 */}
-                  <div className="absolute w-16 h-1 bg-white/80 rounded-full" style={{ 
-                    transform: `translate(${layout.elements.title.x/5}px, ${layout.elements.title.y/5}px)`,
-                    opacity: layout.elements.title.visible ? 1 : 0.3
-                  }}></div>
-                  
-                  {/* 作者元素预览 */}
-                  <div className="absolute w-12 h-0.5 bg-white/60 rounded-full" style={{ 
-                    transform: `translate(${layout.elements.author.x/5}px, ${layout.elements.author.y/5}px)`,
-                    opacity: layout.elements.author.visible ? 1 : 0.3
-                  }}></div>
-                  
-                  {/* 图标元素预览 */}
-                  <div className="absolute w-2 h-2 bg-white/60 rounded-full" style={{ 
-                    transform: `translate(${layout.elements.icon.x/5}px, ${layout.elements.icon.y/5}px)`,
-                    opacity: layout.elements.icon.visible ? 1 : 0.3
-                  }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="text-center text-default-600 mt-2">
-              {layout.name}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 export const LeftResourcePanel = () => {
   const t = useTranslations('LeftResourcePanel');
   const { setImageInfo, setBackgroundType } = usePicprose();
@@ -724,6 +511,10 @@ export const LeftResourcePanel = () => {
   const [windowHeight, setWindowHeight] = React.useState(0);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const scrollPositionRef = React.useRef(0);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [retryCount, setRetryCount] = React.useState(0);
+  const MAX_RETRY_COUNT = 3;
+  const MAX_PHOTOS = 300; // 新增：最大照片数限制
   
   // 添加当前标签页状态
   const [activeTab, setActiveTab] = React.useState("images");
@@ -746,8 +537,27 @@ export const LeftResourcePanel = () => {
   };
 
   const fetchPhotosBySearch = (searchText: string, page: number) => {
+    // 如果已经在加载中，或者没有更多照片，则直接返回
+    if (isLoading || !hasMorePhotos) {
+      return;
+    }
+
+    // 检查照片数量上限
+    if (photos.length >= MAX_PHOTOS) {
+      console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
+      setHasMorePhotos(false);
+      return;
+    }
+
+    setIsLoading(true);
+    
     fetch(`/api/unsplash?query=${encodeURIComponent(searchText)}&page=${page}&perPage=${PHOTOS_PER_PAGE}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(result => {
         if (result.type === "success") {
           // 过滤掉已经加载的图片ID
@@ -768,6 +578,32 @@ export const LeftResourcePanel = () => {
               };
             });
           
+          // 如果过滤后没有新照片，并且还有重试机会，尝试下一页
+          if (newPhotos.length === 0) {
+            if (retryCount < MAX_RETRY_COUNT) {
+              const newRetryCount = retryCount + 1;
+              setRetryCount(newRetryCount);
+              setIsLoading(false);
+              
+              // 如果还需要重试，尝试下一页
+              if (newRetryCount < MAX_RETRY_COUNT) {
+                setTimeout(() => {
+                  if (activeTab === "images" && hasMorePhotos) {
+                    const nextPage = page + 1;
+                    fetchPhotosBySearch(searchText, nextPage);
+                  }
+                }, 800);
+              } else {
+                setHasMorePhotos(false);
+                setIsLoading(false);
+              }
+              return;
+            } else {
+              setHasMorePhotos(false);
+              setIsLoading(false);
+            }
+          }
+          
           // 更新已加载图片ID集合
           const newIds = new Set(loadedPhotoIds);
           newPhotos.forEach((photo: any) => {
@@ -776,7 +612,18 @@ export const LeftResourcePanel = () => {
           setLoadedPhotoIds(newIds);
           
           // 如果过滤后没有新照片或总数小于请求数，设置没有更多照片
-          if (newPhotos.length === 0 || newPhotos.length < PHOTOS_PER_PAGE) {
+          if (newPhotos.length < PHOTOS_PER_PAGE) {
+            setHasMorePhotos(false);
+          } else {
+            // 只有在成功获取照片时才重置重试计数
+            setRetryCount(0);
+            // 确保hasMorePhotos为true
+            setHasMorePhotos(true);
+          }
+          
+          // 检查照片总数是否达到上限
+          const updatedPhotoCount = page === 1 ? newPhotos.length : photos.length + newPhotos.length;
+          if (updatedPhotoCount >= MAX_PHOTOS) {
             setHasMorePhotos(false);
           }
           
@@ -795,20 +642,65 @@ export const LeftResourcePanel = () => {
               }
             }, 0);
           }
+        } else {
+          // API返回不是success类型
+          if (retryCount < MAX_RETRY_COUNT) {
+            setRetryCount(prev => prev + 1);
+            setTimeout(() => {
+              setIsLoading(false);
+              if (activeTab === "images" && hasMorePhotos) {
+                fetchPhotosBySearch(searchText, page);
+              }
+            }, 1000);
+          } else {
+            setHasMorePhotos(false);
+            setIsLoading(false);
+          }
         }
       })
       .catch(error => {
         console.error("搜索照片出错：", error);
-        setHasMorePhotos(false);
+        // 出错时根据重试次数决定是否继续尝试
+        if (retryCount < MAX_RETRY_COUNT) {
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => {
+            setIsLoading(false);
+            if (activeTab === "images" && hasMorePhotos) {
+              fetchPhotosBySearch(searchText, page);
+            }
+          }, 1000);
+        } else {
+          setHasMorePhotos(false);
+          setIsLoading(false);
+        }
       });
   };
 
   const fetchRandomPhotos = () => {
+    // 如果已经在加载中，或者没有更多照片，则直接返回
+    if (isLoading || !hasMorePhotos) {
+      return;
+    }
+
+    // 新增：如果照片数量已达上限，停止加载
+    if (photos.length >= MAX_PHOTOS) {
+      console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
+      setHasMorePhotos(false);
+      return;
+    }
+
+    setIsLoading(true);
+    
     // 随机请求时添加一个随机参数，以获取不同的图片集
-    const randomSeed = Math.floor(Math.random() * 1000);
+    const randomSeed = Math.floor(Math.random() * 10000);
     
     fetch(`/api/unsplash?random=true&seed=${randomSeed}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(result => {
         if (result && result.response) {
           const responseArray = Array.isArray(result.response) 
@@ -833,10 +725,30 @@ export const LeftResourcePanel = () => {
               };
             });
           
-          // 如果过滤后没有新照片，设置没有更多照片可加载
+          // 如果过滤后没有新照片，使用非递归方式处理重试
           if (newPhotos.length === 0) {
-            setHasMorePhotos(false);
-            return;
+            if (retryCount < MAX_RETRY_COUNT) {
+              // 增加重试计数
+              const newRetryCount = retryCount + 1;
+              setRetryCount(newRetryCount);
+              setIsLoading(false);
+              
+              // 如果还需要重试，使用setTimeout避免递归
+              if (newRetryCount < MAX_RETRY_COUNT) {
+                setTimeout(() => {
+                  if (activeTab === "images" && hasMorePhotos) {
+                    fetchRandomPhotos();
+                  }
+                }, 800);
+              } else {
+                setHasMorePhotos(false);
+              }
+              return;
+            } else {
+              // 达到最大重试次数，设置没有更多照片
+              setHasMorePhotos(false);
+              setIsLoading(false);
+            }
           }
           
           // 更新已加载图片ID集合
@@ -846,14 +758,22 @@ export const LeftResourcePanel = () => {
           });
           setLoadedPhotoIds(newIds);
           
-          // 更新状态，确保照片数组不为空
+          // 重置重试计数并确保hasMorePhotos为true
+          setRetryCount(0);
+          setHasMorePhotos(true);
+          
+          // 检查是否达到最大照片数
+          if (photos.length + newPhotos.length >= MAX_PHOTOS) {
+            setHasMorePhotos(false);
+          }
+          
+          // 更新照片状态
           setPhotos(prevPhotos => {
             const updatedPhotos = [...prevPhotos, ...newPhotos];
             
             // 仅在第一次获取照片且有照片时设置初始照片
             if (!hasSetInitialPhoto && updatedPhotos.length > 0) {
               setHasSetInitialPhoto(true);
-              // 使用 setTimeout 确保状态更新后再选择照片
               setTimeout(() => {
                 const randomIndex = Math.floor(Math.random() * Math.min(20, updatedPhotos.length));
                 selectPhoto(randomIndex, updatedPhotos);
@@ -862,12 +782,39 @@ export const LeftResourcePanel = () => {
             
             return updatedPhotos;
           });
+          
+          setIsLoading(false);
+        } else {
+          // 响应格式不正确
+          if (retryCount < MAX_RETRY_COUNT) {
+            setRetryCount(prev => prev + 1);
+            setTimeout(() => {
+              setIsLoading(false);
+              if (activeTab === "images" && hasMorePhotos) {
+                fetchRandomPhotos();
+              }
+            }, 1000);
+          } else {
+            setHasMorePhotos(false);
+            setIsLoading(false);
+          }
         }
       })
       .catch(error => {
         console.error("获取随机照片出错：", error);
-        // 出错时也标记没有更多照片，避免无限重试
-        setHasMorePhotos(false);
+        // 出错时根据重试次数决定是否继续尝试
+        if (retryCount < MAX_RETRY_COUNT) {
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => {
+            setIsLoading(false);
+            if (activeTab === "images" && hasMorePhotos) {
+              fetchRandomPhotos();
+            }
+          }, 1000);
+        } else {
+          setHasMorePhotos(false);
+          setIsLoading(false);
+        }
       });
   };
 
@@ -884,13 +831,36 @@ export const LeftResourcePanel = () => {
 
     setShouldFetchRandomPhotos(false);
     setHasMorePhotos(true);
-    setLoadedPhotoIds(new Set()); // 重置已加载图片ID集合
+    setLoadedPhotoIds(new Set());
+    setRetryCount(0);
+    setIsLoading(false); // 重置加载状态
     const page = 1;
     setCurrentPage(page);
-    fetchPhotosBySearch(searchQuery, page);
+    
+    // 清空当前照片列表并滚动到顶部
+    setPhotos([]);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    
+    // 设置短延迟后开始获取
+    setTimeout(() => {
+      fetchPhotosBySearch(searchQuery, page);
+    }, 100);
   };
 
   const handleLoadMore = () => {
+    if (isLoading || !hasMorePhotos || activeTab !== "images") {
+      return;
+    }
+    
+    // 新增：如果照片数量已达上限，停止加载
+    if (photos.length >= MAX_PHOTOS) {
+      console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
+      setHasMorePhotos(false);
+      return;
+    }
+    
     if (scrollContainerRef.current) {
       scrollPositionRef.current = scrollContainerRef.current.scrollTop;
     }
@@ -907,7 +877,11 @@ export const LeftResourcePanel = () => {
   React.useEffect(() => {
     setWindowHeight(window.innerHeight);
     
-    fetchRandomPhotos();
+    // 只在组件挂载时和activeTab为"images"时获取随机照片
+    if (activeTab === "images" && photos.length === 0 && !isLoading) {
+      fetchRandomPhotos();
+      setHasMorePhotos(true); // 确保可以加载更多
+    }
 
     const handleResize = () => {
       setWindowHeight(window.innerHeight);
@@ -915,11 +889,10 @@ export const LeftResourcePanel = () => {
 
     window.addEventListener("resize", handleResize);
 
-    // 清除事件监听器
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [activeTab, photos.length, isLoading]);
 
   const selectPhoto = (index: number, photoList: any[]) => {
     if (index >= 0 && index < photoList.length) {
@@ -935,7 +908,7 @@ export const LeftResourcePanel = () => {
         key: selectedPhoto.key,
         alt: selectedPhoto.alt
       });
-      setBackgroundType('image'); // 设置背景类型为图片
+      setBackgroundType('image');
     }
   };
 
@@ -945,7 +918,46 @@ export const LeftResourcePanel = () => {
     }
   };
 
-  // 图片面板内容
+
+  const PicproseLogo = () => {
+    return (
+      <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
+        <path
+          clipRule="evenodd"
+          d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+          fill="currentColor"
+          fillRule="evenodd"
+        />
+      </svg>
+    );
+  };
+
+  const handleTabChange = (key: string) => {
+    const previousTab = activeTab;
+    setActiveTab(key);
+    
+    // 如果从非图片标签切换到图片标签
+    if (key === "images" && previousTab !== "images") {
+      // 如果没有照片，则获取随机照片
+      if (photos.length === 0 && !isLoading) {
+        setHasMorePhotos(true);
+        fetchRandomPhotos();
+      } else {
+        // 重置滚动位置
+        setTimeout(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = 0;
+          }
+        }, 0);
+        
+        // 确保hasMorePhotos状态正确
+        if (photos.length < MAX_PHOTOS) {
+          setHasMorePhotos(true);
+        }
+      }
+    }
+  };
+
   const renderImagePanel = () => (
     <div className="flex-grow relative">
       <div 
@@ -957,19 +969,23 @@ export const LeftResourcePanel = () => {
         <InfiniteScroll
           dataLength={photos.length}
           next={handleLoadMore}
-          hasMore={hasMorePhotos}
+          hasMore={hasMorePhotos && !isLoading && activeTab === "images"}
           loader={
             <div className="grid justify-items-center">
               <Spinner className="my-4" />
             </div>
           }
           endMessage={
-            <div className="grid justify-items-center">
-              <div className="my-4">{t('search_end')}</div>
-            </div>
+            photos.length > 0 ? (
+              <div className="grid justify-items-center">
+                <div className="my-4">{t('search_end')}</div>
+              </div>
+            ) : null
           }
           scrollableTarget="scrollableDiv"
           className="px-3"
+          scrollThreshold={0.75}
+          initialScrollY={0}
         >
           {photos.length > 0 ? (
             <PhotoAlbum
@@ -1003,7 +1019,6 @@ export const LeftResourcePanel = () => {
     </div>
   );
 
-  // 颜色面板内容
   const renderColorPanel = () => (
     <div className="flex-grow" style={{ height: windowHeight - 220 }}>
       <ScrollShadow className="h-full overflow-y-auto">
@@ -1012,7 +1027,6 @@ export const LeftResourcePanel = () => {
     </div>
   );
 
-  // 纹理面板内容
   const renderPatternPanel = () => (
     <div className="flex-grow" style={{ height: windowHeight - 220 }}>
       <ScrollShadow className="h-full overflow-y-auto">
@@ -1021,18 +1035,8 @@ export const LeftResourcePanel = () => {
     </div>
   );
 
-  // 添加布局面板内容
-  const renderLayoutPanel = () => (
-    <div className="flex-grow" style={{ height: windowHeight - 220 }}>
-      <ScrollShadow className="h-full overflow-y-auto">
-        <LayoutPanel />
-      </ScrollShadow>
-    </div>
-  );
-
   return (
     <div className="w-full flex flex-col h-screen">
-      {/* 头部导航 */}
       <div className="w-full flex-none">
         <Navbar
           classNames={{
@@ -1040,7 +1044,7 @@ export const LeftResourcePanel = () => {
           }}
         >
           <NavbarBrand>
-            <img className="w-7" src="logo.png" alt="Picprose Logo" />
+            <PicproseLogo />
             <p className="font-bold text-inherit">PicProse</p>
           </NavbarBrand>
           <NavbarContent justify="end">
@@ -1054,27 +1058,26 @@ export const LeftResourcePanel = () => {
         </Navbar>
       </div>
       
-      {/* 标签页容器 - 使用flex-grow填充可用空间但不超出 */}
       <div className="px-2 pt-2 flex-grow flex flex-col">
         <Tabs 
           selectedKey={activeTab} 
-          onSelectionChange={(key) => setActiveTab(key as string)}
+          onSelectionChange={(key) => handleTabChange(key as string)}
           color="default"
           variant="solid"
           fullWidth
           classNames={{
             base: "flex flex-col flex-grow",
             panel: "flex-grow overflow-hidden",
-            tabList: "mb-0 text-xs",  // 添加text-xs类来减小整体文本大小
-            tab: "py-1.5 px-1" // 减小标签页内边距
+            tabList: "mb-0",
+            tab: "py-2 px-2"
           }}
         >
           <Tab 
             key="images" 
             title={
-              <div className="flex items-center gap-1">  {/* gap从2减小到1 */}
-                <GalleryIcon className="w-4 h-4" />  {/* 添加w-4 h-4类来减小图标尺寸 */}
-                <span className="text-xs">{t('images_tab')}</span>  {/* 添加text-xs类明确设置字体大小 */}
+              <div className="flex items-center gap-2">
+                <GalleryIcon className="w-5 h-5" />
+                <span className="text-sm">{t('images_tab')}</span>
               </div>
             }
           >
@@ -1083,9 +1086,9 @@ export const LeftResourcePanel = () => {
           <Tab 
             key="colors" 
             title={
-              <div className="flex items-center gap-1">
-                <PaletteIcon className="w-4 h-4" />
-                <span className="text-xs">{t('colors_tab')}</span>
+              <div className="flex items-center gap-2">
+                <PaletteIcon className="w-5 h-5" />
+                <span className="text-sm">{t('colors_tab')}</span>
               </div>
             }
           >
@@ -1094,29 +1097,17 @@ export const LeftResourcePanel = () => {
           <Tab 
             key="patterns" 
             title={
-              <div className="flex items-center gap-1">
-                <SvgIcon className="w-4 h-4" />
-                <span className="text-xs">{t('patterns_tab')}</span>
+              <div className="flex items-center gap-2">
+                <SvgIcon className="w-5 h-5" />
+                <span className="text-sm">{t('patterns_tab')}</span>
               </div>
             }
           >
             {renderPatternPanel()}
           </Tab>
-          <Tab 
-            key="layouts" 
-            title={
-              <div className="flex items-center gap-1">
-                <LayoutIcon className="w-4 h-4" />
-                <span className="text-xs">{t('layouts_tab')}</span>
-              </div>
-            }
-          >
-            {renderLayoutPanel()}
-          </Tab>
         </Tabs>
       </div>
       
-      {/* 底部导航 - 使用flex-none确保不会被挤压 */}
       <div className="w-full flex-none mt-auto">
         <Navbar
           classNames={{
