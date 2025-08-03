@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createApi } from 'unsplash-js';
+import { NextRequest } from 'next/server';
 
 const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_API_KEY // 注意不要使用 NEXT_PUBLIC_ 前缀
+  accessKey: process.env.UNSPLASH_API_KEY!, // Note: do not use NEXT_PUBLIC_ prefix
 });
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('query');
   const page = searchParams.get('page') || '1';
@@ -32,4 +33,4 @@ export async function GET(request) {
       { status: 500 }
     );
   }
-} 
+}

@@ -79,7 +79,10 @@ export const RightPropertyPanel = () => {
     setBackgroundPattern,
     setBackgroundType,
     showSvgPanel,
-    setShowSvgPanel
+    setShowSvgPanel,
+    backgroundType,
+    imagePosition,
+    setImagePosition
   } = usePicprose();
   
   const titleOptions = config.title;
@@ -182,7 +185,7 @@ export const RightPropertyPanel = () => {
     { label: "9:16", value: "vertical-9x16-aspect-[9/16]", description: "667 × 1185", ratio: "aspect-[9/16]" },
   ];
 
-  // 修改社交平台预设尺寸 - 为每个选项添加唯一标识符
+  // Social platform preset sizes - add unique identifiers for each option
   const socialMediaAspectOptions = [
     { label: "微信公众号", value: "social-wechat-aspect-[900/383]", description: "900 × 383", ratio: "aspect-[900/383]" },
     { label: "BiliBili", value: "social-bilibili-aspect-[16/9]", description: "1920 × 1080", ratio: "aspect-[16/9]" },
@@ -193,7 +196,7 @@ export const RightPropertyPanel = () => {
     { label: "Facebook 移动", value: "social-facebook-mobile-aspect-[16/9]", description: "640 × 360", ratio: "aspect-[16/9]" },
   ];
 
-  // 修改设备预设尺寸 - 为每个选项添加唯一标识符
+  // Device preset sizes - add unique identifiers for each option
   const deviceAspectOptions = [
     { label: "Full HD", value: "device-fullhd-aspect-[16/9]", description: "1920 × 1080", ratio: "aspect-[16/9]" },
     { label: "MacBook", value: "device-macbook-aspect-[16/10]", description: "2560 × 1600", ratio: "aspect-[16/10]" },
@@ -286,7 +289,7 @@ export const RightPropertyPanel = () => {
       };
     }
     
-    // 所有选项合并到一个数组中查找
+    // Merge all options into a single array for lookup
     const allOptions = [
       ...horizontalAspectOptions, 
       ...verticalAspectOptions,
@@ -312,22 +315,22 @@ export const RightPropertyPanel = () => {
   const handleSvgParamChange = (param: string, value: any) => {
     if (selectedSvgIndex === null) return;
     
-    // 创建新参数对象
+    // Create new parameter object
     const currentSvg = SVG_BACKGROUNDS[selectedSvgIndex];
     const newParams = {
-      ...currentSvg.defaultParams, // 确保有默认值
-      ...svgPatternParams, // 当前值
-      [param]: value // 新值
+      ...currentSvg.defaultParams, // Ensure default values
+      ...svgPatternParams, // Current values
+      [param]: value // New value
     };
     
-    // 更新参数状态
+    // Update parameter state
     setSvgPatternParams(newParams);
     
-    // 生成新的SVG模板
+    // Generate new SVG template
     const svgPattern = currentSvg.svgTemplate(newParams);
     const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
     
-    // 更新背景
+    // Update background
     setBackgroundType('svg');
     setBackgroundPattern(encodedSvg);
   };
@@ -335,66 +338,47 @@ export const RightPropertyPanel = () => {
   const randomizeSvgParams = () => {
     if (selectedSvgIndex === null) return;
     
-    // 基于默认参数创建新参数集
+    // Create new parameter set based on default parameters
     const currentSvg = SVG_BACKGROUNDS[selectedSvgIndex];
     const params = {...currentSvg.defaultParams};
     
-    // 随机颜色
+    // Random colors
     params.color1 = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
     params.color2 = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
     
-    // 如果有背景色
+    // If background color exists
     if (params.backgroundColor) {
       params.backgroundColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
     }
     
-    // 随机设置高度
-    params.height = Math.floor(Math.random() * 400) + 200; // 200-600之间
+    // Randomly set height
+    params.height = Math.floor(Math.random() * 400) + 200; // Between 200-600
     
-    // 根据不同的SVG类型设置特定参数
+    // Set specific parameters based on different SVG types
     switch (currentSvg.name) {
-      case "波浪":
-        params.complexity = (Math.random() * 9) + 1; // 1-10之间
-        break;
-        
-      case "气泡":
-        params.bubbleCount = Math.floor(Math.random() * 25) + 5; // 5-30之间
-        params.maxRadius = Math.floor(Math.random() * 150) + 50; // 50-200之间
-        break;
-        
       case "角落":
-        params.cornerRadius = Math.floor(Math.random() * 350) + 50; // 50-400之间
-        params.cornerCount = Math.floor(Math.random() * 10) + 2; // 2-12之间
-        params.strokeWidth = Math.floor(Math.random() * 45) + 5; // 5-50之间
-        params.rotation = Math.floor(Math.random() * 360); // 0-360度旋转
+        if (params.cornerRadius !== undefined) params.cornerRadius = Math.floor(Math.random() * 350) + 50;
+        if (params.cornerCount !== undefined) params.cornerCount = Math.floor(Math.random() * 10) + 2;
+        if (params.strokeWidth !== undefined) params.strokeWidth = Math.floor(Math.random() * 45) + 5;
+        if (params.rotation !== undefined) params.rotation = Math.floor(Math.random() * 360);
         break;
         
-      case "标记":
-        params.markerCount = Math.floor(Math.random() * 16) + 4; // 4-20之间
-        params.markerHeight = Math.floor(Math.random() * 250) + 50; // 50-300之间
-        break;
-        
-      case "等值线":
-        params.lineCount = Math.floor(Math.random() * 16) + 4; // 4-20之间
-        params.amplitude = Math.floor(Math.random() * 45) + 5; // 5-50之间
-        params.noiseScale = (Math.random() * 0.049) + 0.001; // 0.001-0.05之间
-        break;
-
-      case "波浪":
-        params.amplitude = Math.floor(Math.random() * 95) + 5; // 5-100之间
-        params.frequency = (Math.random() * 0.045) + 0.005; // 0.005-0.05之间
-        params.layers = Math.floor(Math.random() * 8) + 1; // 1-8之间
-        params.speed = (Math.random() * 0.95) + 0.05; // 0.05-1之间
-        params.rotation = Math.floor(Math.random() * 360); // 0-360度旋转
-        params.contrast = Math.floor(Math.random() * 101); // 0-100之间
-        params.wavesOpacity = (Math.random() * 0.9) + 0.1; // 0.1-1之间
+      default:
+        // Wave pattern parameters
+        if (params.amplitude !== undefined) params.amplitude = Math.floor(Math.random() * 95) + 5;
+        if (params.frequency !== undefined) params.frequency = (Math.random() * 0.045) + 0.005;
+        if (params.layers !== undefined) params.layers = Math.floor(Math.random() * 8) + 1;
+        if (params.speed !== undefined) params.speed = (Math.random() * 0.95) + 0.05;
+        if (params.rotation !== undefined) params.rotation = Math.floor(Math.random() * 360);
+        if (params.contrast !== undefined) params.contrast = Math.floor(Math.random() * 101);
+        if (params.wavesOpacity !== undefined) params.wavesOpacity = (Math.random() * 0.9) + 0.1;
         break;
     }
     
-    // 更新状态
+    // Update state
     setSvgPatternParams(params);
     
-    // 生成SVG
+    // Generate SVG
     const svgPattern = currentSvg.svgTemplate(params);
     const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
     setBackgroundPattern(encodedSvg);
@@ -404,41 +388,63 @@ export const RightPropertyPanel = () => {
   const randomizeHeazyWave = () => {
     if (selectedSvgIndex === null) return;
     
-    // 确认是Heazy波浪
+    // Confirm it's Heazy wave
     const currentSvg = SVG_BACKGROUNDS[selectedSvgIndex];
     if (currentSvg.name !== "波浪") return;
     
-    // 创建新参数对象，保留默认值结构
+    // Create new parameter object, preserving default value structure
     const params = {...currentSvg.defaultParams};
     
-    // 随机颜色 - 生成鲜艳的颜色
-    const hue1 = Math.floor(Math.random() * 360);
-    const hue2 = (hue1 + 40 + Math.floor(Math.random() * 140)) % 360;
+    // Extended random color generation - includes multiple beautiful color tones
+    const colorPalettes = [
+      // Ocean blue tones
+      [200, 210, 220, 230, 240, 190, 180],
+      // Purple tones
+      [260, 270, 280, 290, 300, 250, 240],
+      // Green tones
+      [120, 130, 140, 150, 160, 110, 100],
+      // Orange-red tones
+      [10, 20, 30, 340, 350, 0, 15],
+      // Pink tones
+      [300, 310, 320, 330, 340, 290, 280],
+      // Cyan-green tones
+      [160, 170, 180, 190, 200, 150, 140]
+    ];
     
-    params.color1 = `hsl(${hue1}, 80%, 60%)`;
-    params.color2 = `hsl(${hue2}, 80%, 60%)`;
+    // Randomly select a color palette
+    const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+    const hue1 = selectedPalette[Math.floor(Math.random() * selectedPalette.length)];
+    const hue2 = selectedPalette[Math.floor(Math.random() * selectedPalette.length)];
     
-    // 随机设置参数
-    params.amplitude = Math.floor(Math.random() * 95) + 10; // 10-105
-    params.frequency = (Math.random() * 0.045) + 0.005; // 0.005-0.05
-    params.layers = Math.floor(Math.random() * 5) + 1; // 1-5
-    params.speed = (Math.random() * 0.8) + 0.1; // 0.1-0.9
-    params.rotation = Math.floor(Math.random() * 360 / 15) * 15; // 0-345，每15度一个增量
-    params.contrast = Math.floor(Math.random() * 101); // 0-100
-    params.wavesOpacity = (Math.random() * 0.6) + 0.3; // 0.3-0.9
+    // Ensure color saturation and lightness are within appropriate ranges
+    const saturation1 = 65 + Math.floor(Math.random() * 25); // 65-90%
+    const saturation2 = 65 + Math.floor(Math.random() * 25); // 65-90%
+    const lightness1 = 45 + Math.floor(Math.random() * 25); // 45-70%
+    const lightness2 = 45 + Math.floor(Math.random() * 25); // 45-70%
     
-    // 随机选择方向
-    const directions = ['left', 'right', 'none'];
-    params.direction = directions[Math.floor(Math.random() * directions.length)];
+    params.color1 = `hsl(${hue1}, ${saturation1}%, ${lightness1}%)`;
+    params.color2 = `hsl(${hue2}, ${saturation2}%, ${lightness2}%)`;
     
-    // 随机选择样式
-    params.style = Math.random() > 0.5 ? 'solid' : 'outline';
+    // Optimize parameter ranges to ensure stable visual effects
+    params.amplitude = 45 + Math.floor(Math.random() * 30); // 45-75, avoid too small or too large
+    params.frequency = 0.006 + (Math.random() * 0.008); // 0.006-0.014, maintain appropriate wave density
+    params.layers = 3 + Math.floor(Math.random() * 2); // 3-4 layers, maintain depth
+    params.speed = 0.2 + (Math.random() * 0.3); // 0.2-0.5, moderate animation speed
+    params.rotation = 0; // Fixed at 0, avoid rotation affecting aesthetics
+    params.contrast = 75 + Math.floor(Math.random() * 20); // 75-95, maintain good contrast
+    params.wavesOpacity = 0.7 + (Math.random() * 0.2); // 0.7-0.9, maintain sufficient transparency
     
-    // 随机选择是否使用渐变背景
-    params.useGradientBg = Math.random() > 0.3; // 70%概率使用渐变背景
+    // Fixed to right direction, best effect
+    params.direction = 'right';
+    
+    // Fixed to solid style, better visual effect
+    params.style = 'solid';
+    
+    // Always use gradient background, better effect
+    params.useGradientBg = true;
     
     if (!params.useGradientBg) {
-      // 如果不使用渐变，随机生成背景色（深色系）
+      // If not using gradient, randomly generate background color (dark tones)
       const bgHue = Math.floor(Math.random() * 360);
       params.backgroundColor = `hsl(${bgHue}, 70%, 10%)`;
     }
@@ -465,6 +471,15 @@ export const RightPropertyPanel = () => {
     // 只保留Heazy波浪的控制项
     specificControls = (
       <>
+        {/* 随机生成按钮 */}
+        <Button 
+          color="primary" 
+          className="w-full mb-6"
+          onClick={() => randomizeHeazyWave()}
+        >
+          {t("randomize_wave")}
+        </Button>
+        
         {/* 顶部切换按钮 - Solid/Outline */}
         <div className="w-full mb-6 rounded-xl overflow-hidden bg-default-100">
           <div className="flex">
@@ -502,7 +517,7 @@ export const RightPropertyPanel = () => {
             <div className="flex items-center">
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center mr-2">
                 <svg className="w-6 h-6 text-default-600" fill="none" viewBox="0 0 24 24">
-                  <path d="M3 12h18M3 6h18M3 18h18" strokeWidth="2" stroke="currentColor" />
+                  <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
               <input 
@@ -516,7 +531,7 @@ export const RightPropertyPanel = () => {
               />
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center ml-2">
                 <svg className="w-6 h-6 text-default-600" fill="none" viewBox="0 0 24 24">
-                  <path d="M8 6C8 6 12 10 12 12C12 14 8 18 8 18M16 6C16 6 12 10 12 12C12 14 16 18 16 18" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
             </div>
@@ -531,7 +546,7 @@ export const RightPropertyPanel = () => {
             <div className="flex items-center">
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center mr-2">
                 <svg className="w-6 h-6 text-default-600" fill="none" viewBox="0 0 24 24">
-                  <path d="M3 18C3 18 7 10 12 10M12 10C17 10 21 18 21 18M12 10V22" stroke="currentColor" strokeWidth="2" />
+                  <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
               <input 
@@ -545,7 +560,7 @@ export const RightPropertyPanel = () => {
               />
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center ml-2">
                 <svg className="w-6 h-6 text-default-600" fill="none" viewBox="0 0 24 24">
-                  <path d="M3 12C3 12 6 6 9 6C12 6 12 18 15 18C18 18 21 12 21 12" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
             </div>
@@ -560,7 +575,7 @@ export const RightPropertyPanel = () => {
             <div className="flex items-center">
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center mr-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M20 12H4M4 12L10 6M4 12L10 18" strokeWidth="2" />
+                  <path d="M5 12h14" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
               <input 
@@ -574,7 +589,7 @@ export const RightPropertyPanel = () => {
               />
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center ml-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M4 12H20M20 12L14 6M20 12L14 18" strokeWidth="2" />
+                  <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
             </div>
@@ -589,7 +604,8 @@ export const RightPropertyPanel = () => {
                 onClick={() => handleSvgParamChange('direction', 'left')}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="2" />
+                  <path d="M19 12H5" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M12 19l-7-7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="ml-2">{t("left")}</span>
               </button>
@@ -598,7 +614,8 @@ export const RightPropertyPanel = () => {
                 onClick={() => handleSvgParamChange('direction', 'right')}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeWidth="2" />
+                  <path d="M5 12h14" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="ml-2">{t("right")}</span>
               </button>
@@ -607,7 +624,8 @@ export const RightPropertyPanel = () => {
                 onClick={() => handleSvgParamChange('direction', 'none')}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M6 12H18M12 6V18" strokeWidth="2" />
+                  <circle cx="12" cy="12" r="3" strokeWidth="2" />
+                  <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24" strokeWidth="1" strokeLinecap="round" />
                 </svg>
                 <span className="ml-2">{t("none")}</span>
               </button>
@@ -623,9 +641,7 @@ export const RightPropertyPanel = () => {
             <div className="flex items-center">
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center mr-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M14.5 10c.5.667 1.5 2 1.5 2M19 6c0 0-3-3-7-3S5 6 5 6" strokeWidth="2" />
-                  <path d="M9.5 14c-.5-.667-1.5-2-1.5-2M5 18c0 0 3 3 7 3s7-3 7-3" strokeWidth="2" />
-                  <path d="M12 3v6m4.5 1L12 9l1.5 4.5" strokeWidth="2" />
+                  <path d="M5 12h14" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
               <input 
@@ -639,8 +655,7 @@ export const RightPropertyPanel = () => {
               />
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center ml-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 3v6M15 12h6M12 21v-6M3 12h6" strokeWidth="2" />
-                  <path d="M12 12h.01" strokeWidth="3" />
+                  <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
             </div>
@@ -669,8 +684,8 @@ export const RightPropertyPanel = () => {
                     handleSvgParamChange('layers', newValue);
                   }}
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7 14l5-5 5 5z" />
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M18 15l-6-6-6 6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
                 <button 
@@ -680,8 +695,8 @@ export const RightPropertyPanel = () => {
                     handleSvgParamChange('layers', newValue);
                   }}
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7 10l5 5 5-5z" />
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
               </div>
@@ -697,7 +712,8 @@ export const RightPropertyPanel = () => {
             <div className="flex items-center">
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center mr-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M4 7h16M4 12h16M4 17h16" strokeWidth="2" strokeOpacity="0.3" />
+                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2" strokeOpacity="0.3" />
+                  <path d="M9 9h6v6H9z" fill="currentColor" fillOpacity="0.2" />
                 </svg>
               </div>
               <input 
@@ -711,7 +727,8 @@ export const RightPropertyPanel = () => {
               />
               <div className="rounded-full w-10 h-10 bg-default-200 flex items-center justify-center ml-2">
                 <svg className="w-6 h-6 text-default-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M4 7h16M4 12h16M4 17h16" strokeWidth="2" />
+                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2" />
+                  <path d="M6 6h12v12H6z" fill="currentColor" />
                 </svg>
               </div>
             </div>
@@ -849,15 +866,6 @@ export const RightPropertyPanel = () => {
             </div>
           </div>
         </div>
-        
-        {/* 随机生成按钮 */}
-        <Button 
-          color="primary" 
-          className="w-full mb-6"
-          onClick={() => randomizeHeazyWave()}
-        >
-          {t("randomize_wave")}
-        </Button>
       </>
     );
 
@@ -988,6 +996,25 @@ export const RightPropertyPanel = () => {
             step={5}
             className="w-full my-2"
           />
+          
+          {/* 图片位置滑动条 - 仅在背景类型为图片时显示 */}
+          {backgroundType === 'image' && (
+            <Slider
+              label={t("image_position") || "背景图片位置"}
+              value={imagePosition}
+              onChange={(value) => setImagePosition(typeof value === "number" ? value : value[0])}
+              size="sm"
+              step={10}
+              minValue={-100}
+              maxValue={100}
+              className="w-full my-2"
+              formatOptions={{
+                style: "decimal",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }}
+            />
+          )}
           <Divider />
           <div className="flex w-full py-2 items-end gap-2">
             <div className="flex-grow">

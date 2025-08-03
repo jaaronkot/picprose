@@ -6,7 +6,7 @@ import {
 } from "@nextui-org/react";
 import { usePicprose } from "./PicproseContext";
 
-// 类型定义
+// Type definitions
 interface ImageEditorProps {
   isDragMode: boolean;
   elements: {
@@ -25,10 +25,10 @@ interface ImageEditorProps {
   handleResetLayout: () => void;
 }
 
-// 拖动元素类型
+// Draggable element type
 type DraggableElement = 'title' | 'author' | 'icon' | 'image' | null;
 
-// 网格步长常量
+// Grid step constant
 const GRID_STEP = 10;
 
 export const ImageEditor = ({ 
@@ -38,17 +38,18 @@ export const ImageEditor = ({
   saveHistory,
   handleResetLayout
 }: ImageEditorProps) => {
-  // 从Context获取配置
+  // Get configuration from Context
   const { 
     propertyInfo, 
     imageInfo, 
     backgroundType,
     backgroundColor, 
     backgroundPattern,
-    elementsLayout
+    elementsLayout,
+    imagePosition
   } = usePicprose();
   
-  // 解构属性
+  // Destructure properties
   const {
     aspect,
     blur,
@@ -66,64 +67,41 @@ export const ImageEditor = ({
     titleWidthValue,
   } = propertyInfo;
 
-  // 状态定义
+  // State definitions
   const [isLoading, setIsLoading] = React.useState(false);
-  const [imagePosition, setImagePosition] = React.useState(0);
   const [gridLines, setGridLines] = React.useState({ horizontal: 0, vertical: 0 });
   const [, forceUpdate] = useReducer(x => x + 1, 0);
   
-  // 拖动状态
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [dragStartY, setDragStartY] = React.useState(0);
+  // Drag state
   const [draggingElement, setDraggingElement] = React.useState<DraggableElement>(null);
   const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
   
-  // 引用
+  // References
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // 辅助函数：将值对齐到网格
+  // Helper function: snap value to grid
   const snapToGrid = (value: number): number => {
     return Math.round(value / GRID_STEP) * GRID_STEP;
   };
 
-  // 图片加载
+  // Image loading
   useEffect(() => {
     if (imageInfo.url) {
       setIsLoading(true);
     }
   }, [imageInfo.url]);
 
-  // 图片垂直居中和加载处理
+  // Handle image loading
   useEffect(() => {
-    const centerImageVertically = () => {
-      if (imageRef.current && containerRef.current) {
-        const container = containerRef.current;
-        const image = imageRef.current;
-        
-        // 等待图片加载完成后获取尺寸
-        const checkImageSize = () => {
-          // 在cover模式下，图片居中显示，初始位置为0（对应50%）
-          setImagePosition(0);
-        };
-        
-        // 如果图片已经加载完成，直接计算位置
-        if (image.complete && image.naturalHeight > 0) {
-          checkImageSize();
-        }
-      }
-    };
-    
     const handleImageLoad = () => {
       setIsLoading(false);
-      // 图片加载完成后居中图片
-      setTimeout(centerImageVertically, 10); // 小延迟确保DOM更新
     };
     
     const imgElement = imageRef.current;
     if (imgElement) {
       imgElement.addEventListener('load', handleImageLoad);
-      // 如果图片已经加载完成，立即处理
+      // If image is already loaded, handle immediately
       if (imgElement.complete) {
         handleImageLoad();
       }
@@ -136,7 +114,7 @@ export const ImageEditor = ({
     };
   }, [imageInfo.url]);
   
-  // 计算网格线
+  // Calculate grid lines
   useEffect(() => {
     if (containerRef.current && isDragMode) {
       const width = containerRef.current.clientWidth;
@@ -150,35 +128,11 @@ export const ImageEditor = ({
     }
   }, [isDragMode, containerRef.current?.clientWidth, containerRef.current?.clientHeight]);
 
-  // 图片拖动事件处理
-  const handleImageMouseDown = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
-    if (!isDragMode) return;
-    setIsDragging(true);
-    setDragStartY(e.clientY);
-    setDragStart({ 
-      x: e.clientX,
-      y: e.clientY
-    });
-    e.stopPropagation();
-  }, [isDragMode]);
 
-  // 容器点击处理
-  const handleContainerMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragMode) return;
-    
-    const isClickOnDraggableElement = e.target !== containerRef.current;
-    
-    if (!isClickOnDraggableElement) {
-      setIsDragging(true);
-      setDragStartY(e.clientY);
-      setDragStart({ 
-        x: e.clientX,
-        y: e.clientY
-      });
-    }
-  };
+
+
   
-  // 元素拖动开始
+  // Element drag start
   const handleElementDragStart = (element: DraggableElement, e: React.MouseEvent) => {
     if (!isDragMode) return;
     e.stopPropagation();
@@ -186,47 +140,9 @@ export const ImageEditor = ({
     setDragStart({ x: e.clientX, y: e.clientY });
   };
   
-  // 鼠标移动处理 - 修复图片拖拽逻辑
+  // Mouse move handling
   const handleMouseMove = (e: MouseEvent) => {
-    // 处理图片拖动
-    if (isDragging && imageRef.current) {
-      // 计算鼠标移动距离
-      const mouseDelta = e.clientY - dragStartY;
-      
-      const container = containerRef.current;
-      const image = imageRef.current;
-      
-      if (container && image) {
-        // 使用cover模式时，通过object-position控制显示位置
-        // imagePosition的范围应该在合理的百分比范围内
-        
-        // 计算新的位置值，基于鼠标移动距离
-        const sensitivity = 2.5; // 拖拽灵敏度，增加响应速度
-        const newPosition = imagePosition + (mouseDelta * sensitivity);
-        
-        // 限制范围：允许从显示图片顶部(-300)到底部(300)
-        // 这个范围对应object-position的20%到80%，提供更大的调整空间
-        const minPosition = -300;
-        const maxPosition = 300;
-        
-        const boundedPosition = Math.max(minPosition, Math.min(maxPosition, newPosition));
-        
-        // 设置新位置
-        setImagePosition(boundedPosition);
-        
-        // 更新拖拽起始点，使拖拽连续
-        setDragStartY(e.clientY);
-      } else {
-        // 容器或图片不存在时的fallback
-        const sensitivity = 2.5;
-        const newPosition = imagePosition + (mouseDelta * sensitivity);
-        const boundedPosition = Math.max(-300, Math.min(300, newPosition));
-        setImagePosition(boundedPosition);
-        setDragStartY(e.clientY);
-      }
-    }
-    
-    // 处理元素拖动
+    // Handle element dragging
     if (draggingElement && isDragMode) {
       const deltaX = snapToGrid(e.clientX - dragStart.x);
       const deltaY = snapToGrid(e.clientY - dragStart.y);
@@ -238,14 +154,14 @@ export const ImageEditor = ({
     }
   };
   
-  // 处理元素拖动
+  // Handle element drag
   const handleElementDrag = (elementKey: DraggableElement, deltaX: number, deltaY: number) => {
     if (!elementKey) return;
     
     setElements(prev => {
       const newElements = {...prev};
       
-      // 为image元素特殊处理
+      // Special handling for image element
       if (elementKey === 'image') {
         newElements[elementKey] = {
           ...newElements[elementKey],
@@ -253,12 +169,12 @@ export const ImageEditor = ({
           y: snapToGrid(newElements[elementKey].y + deltaY)
         };
       } else {
-        // 针对带有visible属性的元素
+        // For elements with visible property
         newElements[elementKey] = {
           ...newElements[elementKey],
           x: snapToGrid(newElements[elementKey].x + deltaX),
           y: snapToGrid(newElements[elementKey].y + deltaY),
-          visible: (newElements[elementKey] as any).visible // 保留visible属性
+          visible: (newElements[elementKey] as any).visible // Preserve visible property
         };
       }
       
@@ -266,18 +182,17 @@ export const ImageEditor = ({
     });
   };
   
-  // 鼠标释放处理
+  // Mouse release handling
   const handleMouseUp = () => {
-    if (isDragging || draggingElement) {
+    if (draggingElement) {
       saveHistory(elements);
     }
-    setIsDragging(false);
     setDraggingElement(null);
   };
   
-  // 添加/移除事件监听器
+  // Add/remove event listeners
   useEffect(() => {
-    if (isDragging || draggingElement) {
+    if (draggingElement) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     } else {
@@ -289,9 +204,9 @@ export const ImageEditor = ({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, draggingElement, dragStart, isDragMode]);
+  }, [draggingElement, dragStart, isDragMode]);
   
-  // 渲染图标
+  // Render icon
   const renderIcon = () => {
     if (devicon.length !== 0) {
       return (
@@ -319,7 +234,7 @@ export const ImageEditor = ({
     return null;
   };
   
-  // 计算宽高比
+  // Calculate aspect ratio
   const calculateAspectRatio = () => {
     if (!aspect || !aspect.includes('/')) {
       return { width: '90vh', height: '90vh' };
@@ -345,7 +260,7 @@ export const ImageEditor = ({
     }
   };
   
-  // 渲染背景
+  // Render background
   const renderBackground = () => {
     switch (backgroundType) {
       case 'image':
@@ -354,7 +269,7 @@ export const ImageEditor = ({
             ref={imageRef}
             src={imageInfo.url}
             alt="Background"
-            className={`rounded-md ${isDragMode ? 'cursor-move' : ''}`}
+            className="rounded-md"
             style={{ 
               position: 'absolute',
               top: 0,
@@ -362,10 +277,9 @@ export const ImageEditor = ({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: `center ${50 - imagePosition * 0.1}%`,
-              transition: isDragging ? 'none' : 'object-position 0.1s ease-out',
+              objectPosition: `center ${50 - imagePosition * 0.5}%`,
+              transition: 'object-position 0.1s ease-out',
             }}
-            onMouseDown={handleImageMouseDown}
             draggable={false}
           />
         );
@@ -413,22 +327,22 @@ export const ImageEditor = ({
     }
   };
   
-  // 渲染网格
+  // Render grid
   const renderGrid = () => {
     if (!isDragMode) return null;
     
     return (
       <>
-        {/* 主网格 - 大区域分隔 */}
+        {/* Main grid - large area divisions */}
         <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
           {[...Array(9)].map((_, i) => (
             <div key={i} className="border border-white/20"></div>
           ))}
         </div>
         
-        {/* 细网格 - 10像素对齐辅助线 */}
+        {/* Fine grid - 10px alignment guides */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* 横向线条 */}
+          {/* Horizontal lines */}
           {Array.from({ length: gridLines.horizontal }).map((_, i) => (
             <div 
               key={`h-${i}`} 
@@ -437,7 +351,7 @@ export const ImageEditor = ({
             ></div>
           ))}
           
-          {/* 纵向线条 */}
+          {/* Vertical lines */}
           {Array.from({ length: gridLines.vertical }).map((_, i) => (
             <div 
               key={`v-${i}`} 
@@ -450,11 +364,11 @@ export const ImageEditor = ({
     );
   };
   
-  // 渲染可拖动元素
+  // Render draggable elements
   const renderDraggableElements = () => {
     return (
       <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
-        {/* 标题元素 */}
+        {/* Title element */}
         <div 
           className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
           style={{ 
@@ -484,7 +398,7 @@ export const ImageEditor = ({
           </h1>
         </div>
         
-        {/* 作者元素 */}
+        {/* Author element */}
         <div 
           className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
           style={{ 
@@ -506,7 +420,7 @@ export const ImageEditor = ({
           </h2>
         </div>
         
-        {/* 图标容器 */}
+        {/* Icon container */}
         {(devicon.length > 0 || icon.length > 0) && (
           <div 
             className={`absolute ${isDragMode ? 'cursor-move border border-dashed border-white/30' : ''}`}
@@ -528,10 +442,10 @@ export const ImageEditor = ({
     );
   };
   
-  // 计算容器尺寸
+  // Calculate container dimensions
   const aspectRatio = calculateAspectRatio();
   
-  // 监听布局变化并应用
+  // Listen for layout changes and apply
   useEffect(() => {
     if (elementsLayout) {
       setElements(prev => ({
@@ -545,20 +459,20 @@ export const ImageEditor = ({
         icon: {
           ...elementsLayout.icon,
         },
-        // 保持图片位置不变
+        // Keep image position unchanged
         image: prev.image
       }));
       
-      // 保存到历史记录
+      // Save to history
       saveHistory(elementsLayout);
     }
   }, [elementsLayout]);
   
-  // 在组件挂载后自动重置布局
+  // Auto reset layout after component mount
   useEffect(() => {
-    // 组件挂载后调用重置布局方法
+    // Call reset layout method after component mount
     handleResetLayout();
-    // 仅在组件挂载时执行一次
+    // Execute only once when component mounts
   }, []);
   
   return (
@@ -575,16 +489,16 @@ export const ImageEditor = ({
           height: aspectRatio.height,
         }}
         className="rounded-md"
-        onMouseDown={isDragMode ? handleContainerMouseDown : undefined}
+
       >
-        {/* 背景 */}
+        {/* Background */}
         {renderBackground()}
         
-        {/* 网格辅助线 */}
+        {/* Grid guides */}
         {renderGrid()}
       </div>
 
-      {/* 遮罩和内容层 */}
+      {/* Overlay and content layer */}
       <div
         style={{
           backgroundColor: color == "" ? "#1F293799" : color + blurTrans,
@@ -593,14 +507,14 @@ export const ImageEditor = ({
         }}
         className={`absolute top-0 right-0 left-0 rounded-md h-full ${blur}`}
       >
-        {/* 可拖动元素 */}
+        {/* Draggable elements */}
         {renderDraggableElements()}
 
-        {/* 加载指示器 */}
+        {/* Loading indicator */}
         {isLoading && <Spinner className="absolute bottom-8 left-8" />}
       </div>
 
-      {/* 图片作者信息 */}
+      {/* Image author information */}
       {backgroundType === 'image' && (
         <div className="absolute bottom-4 right-4 opacity-80">
           <div className="group-hover:flex hidden items-center">
@@ -632,7 +546,7 @@ export const ImageEditor = ({
   );
 };
 
-// 添加类型定义以支持window对象扩展
+// Add type definitions to support window object extension
 declare global {
   interface Window {
     ImageEditorState?: {

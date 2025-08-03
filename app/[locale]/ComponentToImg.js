@@ -29,7 +29,7 @@ export const ComponentToImg = forwardRef((props, ref) => {
 	}
 
 	const downloadImage = async (imgFormat) => {
-		// exportComponentAsPNG(componentRef, 'cover')
+		// Export component as PNG with cover name
 		setLoading(true)
 
 		const element = componentRef.current;
@@ -59,7 +59,7 @@ export const ComponentToImg = forwardRef((props, ref) => {
 		}
 	}
 
-	// 供外部调用
+	// For external calls
 	React.useImperativeHandle(ref, () => ({
 		downloadImage: (imgFormat) => {
 			downloadImage(imgFormat)

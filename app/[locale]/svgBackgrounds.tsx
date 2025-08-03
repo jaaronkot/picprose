@@ -1,4 +1,4 @@
-// SVG 背景模板
+// SVG Background Templates
 export const SVG_BACKGROUNDS = [
   {
     name: "波浪",
@@ -16,42 +16,86 @@ export const SVG_BACKGROUNDS = [
       const direction = params.direction || 'right';
       const useGradientBg = params.hasOwnProperty('useGradientBg') ? params.useGradientBg : true;
       
-      // 创建渐变ID
+      // Create gradient ID
       const gradientId = `heazy-wave-gradient-${Math.random().toString(36).substring(2, 9)}`;
       
-      // 创建多个波浪层
+      // Create multiple wave layers - optimized algorithm for more natural effects
       let waveLayers = '';
+      
+      // Create more complex waves for each layer
       for (let i = 0; i < layers; i++) {
-        const layerOpacity = (wavesOpacity * (layers - i)) / layers;
-        const heightPosition = height * (i + 1) / (layers + 1);
+        const layerOpacity = Math.pow((layers - i) / layers, 0.8) * wavesOpacity;
+        const baseHeight = height * 0.6 + (i * height * 0.15 / layers);
         
-        let path = `M0,${heightPosition}`;
+        // Use finer steps to create smoother curves
+        const step = 2;
+        let path = `M0,${baseHeight}`;
         
-        // 生成波浪路径
-        for (let x = 0; x <= width; x += 10) {
+        // Generate more natural wave paths using multiple sine wave overlays
+        for (let x = 0; x <= width; x += step) {
           const directionFactor = direction === 'left' ? -1 : direction === 'right' ? 1 : 0;
           const timeOffset = (i * speed / layers) * directionFactor;
-          const waveHeight = amplitude * Math.sin((x * frequency) + timeOffset);
-          const y = heightPosition + waveHeight;
-          path += ` L${x},${y}`;
+          
+          // Main wave - large amplitude, low frequency
+          const mainWave = amplitude * 0.8 * Math.sin((x * frequency * 0.8) + timeOffset);
+          
+          // Secondary wave - medium amplitude, medium frequency
+          const secondWave = amplitude * 0.3 * Math.sin((x * frequency * 2.5) + timeOffset * 1.5);
+          
+          // Detail wave - small amplitude, high frequency
+          const detailWave = amplitude * 0.15 * Math.sin((x * frequency * 6) + timeOffset * 2);
+          
+          // Add some randomness to simulate natural waves
+          const randomOffset = amplitude * 0.1 * Math.sin((x * frequency * 0.3) + timeOffset * 0.7);
+          
+          // Layer offset to create better depth perception
+          const layerOffset = i * amplitude * 0.2 * Math.sin((x * frequency * 1.2) + i * Math.PI / 3);
+          
+          const totalWaveHeight = mainWave + secondWave + detailWave + randomOffset + layerOffset;
+          const y = baseHeight + totalWaveHeight;
+          
+          if (x === 0) {
+            path = `M0,${y}`;
+          } else {
+            // Use quadratic Bezier curves for smoother connections
+            const prevX = x - step;
+            const controlX = x - step / 2;
+            const controlY = y;
+            path += ` Q${controlX},${controlY} ${x},${y}`;
+          }
         }
         
+        // Close path to bottom
         path += ` L${width},${height} L0,${height} Z`;
         
-        const color = style === 'outline' ? 'none' : (i % 2 === 0 ? params.color1 : params.color2);
-        const strokeColor = i % 2 === 0 ? params.color1 : params.color2;
+        // Improved color handling for better gradient effects
+        let fillColor, strokeColor;
+        if (style === 'outline') {
+          fillColor = 'none';
+          strokeColor = i % 2 === 0 ? params.color1 : params.color2;
+        } else {
+          // Create slightly different colors for each layer to add depth
+          const baseColor = i % 2 === 0 ? params.color1 : params.color2;
+          const colorVariation = 1 - (i * 0.1); // Each layer slightly darker
+          fillColor = baseColor;
+          strokeColor = 'none';
+        }
+        
         const strokeWidth = style === 'outline' ? 2 : 0;
         
-        waveLayers += `<path fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}" d="${path}" style="transform-origin: center; transform: rotate(${rotation}deg)" opacity="${layerOpacity}"></path>`;
+        waveLayers += `<path fill="${fillColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}" d="${path}" style="transform-origin: center; transform: rotate(${rotation}deg)" opacity="${layerOpacity}"></path>`;
       }
       
-      // 创建背景
+      // Create background - optimized gradient effects
       let background;
       if (useGradientBg) {
+        // Create more complex multi-color gradient background, simulating deep to shallow sea effect
         const gradient = `
-          <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="${params.color1}" />
-            <stop offset="100%" stop-color="${params.color2}" />
+          <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0f172a" stop-opacity="1" />
+            <stop offset="30%" stop-color="#1e293b" stop-opacity="1" />
+            <stop offset="60%" stop-color="${params.color1}" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="${params.color2}" stop-opacity="0.9" />
           </linearGradient>
         `;
         background = `<rect width="${width}" height="${height}" fill="url(#${gradientId})" />`;
@@ -74,19 +118,19 @@ export const SVG_BACKGROUNDS = [
     },
     defaultParams: {
       color1: '#3b82f6',
-      color2: '#2dd4bf',
-      backgroundColor: '#001220',
+      color2: '#06b6d4',
+      backgroundColor: '#0f172a',
       height: 400,
-      amplitude: 40,
-      frequency: 0.015,
-      layers: 3,
-      speed: 0.2,
+      amplitude: 60,
+      frequency: 0.008,
+      layers: 4,
+      speed: 0.3,
       rotation: 0,
-      contrast: 80,
-      wavesOpacity: 0.7,
+      contrast: 85,
+      wavesOpacity: 0.85,
       style: 'solid',
       direction: 'right',
       useGradientBg: true
     }
   }
-]; 
+];

@@ -1,8 +1,8 @@
-// ... 现有的波浪图案代码 ...
+// ... Existing wave pattern code ...
 
-// 确保文件顶部有heazyWaveTemplate的导出
+// Ensure heazyWaveTemplate export at the top of the file
 const heazyWaveTemplate = (params: any) => {
-  // 简化的模板实现
+  // Simplified template implementation
   const { backgroundColor, color1, color2 } = params;
   return `<svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
     <rect width="800" height="600" fill="${backgroundColor}" />
@@ -11,7 +11,7 @@ const heazyWaveTemplate = (params: any) => {
   </svg>`;
 };
 
-// 角落模板
+// Corner template
 const cornersTemplate = (params: any) => {
   const { 
     backgroundColor, 
@@ -34,58 +34,58 @@ const cornersTemplate = (params: any) => {
     layerDistance = 50
   } = params;
   
-  // 创建滤镜定义
+  // Create filter definition
   const filterId = "cornerShadow";
   const filterDef = radius > 0 ? 
     `<filter id="${filterId}" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="${offsetX}" dy="${offsetY}" stdDeviation="${radius}" flood-color="${shadowColor}" />
     </filter>` : '';
   
-  // 计算样式
+  // Calculate styles
   const pathStyle = style === 'outline' ? 
     `fill="none" stroke="${color1}" stroke-width="${strokeWidth || 30}"` : 
     `fill="${color1}" stroke="none"`;
   
-  // 生成角落路径
+  // Generate corner paths
   let paths = '';
   
-  // 处理位置
+  // Handle positions
   const width = 800;
   const height = 600;
   const cornerSize = cornerRadius || 150;
   
-  // 基于平衡和速度调整曲线
+  // Adjust curves based on balance and velocity
   const balanceFactor = (balance - 50) / 100;
   const velocityFactor = velocity / 100;
   
-  // 生成用于每个角落的路径
-  const generateCornerPath = (x, y, isRight, isBottom) => {
-    // 调整控制点位置
+  // Generate corner paths for each corner
+   const generateCornerPath = (x: number, y: number, isRight: boolean, isBottom: boolean) => {
+    // Adjust control point positions
     const cpDistance = cornerSize * (1 + balanceFactor);
     const cpOffset = cornerSize * velocityFactor;
     
     let path = '';
-    // 基于位置确定路径方向
+    // Determine path direction based on position
     if (isRight && isBottom) {
-      // 右下角
+      // Bottom right corner
       path = `M${x-cornerSize},${y} Q${x-cpOffset},${y+cpDistance} ${x},${y+cornerSize}`;
     } else if (isRight && !isBottom) {
-      // 右上角
+      // Top right corner
       path = `M${x-cornerSize},${y} Q${x-cpOffset},${y-cpDistance} ${x},${y-cornerSize}`;
     } else if (!isRight && isBottom) {
-      // 左下角
+      // Bottom left corner
       path = `M${x+cornerSize},${y} Q${x+cpOffset},${y+cpDistance} ${x},${y+cornerSize}`;
     } else {
-      // 左上角
+      // Top left corner
       path = `M${x+cornerSize},${y} Q${x+cpOffset},${y-cpDistance} ${x},${y-cornerSize}`;
     }
     
     return path;
   };
   
-  // 添加每个指定位置的角落
+  // Add corners for each specified position
   for (let i = 0; i < cornerCount; i++) {
-    // 在不同位置创建角落
+    // Create corners at different positions
     if (position.includes('topLeft')) {
       const x = cornerSize + (i * layerDistance);
       const y = cornerSize + (i * layerDistance);
@@ -110,11 +110,11 @@ const cornersTemplate = (params: any) => {
       paths += `<path d="${generateCornerPath(x, y, true, true)}" ${pathStyle} ${radius > 0 ? `filter="url(#${filterId})"` : ''} />`;
     }
     
-    // 如果图层数量已达到设置值，退出循环
+    // Exit loop if layer count reaches the set value
     if (i >= layers && layers > 0) break;
   }
   
-  // 创建SVG
+  // Create SVG
   return `<svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
     <rect width="800" height="600" fill="${backgroundColor}" />
     ${filterDef}
@@ -124,7 +124,7 @@ const cornersTemplate = (params: any) => {
   </svg>`;
 };
 
-// 生成角落路径
+// Generate corner paths
 const generateCorners = (count: number, radius: number, color1: string, color2: string, strokeWidth: number) => {
   let paths = '';
   const width = 800;
@@ -134,7 +134,7 @@ const generateCorners = (count: number, radius: number, color1: string, color2: 
     const percent = i / count;
     const color = interpolateColor(color1, color2, percent);
     
-    // 随机位置，但确保在画布内
+    // Random position, but ensure within canvas
     const x = Math.random() * (width - radius * 2) + radius;
     const y = Math.random() * (height - radius * 2) + radius;
     
@@ -145,9 +145,9 @@ const generateCorners = (count: number, radius: number, color1: string, color2: 
   return paths;
 };
 
-// 颜色插值函数
+// Color interpolation function
 const interpolateColor = (color1: string, color2: string, factor: number) => {
-  // 简单实现，实际项目中可能需要更复杂的颜色插值
+  // Simple implementation, actual projects may need more complex color interpolation
   if (factor === 0) return color1;
   if (factor === 1) return color2;
   
@@ -170,7 +170,7 @@ const interpolateColor = (color1: string, color2: string, factor: number) => {
   }
 };
 
-// 导出SVG背景定义
+// Export SVG background definitions
 export const SVG_BACKGROUNDS = [
   {
     name: "波浪",
@@ -217,4 +217,4 @@ export const SVG_BACKGROUNDS = [
       layerDistance: 50
     }
   }
-]; 
+];

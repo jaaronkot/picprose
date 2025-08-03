@@ -119,7 +119,9 @@
         "solid": "Solid",
         "randomize_wave": "Randomize",
         "title_width": "Title Width",
-        "devices": "Devices"
+        "devices": "Devices",
+        "social_media": "Social Media",
+        "image_position": "Image Position"
     },
     "ImageEditorToolbar": {
         "edit": "Edit",

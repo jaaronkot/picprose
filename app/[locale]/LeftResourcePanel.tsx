@@ -24,7 +24,7 @@ import {useTranslations} from 'next-intl';
 import { usePicprose } from "./PicproseContext";
 import { SVG_BACKGROUNDS } from './svgBackgrounds';
 
-// 添加SVG模板类型定义
+// Add SVG template type definition
 interface SvgTemplate {
   name: string;
   svgTemplate: (params: any) => string;
@@ -37,7 +37,7 @@ const PHOTOS_PER_PAGE = 30;
 const TARGET_ROW_HEIGHT = 110;
 const ROW_CONSTRAINTS = { maxPhotos: 2 };
 
-// 纯色预设
+// Solid color presets
 const SOLID_COLORS = [
   "#1F2937", "#1E3A8A", "#312E81", "#4C1D95", "#5B21B6", "#6D28D9", 
   "#7C3AED", "#8B5CF6", "#9333EA", "#A855F7", "#C026D3", "#D946EF", 
@@ -46,7 +46,7 @@ const SOLID_COLORS = [
   "#FBBF24", "#065F46", "#047857", "#059669", "#10B981", "#34D399"
 ];
 
-// 渐变色预设
+// Gradient color presets
 const GRADIENT_COLORS = [
   "linear-gradient(to right, #8e2de2, #4a00e0)",
   "linear-gradient(to right, #fc466b, #3f5efb)",
@@ -62,105 +62,105 @@ const GRADIENT_COLORS = [
   "linear-gradient(to right, #0f0c29, #302b63, #24243e)"
 ];
 
-// 纹理背景预设
+// Pattern background presets
 const PATTERN_BACKGROUNDS = [
-  // 点状图案
+  // Dot pattern
   {
     name: "点状图案",
     value: "radial-gradient(#444cf7 1px, transparent 1px) 0 0 / 20px 20px",
     bgColor: "#ffffff"
   },
-  // 网格线
+  // Grid lines
   {
     name: "网格线",
     value: "linear-gradient(#444cf7 1px, transparent 1px) 0 0 / 20px 20px, linear-gradient(90deg, #444cf7 1px, transparent 1px) 0 0 / 20px 20px",
     bgColor: "#ffffff"
   },
-  // 对角线
+  // Diagonal lines
   {
     name: "对角线",
     value: "repeating-linear-gradient(45deg, #444cf7, #444cf7 5px, transparent 5px, transparent 25px)",
     bgColor: "#ffffff"
   },
-  // 波浪图案
+  // Wave pattern
   {
     name: "波浪图案",
     value: "repeating-radial-gradient(#444cf7, #444cf7 1px, transparent 1px, transparent 13px)",
     bgColor: "#ffffff"
   },
-  // 条纹图案
+  // Stripe pattern
   {
     name: "条纹图案",
     value: "repeating-linear-gradient(-45deg, #f472b6, #f472b6 10px, #ffffff 10px, #ffffff 20px)",
     bgColor: "#ffffff"
   },
-  // 植物图案
+  // Plant pattern
   {
     name: "植物图案",
     value: "radial-gradient(circle at 0% 50%, rgba(96, 165, 250, 0.2) 9px, transparent 10px), radial-gradient(at 100% 100%, rgba(52, 211, 153, 0.2) 15px, transparent 16px)",
     bgColor: "#f8fafc"
   },
-  // 方块拼图
+  // Block puzzle
   {
     name: "方块拼图",
     value: "linear-gradient(135deg, #f7acbc 25%, transparent 25%) -20px 0, linear-gradient(225deg, #f7acbc 25%, transparent 25%) -20px 0, linear-gradient(315deg, #f7acbc 25%, transparent 25%), linear-gradient(45deg, #f7acbc 25%, transparent 25%)",
     bgColor: "#ffb6c1"
   },
-  // 六边形
+  // Hexagon
   {
     name: "六边形",
     value: "radial-gradient(circle at 33% 33%, #f8b195 5%, transparent 5.5%), radial-gradient(circle at 72% 64%, #8b5cf6 5%, transparent 5.5%), radial-gradient(circle at 45% 85%, #3b82f6 5%, transparent 5.5%), radial-gradient(circle at 75% 20%, #06b6d4 5%, transparent 5.5%), radial-gradient(circle at 20% 60%, #22c55e 5%, transparent 5.5%)",
     bgColor: "#ffffff"
   },
-  // 圆点阵列
+  // Dot array
   {
     name: "圆点阵列",
     value: "radial-gradient(#c06c84 20%, transparent 20%) 0 0 / 20px 20px, radial-gradient(#c06c84 20%, transparent 20%) 10px 10px / 20px 20px",
     bgColor: "#ffffff"
   },
-  // 几何三角形
+  // Geometric triangles
   {
     name: "几何三角形",
     value: "linear-gradient(30deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(150deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(30deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(150deg, #6d28d9 12%, transparent 12.5%, transparent 87%, #6d28d9 87.5%, #6d28d9), linear-gradient(60deg, #a78bfa 25%, transparent 25.5%, transparent 75%, #a78bfa 75%, #a78bfa), linear-gradient(60deg, #a78bfa 25%, transparent 25.5%, transparent 75%, #a78bfa 75%, #a78bfa)",
     bgColor: "#ffffff"
   },
-  // 交叉线条
+  // Cross lines
   {
     name: "交叉线条",
     value: "repeating-linear-gradient(0deg, #38bdf8, #38bdf8 2px, transparent 2px, transparent 20px), repeating-linear-gradient(90deg, #38bdf8, #38bdf8 2px, transparent 2px, transparent 20px)",
     bgColor: "#ffffff" 
   },
-  // 霓虹斑点
+  // Neon spots
   {
     name: "霓虹斑点",
     value: "radial-gradient(circle at 50% 0%, #fb7185 10%, #4f46e5 15%, transparent 60%), radial-gradient(circle at 85% 30%, #2dd4bf 15%, #8b5cf6 30%, transparent 55%), radial-gradient(circle at 10% 70%, #f59e0b 5%, #ec4899 15%, transparent 35%)",
     bgColor: "#0f172a"
   },
-  // 棋盘格
+  // Checkerboard
   {
     name: "棋盘格",
     value: "linear-gradient(45deg, #444cf722 25%, transparent 25%) 0 0 / 20px 20px, linear-gradient(-45deg, #444cf722 25%, transparent 25%) 0 0 / 20px 20px, linear-gradient(45deg, transparent 75%, #444cf722 75%) 0 0 / 20px 20px, linear-gradient(-45deg, transparent 75%, #444cf722 75%) 0 0 / 20px 20px",
     bgColor: "#ffffff"
   },
-  // 马赛克
+  // Mosaic
   {
     name: "马赛克",
     value: "linear-gradient(135deg, #eab308 21px, #fef08a 22px, #fef08a 24px, transparent 24px, transparent 67px, #fef08a 67px, #fef08a 69px, transparent 69px), linear-gradient(225deg, #eab308 21px, #fef08a 22px, #fef08a 24px, transparent 24px, transparent 67px, #fef08a 67px, #fef08a 69px, transparent 69px) 0 64px",
     bgColor: "#eab308"
   },
-  // 像素点
+  // Pixel dots
   {
     name: "像素点",
     value: "linear-gradient(90deg, rgba(166, 173, 186, 0.2) 2px, transparent 0), linear-gradient(180deg, rgba(166, 173, 186, 0.2) 2px, transparent 0)",
     bgColor: "#f1f5f9"
   },
-  // 纸张纹理
+  // Paper texture
   {
     name: "纸张纹理",
     value: "linear-gradient(135deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03) 75%, transparent 75%, transparent)",
     bgColor: "#f5f5f4"
   },
-  // 彩色泡泡
+  // Colorful bubbles
   {
     name: "彩色泡泡",
     value: "radial-gradient(circle at 33% 33%, #f43f5e 5%, transparent 5.5%), radial-gradient(circle at 72% 64%, #8b5cf6 5%, transparent 5.5%), radial-gradient(circle at 45% 85%, #3b82f6 5%, transparent 5.5%), radial-gradient(circle at 75% 20%, #06b6d4 5%, transparent 5.5%), radial-gradient(circle at 20% 60%, #22c55e 5%, transparent 5.5%)",
@@ -168,7 +168,7 @@ const PATTERN_BACKGROUNDS = [
   }
 ];
 
-// 更新SvgPatternPanel组件
+// Update SvgPatternPanel component
 const SvgPatternPanel = () => {
   const { 
     setBackgroundType, 
@@ -180,11 +180,11 @@ const SvgPatternPanel = () => {
   } = usePicprose();
   const t = useTranslations('LeftResourcePanel');
   
-  // 手动定义角落模板，确保可用
+  // Manually define corner template to ensure availability
   const cornerTemplate = (params: any) => {
     const { backgroundColor, color1, color2, cornerRadius, cornerCount, strokeWidth, rotation } = params;
     
-    // 简化的角落实现
+    // Simplified corner implementation
     return `<svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
       <rect width="800" height="600" fill="${backgroundColor}" />
       <g transform="rotate(${rotation || 0}, 400, 300)">
@@ -196,18 +196,18 @@ const SvgPatternPanel = () => {
     </svg>`;
   };
   
-  // 安全地构建SVG背景数组
+  // Safely build SVG background array
   const svgBgs: SvgTemplate[] = [];
   
-  // 检查SVG_BACKGROUNDS是否可用，如果可用则使用它
+  // Check if SVG_BACKGROUNDS is available, use it if available
   if (Array.isArray(SVG_BACKGROUNDS) && SVG_BACKGROUNDS.length > 0) {
     svgBgs.push(...SVG_BACKGROUNDS);
   }
   
-  // 检查是否已经存在角落模板
+  // Check if corner template already exists
   const hasCornerTemplate = svgBgs.some(bg => bg.name === "角落");
   
-  // 如果没有角落模板，添加一个
+  // If no corner template exists, add one
   if (!hasCornerTemplate) {
     svgBgs.push({
       name: "角落",
@@ -216,19 +216,19 @@ const SvgPatternPanel = () => {
         color1: "#ff0071ff",
         color2: "#95ffa1ff",
         backgroundColor: "#95ffda",
-        // 添加足够的参数以匹配预期类型
+        // Add sufficient parameters to match expected type
         cornerRadius: 150,
         cornerCount: 5,
         strokeWidth: 30,
         rotation: 0,
         contrast: 50,
-        layers: 3,  // 添加必须的layers属性
+        layers: 3,  // Add required layers property
         height: 100,
         amplitude: 50,
         frequency: 0.02,
         speed: 0.5,
         wavesOpacity: 0.7,
-        // 其他可选参数
+        // Other optional parameters
         style: "solid",
         position: ["center"],
         mirrorEdges: false
@@ -236,7 +236,7 @@ const SvgPatternPanel = () => {
     });
   }
   
-  // 确保有可用的模板
+  // Ensure available templates
   if (!svgBgs || svgBgs.length === 0) {
     return (
       <div className="p-4">
@@ -253,16 +253,16 @@ const SvgPatternPanel = () => {
     
     const selectedSvg = svgBgs[index];
     
-    // 克隆默认参数以避免引用问题
+    // Clone default parameters to avoid reference issues
     const defaultParams = JSON.parse(JSON.stringify(selectedSvg.defaultParams));
     
-    // 设置选中的SVG索引和默认参数
+    // Set selected SVG index and default parameters
     setSelectedSvgIndex(index);
     setSvgPatternParams(defaultParams);
     setShowSvgPanel(true);
     
     try {
-      // 应用默认参数的SVG
+      // Apply SVG with default parameters
       const svgPattern = selectedSvg.svgTemplate(defaultParams);
       const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
       setBackgroundType('svg');
@@ -271,7 +271,7 @@ const SvgPatternPanel = () => {
     }
   };
 
-  // 使用安全的渲染方式
+  // Use safe rendering approach
   const renderSvgPreview = (index: number) => {
     if (index >= svgBgs.length) {
       return <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">SVG不可用</div>;
@@ -300,7 +300,7 @@ const SvgPatternPanel = () => {
     <div className="p-4">
       <h3 className="text-lg font-medium mb-4">{t('svg_patterns')}</h3>
       <div className="grid grid-cols-2 gap-4">
-        {/* Heazy波浪SVG模板 */}
+        {/* Heazy wave SVG template */}
         <div className="flex flex-col items-center">
           <div 
             className={`w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform overflow-hidden ${selectedSvgIndex === 0 ? 'border-2 border-blue-500' : 'border border-gray-300 dark:border-gray-700'}`}
@@ -313,7 +313,7 @@ const SvgPatternPanel = () => {
           </div>
         </div>
         
-        {/* 角落SVG模板 */}
+        {/* Corner SVG template */}
         <div className="flex flex-col items-center">
           <div 
             className={`w-full aspect-[4/3] rounded-md cursor-pointer hover:scale-105 transition-transform overflow-hidden ${selectedSvgIndex === 1 ? 'border-2 border-blue-500' : 'border border-gray-300 dark:border-gray-700'}`}
@@ -368,7 +368,7 @@ export const GalleryIcon = (props: React.SVGProps<SVGSVGElement>) => {
   );
 };
   
-// 添加颜色选择图标
+// Add color selection icon - rounded rectangle style
 export const PaletteIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
@@ -381,39 +381,48 @@ export const PaletteIcon = (props: React.SVGProps<SVGSVGElement>) => {
       width="24"
       {...props}
     >
+      {/* Rounded rectangle background */}
       <path
-        d="M10 16.5C10 17.88 8.88 19 7.5 19C6.12 19 5 17.88 5 16.5C5 15.12 6.12 14 7.5 14C8.88 14 10 15.12 10 16.5Z"
+        d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"
       />
-      <path
-        d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+      {/* Palette pattern */}
+      <circle
+        cx="8"
+        cy="8"
+        r="2"
+        fill="currentColor"
+        opacity="0.6"
       />
-      <path
-        d="M14.5 9C15.8807 9 17 7.88071 17 6.5C17 5.11929 15.8807 4 14.5 4C13.1193 4 12 5.11929 12 6.5C12 7.88071 13.1193 9 14.5 9Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+      <circle
+        cx="16"
+        cy="8"
+        r="2"
+        fill="currentColor"
+        opacity="0.4"
       />
-      <path
-        d="M18.5 13C19.0523 13 19.5 12.5523 19.5 12C19.5 11.4477 19.0523 11 18.5 11C17.9477 11 17.5 11.4477 17.5 12C17.5 12.5523 17.9477 13 18.5 13Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+      <circle
+        cx="8"
+        cy="16"
+        r="2"
+        fill="currentColor"
+        opacity="0.8"
+      />
+      <circle
+        cx="16"
+        cy="16"
+        r="2"
+        fill="currentColor"
+        opacity="0.3"
       />
     </svg>
   );
 };
 
-// 颜色选择组件
+// Color selection component
 const ColorPanel = () => {
   const { setBackgroundType, setBackgroundColor } = usePicprose();
   const t = useTranslations('LeftResourcePanel');
@@ -452,7 +461,7 @@ const ColorPanel = () => {
   );
 };
 
-// 添加 SVG 图标组件
+// Add texture icon component - rounded rectangle style
 export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
@@ -465,6 +474,7 @@ export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
       width="24"
       {...props}
     >
+      {/* Rounded rectangle background */}
       <path
         d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z"
         stroke="currentColor"
@@ -472,26 +482,48 @@ export const SvgIcon = (props: React.SVGProps<SVGSVGElement>) => {
         strokeLinejoin="round"
         strokeWidth="1.5"
       />
+      {/* Texture pattern - grid lines */}
       <path
-        d="M15 9.5C15 8.12 13.88 7 12.5 7C11.12 7 10 8.12 10 9.5C10 10.88 11.12 12 12.5 12"
+        d="M6 6L18 6"
         stroke="currentColor"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+        strokeWidth="1"
+        opacity="0.5"
       />
       <path
-        d="M16.5 14.5C16.5 15.88 15.38 17 14 17C12.62 17 11.5 15.88 11.5 14.5C11.5 13.12 12.62 12 14 12"
+        d="M6 10L18 10"
         stroke="currentColor"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+        strokeWidth="1"
+        opacity="0.5"
       />
       <path
-        d="M9 15L15 9"
+        d="M6 14L18 14"
         stroke="currentColor"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+        strokeWidth="1"
+        opacity="0.5"
+      />
+      <path
+        d="M6 18L18 18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1"
+        opacity="0.5"
+      />
+      <path
+        d="M10 6L10 18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1"
+        opacity="0.3"
+      />
+      <path
+        d="M14 6L14 18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1"
+        opacity="0.3"
       />
     </svg>
   );
@@ -514,12 +546,12 @@ export const LeftResourcePanel = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [retryCount, setRetryCount] = React.useState(0);
   const MAX_RETRY_COUNT = 3;
-  const MAX_PHOTOS = 300; // 新增：最大照片数限制
+  const MAX_PHOTOS = 300; // New: Maximum photo count limit
   
-  // 添加当前标签页状态
+  // Add current tab state
   const [activeTab, setActiveTab] = React.useState("images");
 
-  // 添加一个状态来跟踪已加载的图片ID
+  // Add state to track loaded image IDs
   const [loadedPhotoIds, setLoadedPhotoIds] = useState<Set<string>>(new Set());
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -537,12 +569,12 @@ export const LeftResourcePanel = () => {
   };
 
   const fetchPhotosBySearch = (searchText: string, page: number) => {
-    // 如果已经在加载中，或者没有更多照片，则直接返回
+    // Return directly if already loading or no more photos
     if (isLoading || !hasMorePhotos) {
       return;
     }
 
-    // 检查照片数量上限
+    // Check photo count limit
     if (photos.length >= MAX_PHOTOS) {
       console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
       setHasMorePhotos(false);
@@ -560,7 +592,7 @@ export const LeftResourcePanel = () => {
       })
       .then(result => {
         if (result.type === "success") {
-          // 过滤掉已经加载的图片ID
+          // Filter out already loaded image IDs
           const newPhotos = result.response.results
             .filter((item: any) => !loadedPhotoIds.has(item.id))
             .map((item: any) => {
@@ -578,14 +610,14 @@ export const LeftResourcePanel = () => {
               };
             });
           
-          // 如果过滤后没有新照片，并且还有重试机会，尝试下一页
+          // If no new photos after filtering and retry chances remain, try next page
           if (newPhotos.length === 0) {
             if (retryCount < MAX_RETRY_COUNT) {
               const newRetryCount = retryCount + 1;
               setRetryCount(newRetryCount);
               setIsLoading(false);
               
-              // 如果还需要重试，尝试下一页
+              // If retry is needed, try next page
               if (newRetryCount < MAX_RETRY_COUNT) {
                 setTimeout(() => {
                   if (activeTab === "images" && hasMorePhotos) {
@@ -604,24 +636,24 @@ export const LeftResourcePanel = () => {
             }
           }
           
-          // 更新已加载图片ID集合
+          // Update loaded image ID set
           const newIds = new Set(loadedPhotoIds);
           newPhotos.forEach((photo: any) => {
             newIds.add(photo.key);
           });
           setLoadedPhotoIds(newIds);
           
-          // 如果过滤后没有新照片或总数小于请求数，设置没有更多照片
+          // If no new photos after filtering or total less than requested, set no more photos
           if (newPhotos.length < PHOTOS_PER_PAGE) {
             setHasMorePhotos(false);
           } else {
-            // 只有在成功获取照片时才重置重试计数
+            // Only reset retry count when photos are successfully obtained
             setRetryCount(0);
-            // 确保hasMorePhotos为true
+            // Ensure hasMorePhotos is true
             setHasMorePhotos(true);
           }
           
-          // 检查照片总数是否达到上限
+          // Check if total photo count reaches limit
           const updatedPhotoCount = page === 1 ? newPhotos.length : photos.length + newPhotos.length;
           if (updatedPhotoCount >= MAX_PHOTOS) {
             setHasMorePhotos(false);
@@ -643,7 +675,7 @@ export const LeftResourcePanel = () => {
             }, 0);
           }
         } else {
-          // API返回不是success类型
+          // API return is not success type
           if (retryCount < MAX_RETRY_COUNT) {
             setRetryCount(prev => prev + 1);
             setTimeout(() => {
@@ -660,7 +692,7 @@ export const LeftResourcePanel = () => {
       })
       .catch(error => {
         console.error("搜索照片出错：", error);
-        // 出错时根据重试次数决定是否继续尝试
+        // Decide whether to continue trying based on retry count when error occurs
         if (retryCount < MAX_RETRY_COUNT) {
           setRetryCount(prev => prev + 1);
           setTimeout(() => {
@@ -677,12 +709,12 @@ export const LeftResourcePanel = () => {
   };
 
   const fetchRandomPhotos = () => {
-    // 如果已经在加载中，或者没有更多照片，则直接返回
+    // Return directly if already loading or no more photos
     if (isLoading || !hasMorePhotos) {
       return;
     }
 
-    // 新增：如果照片数量已达上限，停止加载
+    // New: Stop loading if photo count reaches limit
     if (photos.length >= MAX_PHOTOS) {
       console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
       setHasMorePhotos(false);
@@ -691,7 +723,7 @@ export const LeftResourcePanel = () => {
 
     setIsLoading(true);
     
-    // 随机请求时添加一个随机参数，以获取不同的图片集
+    // Add random parameter for random requests to get different image sets
     const randomSeed = Math.floor(Math.random() * 10000);
     
     fetch(`/api/unsplash?random=true&seed=${randomSeed}`)
@@ -707,7 +739,7 @@ export const LeftResourcePanel = () => {
             ? result.response 
             : [result.response];
             
-          // 过滤出尚未加载的图片
+          // Filter out unloaded images
           const newPhotos = responseArray
             .filter((item: any) => !loadedPhotoIds.has(item.id))
             .map((item: any) => {
@@ -725,15 +757,15 @@ export const LeftResourcePanel = () => {
               };
             });
           
-          // 如果过滤后没有新照片，使用非递归方式处理重试
+          // If no new photos after filtering, handle retry in non-recursive way
           if (newPhotos.length === 0) {
             if (retryCount < MAX_RETRY_COUNT) {
-              // 增加重试计数
+              // Increase retry count
               const newRetryCount = retryCount + 1;
               setRetryCount(newRetryCount);
               setIsLoading(false);
               
-              // 如果还需要重试，使用setTimeout避免递归
+              // If retry is needed, use setTimeout to avoid recursion
               if (newRetryCount < MAX_RETRY_COUNT) {
                 setTimeout(() => {
                   if (activeTab === "images" && hasMorePhotos) {
@@ -745,33 +777,33 @@ export const LeftResourcePanel = () => {
               }
               return;
             } else {
-              // 达到最大重试次数，设置没有更多照片
+              // Reached max retry count, set no more photos
               setHasMorePhotos(false);
               setIsLoading(false);
             }
           }
           
-          // 更新已加载图片ID集合
+          // Update loaded image ID set
           const newIds = new Set(loadedPhotoIds);
           newPhotos.forEach((photo: any) => {
             newIds.add(photo.key);
           });
           setLoadedPhotoIds(newIds);
           
-          // 重置重试计数并确保hasMorePhotos为true
+          // Reset retry count and ensure hasMorePhotos is true
           setRetryCount(0);
           setHasMorePhotos(true);
           
-          // 检查是否达到最大照片数
+          // Check if max photo count is reached
           if (photos.length + newPhotos.length >= MAX_PHOTOS) {
             setHasMorePhotos(false);
           }
           
-          // 更新照片状态
+          // Update photo state
           setPhotos(prevPhotos => {
             const updatedPhotos = [...prevPhotos, ...newPhotos];
             
-            // 仅在第一次获取照片且有照片时设置初始照片
+            // Only set initial photo when getting photos for the first time and photos exist
             if (!hasSetInitialPhoto && updatedPhotos.length > 0) {
               setHasSetInitialPhoto(true);
               setTimeout(() => {
@@ -785,7 +817,7 @@ export const LeftResourcePanel = () => {
           
           setIsLoading(false);
         } else {
-          // 响应格式不正确
+          // Response format is incorrect
           if (retryCount < MAX_RETRY_COUNT) {
             setRetryCount(prev => prev + 1);
             setTimeout(() => {
@@ -802,7 +834,7 @@ export const LeftResourcePanel = () => {
       })
       .catch(error => {
         console.error("获取随机照片出错：", error);
-        // 出错时根据重试次数决定是否继续尝试
+        // Decide whether to continue trying based on retry count when error occurs
         if (retryCount < MAX_RETRY_COUNT) {
           setRetryCount(prev => prev + 1);
           setTimeout(() => {
@@ -854,7 +886,7 @@ export const LeftResourcePanel = () => {
       return;
     }
     
-    // 新增：如果照片数量已达上限，停止加载
+    // New: Stop loading if photo count reaches limit
     if (photos.length >= MAX_PHOTOS) {
       console.log(`已达到最大照片数量限制 (${MAX_PHOTOS})`);
       setHasMorePhotos(false);
@@ -877,10 +909,10 @@ export const LeftResourcePanel = () => {
   React.useEffect(() => {
     setWindowHeight(window.innerHeight);
     
-    // 只在组件挂载时和activeTab为"images"时获取随机照片
+    // Only fetch random photos when component mounts and activeTab is "images"
     if (activeTab === "images" && photos.length === 0 && !isLoading) {
       fetchRandomPhotos();
-      setHasMorePhotos(true); // 确保可以加载更多
+      setHasMorePhotos(true); // Ensure more can be loaded
     }
 
     const handleResize = () => {
@@ -936,21 +968,21 @@ export const LeftResourcePanel = () => {
     const previousTab = activeTab;
     setActiveTab(key);
     
-    // 如果从非图片标签切换到图片标签
+    // If switching from non-image tab to image tab
     if (key === "images" && previousTab !== "images") {
-      // 如果没有照片，则获取随机照片
+      // If no photos, fetch random photos
       if (photos.length === 0 && !isLoading) {
         setHasMorePhotos(true);
         fetchRandomPhotos();
       } else {
-        // 重置滚动位置
+        // Reset scroll position
         setTimeout(() => {
           if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTop = 0;
           }
         }, 0);
         
-        // 确保hasMorePhotos状态正确
+        // Ensure hasMorePhotos state is correct
         if (photos.length < MAX_PHOTOS) {
           setHasMorePhotos(true);
         }

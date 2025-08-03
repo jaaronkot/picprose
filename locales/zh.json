@@ -120,7 +120,8 @@
         "randomize_wave": "随机生成",
         "title_width": "标题宽度",
         "devices": "设备",
-        "social_media": "社交媒体"
+        "social_media": "社交媒体",
+        "image_position": "背景图片位置"
     },
     "ImageEditorToolbar": {
         "edit": "编辑",

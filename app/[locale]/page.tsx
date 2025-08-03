@@ -22,7 +22,7 @@ import { ImageEditorToolbar } from "./ImageEditorToolbar";
 import { PicproseProvider } from "./PicproseContext";
 import { ComponentToImg } from "./ComponentToImg";
 
-// 定义编辑器状态类型
+// Define editor state types
 type EditorElements = {
   title: { x: number; y: number; visible: boolean };
   author: { x: number; y: number; visible: boolean };
@@ -33,7 +33,7 @@ type EditorElements = {
 export default function Home() {
   const [selectedImage, setSelectedImage] = React.useState({});
   
-  // 提升所有状态到最顶层组件
+  // Lift all state to the top-level component
   const [isDragMode, setIsDragMode] = React.useState(false);
   const [elements, setElements] = React.useState<EditorElements>({
     title: { x: 0, y: 0, visible: true },
@@ -42,7 +42,7 @@ export default function Home() {
     image: { x: 0, y: 0 }
   });
   
-  // 初始化历史记录，包含初始状态
+  // Initialize history with initial state
   const initialElements = {
     title: { x: 0, y: 0, visible: true },
     author: { x: 0, y: 0, visible: true },
@@ -52,18 +52,18 @@ export default function Home() {
   const [history, setHistory] = React.useState<EditorElements[]>([initialElements]);
   const [historyIndex, setHistoryIndex] = React.useState(0);
 
-  // 添加对 ComponentToImg 的引用
-  const componentToImgRef = React.useRef(null);
+  // Add reference to ComponentToImg
+  const componentToImgRef = React.useRef<{ downloadImage: (format: string) => void } | null>(null);
   
-  // 修改下载图片的方法
+  // Modify image download method
   const handleDownload = (format: string) => {
-    // 调用 ComponentToImg 的下载方法
+    // Call ComponentToImg download method
     if (componentToImgRef.current) {
       componentToImgRef.current.downloadImage(format);
     }
   };
 
-  // 重置所有编辑器状态
+  // Reset all editor state
   const handleResetLayout = () => {
     const resetElements = {
       title: { x: 0, y: 0, visible: true },
@@ -77,7 +77,7 @@ export default function Home() {
     setIsDragMode(false);
   };
 
-  // 保存历史记录
+  // Save history
   const saveHistory = (currentElements: EditorElements) => {
     setHistory(prev => [...prev.slice(0, historyIndex + 1), {...currentElements}]);
     setHistoryIndex(prev => prev + 1);
@@ -86,12 +86,12 @@ export default function Home() {
   return (
     <PicproseProvider onDownload={handleDownload}>
       <div className="flex flex-col lg:flex-row h-screen max-h-screen">
-        {/* 左侧面板 - 固定宽度350px */}
+        {/* Left panel - fixed width 350px */}
         <div className="lg:w-[350px] flex-shrink-0 h-screen overflow-hidden">
           <LeftResourcePanel />
         </div>
         
-        {/* 中间内容区域 - 自适应填充剩余空间 */}
+        {/* Middle content area - adaptive fill remaining space */}
         <div className="flex-grow flex flex-col bg-white dark:bg-gray-900 h-screen max-h-screen overflow-hidden relative">
           <div className="flex-1 flex justify-center items-center bg-gray-100 dark:bg-gray-800">
             <ComponentToImg ref={componentToImgRef}>
@@ -105,7 +105,7 @@ export default function Home() {
             </ComponentToImg>
           </div>
           
-          {/* 工具栏浮动在上方 */}
+          {/* Toolbar floating above */}
           <ImageEditorToolbar 
             isDragMode={isDragMode}
             setIsDragMode={setIsDragMode}
@@ -117,7 +117,7 @@ export default function Home() {
           />
         </div>
         
-        {/* 右侧面板 - 固定宽度350px */}
+        {/* Right panel - fixed width 350px */}
         <div className="lg:w-[350px] flex-shrink-0 h-screen overflow-hidden">
           <RightPropertyPanel />
         </div>

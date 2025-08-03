@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { config } from "@/config";
 import { SVG_BACKGROUNDS } from "./svgBackgrounds";
 
-// 定义图片信息接口
+// Define image information interface
 interface ImageInfo {
   url: string;
   name: string;
@@ -17,7 +17,7 @@ interface ImageInfo {
   src?: string;
 }
 
-// 定义属性接口
+// Define property interface
 interface PropertyInfo {
   font: string;
   fontSizeValue: number | string;
@@ -36,12 +36,13 @@ interface PropertyInfo {
   customHeight: number;
   isCustomAspect: boolean;
   titleWidthValue?: number | string;
+  selectedValue?: string;
 }
 
-// 定义背景类型
+// Define background type
 type BackgroundType = 'image' | 'color' | 'pattern' | 'svg';
 
-// 修改SvgParams类型定义
+// Modify SvgParams type definition
 interface SvgParams {
   color1: string;
   color2: string;
@@ -58,7 +59,7 @@ interface SvgParams {
   direction?: string;
   useGradientBg?: boolean;
   
-  // 角落图案的参数
+  // Corner pattern parameters
   cornerRadius?: number;
   cornerCount?: number;
   strokeWidth?: number;
@@ -73,49 +74,53 @@ interface SvgParams {
   shadowColor?: string;
 }
 
-// 添加SVG模板参数类型定义
+// Add SVG template parameter type definition
 interface SvgTemplateParams {
   [key: string]: any;
 }
 
-// 添加SVG模板类型定义
+// Add SVG template type definition
 interface SvgTemplate {
   name: string;
   svgTemplate: (params: SvgTemplateParams) => string;
   defaultParams: SvgTemplateParams;
 }
 
-// 定义元素布局接口
+// Define element layout interface
 interface ElementLayout {
   title: { x: number; y: number; visible: boolean };
   author: { x: number; y: number; visible: boolean };
   icon: { x: number; y: number; visible: boolean };
 }
 
-// 定义Context的类型
+// Define Context type
 interface PicproseContextType {
-  // 图片信息
+  // Image information
   imageInfo: ImageInfo;
   setImageInfo: (info: ImageInfo) => void;
   
-  // 属性信息
+  // Property information
   propertyInfo: PropertyInfo;
   updateProperty: <K extends keyof PropertyInfo>(key: K, value: PropertyInfo[K]) => void;
   
-  // 下载图片
+  // Download image
   downloadImage: (format: string) => void;
   
-  // 背景类型和颜色
+  // Background type and color
   backgroundType: BackgroundType;
   setBackgroundType: (type: BackgroundType) => void;
   backgroundColor: string;
   setBackgroundColor: (color: string) => void;
   
-  // 新增纹理背景相关属性
+  // Add texture background related properties
   backgroundPattern: string;
   setBackgroundPattern: (pattern: string) => void;
   
-  // 添加SVG相关属性
+  // Image position state
+  imagePosition: number;
+  setImagePosition: (position: number) => void;
+  
+  // Add SVG related properties
   selectedSvgIndex: number | null;
   setSelectedSvgIndex: (index: number | null) => void;
   svgPatternParams: SvgTemplateParams;
@@ -123,12 +128,12 @@ interface PicproseContextType {
   showSvgPanel: boolean;
   setShowSvgPanel: (show: boolean) => void;
   
-  // 添加布局相关属性
+  // Add layout related properties
   elementsLayout: ElementLayout;
   setElementsLayout: (layout: ElementLayout) => void;
 }
 
-// 创建默认图片信息
+// Create default image information
 const defaultImageInfo: ImageInfo = {
   url: "stacked-waves.svg",
   name: "PicProse",
@@ -137,7 +142,7 @@ const defaultImageInfo: ImageInfo = {
   downloadLink: "",
 };
 
-// 创建默认属性信息
+// Create default property information
 const defaultPropertyInfo: PropertyInfo = {
   font: config.font,
   fontSizeValue: config.fontSize,
@@ -156,19 +161,20 @@ const defaultPropertyInfo: PropertyInfo = {
   customHeight: 1080,
   isCustomAspect: false,
   titleWidthValue: 100,
+  selectedValue: "horizontal-16x9-aspect-[16/9]",
 };
 
-// 创建默认布局配置
+// Create default layout configuration
 const defaultElementsLayout: ElementLayout = {
   title: { x: 0, y: 0, visible: true },
   author: { x: 0, y: 80, visible: true },
   icon: { x: 0, y: 160, visible: true },
 };
 
-// 创建Context
+// Create Context
 const PicproseContext = createContext<PicproseContextType | undefined>(undefined);
 
-// Context Provider组件
+// Context Provider component
 export function PicproseProvider({ 
   children, 
   onDownload 
@@ -176,12 +182,12 @@ export function PicproseProvider({
   children: React.ReactNode, 
   onDownload: (format: string) => void 
 }) {
-  // 创建默认属性信息
+  // Create default property information
   const initialPropertyInfo = React.useMemo(() => {
-    // 使用固定的第一个标题，而不是随机选择
+    // Use fixed first title instead of random selection
     return {
       ...defaultPropertyInfo,
-      title: config.title[0] // 使用固定的第一个标题
+      title: config.title[0] // Use fixed first title
     };
   }, []);
 
@@ -191,22 +197,25 @@ export function PicproseProvider({
   const [backgroundColor, setBackgroundColor] = useState<string>('#1F2937');
   const [backgroundPattern, setBackgroundPattern] = useState<string>("");
   
-  // 添加三种状态下的遮罩浓度
+  // Add mask opacity for three states
   const [imageBlurTrans, setImageBlurTrans] = useState<string>((Math.floor(2.55 * config.blurTrans)).toString(16));
-  const [colorBlurTrans, setColorBlurTrans] = useState<string>("00"); // 颜色模式默认透明
-  const [patternBlurTrans, setPatternBlurTrans] = useState<string>("99"); // 纹理模式默认60%浓度 (153/255 ≈ 0.6 = 60%)
+  const [colorBlurTrans, setColorBlurTrans] = useState<string>("00"); // Color mode default transparent
+  const [patternBlurTrans, setPatternBlurTrans] = useState<string>("99"); // Pattern mode default 60% opacity (153/255 ≈ 0.6 = 60%)
 
-  // 新增SVG相关状态
+  // Image position state (range: -300 to 300)
+  const [imagePosition, setImagePosition] = useState<number>(0);
+
+  // Add SVG related states
   const [selectedSvgIndex, setSelectedSvgIndex] = useState<number | null>(null);
   const [svgPatternParams, setSvgPatternParams] = useState<SvgTemplateParams>({});
   const [showSvgPanel, setShowSvgPanel] = useState(false);
 
-  // 添加布局状态
+  // Add layout state
   const [elementsLayout, setElementsLayout] = useState<ElementLayout>(defaultElementsLayout);
 
-  // 使用 useEffect 来设置随机标题，这样只会在客户端执行
+  // Use useEffect to set random title, this will only execute on client side
   useEffect(() => {
-    // 仅在客户端执行随机选择
+    // Only execute random selection on client side
     const randomTitle = config.title[Math.floor(Math.random() * config.title.length)];
     setPropertyInfo(prev => ({
       ...prev,
@@ -214,14 +223,14 @@ export function PicproseProvider({
     }));
   }, []);
 
-  // 更新单个属性
+  // Update single property
   const updateProperty = <K extends keyof PropertyInfo>(key: K, value: PropertyInfo[K]) => {
     setPropertyInfo(prev => ({
       ...prev,
       [key]: value
     }));
     
-    // 如果用户正在更新遮罩透明度，同时根据当前背景类型保存到对应的状态
+    // If user is updating mask transparency, save to corresponding state based on current background type
     if (key === "blurTrans" && typeof value === "string") {
       if (backgroundType === 'image') {
         setImageBlurTrans(value);
@@ -233,12 +242,12 @@ export function PicproseProvider({
     }
   };
 
-  // 修改背景类型设置函数，当切换背景类型时，也切换对应的遮罩透明度
+  // Modify background type setting function, when switching background type, also switch corresponding mask transparency
   const handleBackgroundTypeChange = (type: BackgroundType) => {
-    // 更新背景类型
+    // Update background type
     setBackgroundType(type);
     
-    // 根据新的背景类型应用相应的遮罩透明度
+    // Apply corresponding mask transparency based on new background type
     if (type === 'color') {
       updateProperty("blurTrans", colorBlurTrans);
     } else if (type === 'image') {
@@ -248,7 +257,7 @@ export function PicproseProvider({
     }
   };
 
-  // 处理模糊属性特殊逻辑
+  // Handle blur property special logic
   useEffect(() => {
     let blurLevel: string = "backdrop-blur-none";
     if (typeof propertyInfo.blur === "number") {
@@ -270,7 +279,7 @@ export function PicproseProvider({
     }
   }, [propertyInfo.blur]);
 
-  // 处理透明度
+  // Handle transparency
   useEffect(() => {
     if (typeof propertyInfo.blurTrans === "number") {
       const trans = Math.floor(2.55 * propertyInfo.blurTrans as number).toString(16);
@@ -278,21 +287,21 @@ export function PicproseProvider({
     }
   }, [propertyInfo.blurTrans]);
 
-  // 下载图片
+  // Download image
   const downloadImage = (format: string) => {
     if (onDownload) {
       onDownload(format);
     }
   };
 
-  // 将这些方法更新为支持多个SVG模板
+  // Update these methods to support multiple SVG templates
   const randomizeSvgParams = (index: number) => {
     if (index >= 0 && index < SVG_BACKGROUNDS.length) {
       const svgTemplate = SVG_BACKGROUNDS[index];
       const params = {...svgTemplate.defaultParams};
       
-      // 随机参数设置...
-      // 这部分已在RightPropertyPanel中实现
+      // Random parameter settings...
+      // This part is already implemented in RightPropertyPanel
       
       setSvgPatternParams(params);
       setSelectedSvgIndex(index);
@@ -304,52 +313,52 @@ export function PicproseProvider({
     }
   };
 
-  // 只需确保保留Heazy波浪相关的随机生成逻辑
+  // Just ensure to keep Heazy wave related random generation logic
   const randomizeHeazyWave = () => {
-    // 确认是Heazy波浪（索引为1）
+    // Confirm it's Heazy wave (index 1)
     const heazyWaveIndex = 1;
     const heazyWave = SVG_BACKGROUNDS[heazyWaveIndex];
     
-    // 创建新参数对象，保留默认值结构
+    // Create new parameter object, keep default value structure
     const params = {...heazyWave.defaultParams};
     
-    // 随机颜色 - 生成鲜艳的颜色
+    // Random colors - generate vibrant colors
     const hue1 = Math.floor(Math.random() * 360);
     const hue2 = (hue1 + 40 + Math.floor(Math.random() * 140)) % 360;
     
     params.color1 = `hsl(${hue1}, 80%, 60%)`;
     params.color2 = `hsl(${hue2}, 80%, 60%)`;
     
-    // 随机设置参数
+    // Randomly set parameters
     params.amplitude = Math.floor(Math.random() * 95) + 10; // 10-105
     params.frequency = (Math.random() * 0.045) + 0.005; // 0.005-0.05
     params.layers = Math.floor(Math.random() * 5) + 1; // 1-5
     params.speed = (Math.random() * 0.8) + 0.1; // 0.1-0.9
-    params.rotation = Math.floor(Math.random() * 360 / 15) * 15; // 0-345，每15度一个增量
+    params.rotation = Math.floor(Math.random() * 360 / 15) * 15; // 0-345, increment by 15 degrees
     params.contrast = Math.floor(Math.random() * 101); // 0-100
     params.wavesOpacity = (Math.random() * 0.6) + 0.3; // 0.3-0.9
     
-    // 随机选择方向
+    // Randomly select direction
     const directions = ['left', 'right', 'none'];
     params.direction = directions[Math.floor(Math.random() * directions.length)];
     
-    // 随机选择样式
+    // Randomly select style
     params.style = Math.random() > 0.5 ? 'solid' : 'outline';
     
-    // 随机选择是否使用渐变背景
-    params.useGradientBg = Math.random() > 0.3; // 70%概率使用渐变背景
+    // Randomly select whether to use gradient background
+    params.useGradientBg = Math.random() > 0.3; // 70% probability to use gradient background
     
     if (!params.useGradientBg) {
-      // 如果不使用渐变，随机生成背景色（深色系）
+      // If not using gradient, randomly generate background color (dark theme)
       const bgHue = Math.floor(Math.random() * 360);
       params.backgroundColor = `hsl(${bgHue}, 70%, 10%)`;
     }
     
-    // 更新状态
+    // Update state
     setSvgPatternParams(params);
     setSelectedSvgIndex(heazyWaveIndex);
     
-    // 生成SVG
+    // Generate SVG
     const svgPattern = heazyWave.svgTemplate(params);
     const encodedSvg = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgPattern)}")`;
     setBackgroundPattern(encodedSvg);
@@ -370,6 +379,8 @@ export function PicproseProvider({
         setBackgroundColor,
         backgroundPattern,
         setBackgroundPattern,
+        imagePosition,
+        setImagePosition,
         selectedSvgIndex,
         setSelectedSvgIndex,
         svgPatternParams,
@@ -385,11 +396,11 @@ export function PicproseProvider({
   );
 }
 
-// 自定义Hook，用于访问Context
+// Custom Hook for accessing Context
 export function usePicprose() {
   const context = useContext(PicproseContext);
   if (context === undefined) {
     throw new Error("usePicprose must be used within a PicproseProvider");
   }
   return context;
-} 
+}

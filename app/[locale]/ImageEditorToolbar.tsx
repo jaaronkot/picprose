@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
 import { useTranslations } from 'next-intl';
-import { usePicprose } from "./PicproseContext"; // 导入 usePicprose 上下文
+import { usePicprose } from "./PicproseContext"; // Import usePicprose context
 
 interface ImageEditorToolbarProps {
   isDragMode: boolean;
@@ -23,13 +23,13 @@ export const ImageEditorToolbar = ({
   setElements,
   setHistoryIndex
 }: ImageEditorToolbarProps) => {
-  // 获取翻译函数
+  // Get translation function
   const t = useTranslations('ImageEditorToolbar');
   
-  // 获取背景类型信息
+  // Get background type information
   const { backgroundType } = usePicprose();
   
-  // 简单直接的切换编辑模式
+  // Simple and direct toggle edit mode
   const toggleEditMode = () => {
     setIsDragMode(!isDragMode);
   };
@@ -37,7 +37,7 @@ export const ImageEditorToolbar = ({
   return (
     <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-30">
       <div className="flex flex-col items-center relative">
-        {/* 拖动模式提示 - 从ImageEditor移动过来 */}
+        {/* Drag mode hint - moved from ImageEditor */}
         {isDragMode && (
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white/80 text-black px-4 py-2 rounded-lg shadow-lg whitespace-nowrap">
             {t('drag_mode_hint', {
@@ -50,13 +50,13 @@ export const ImageEditorToolbar = ({
         
         <div className="flex items-center rounded-lg bg-primary/10 backdrop-blur-sm px-3 py-2 shadow-lg">
           <div className="flex items-center gap-4">
-            {/* 拖拽模式切换按钮 - 使用笔/锁图标 */}
+            {/* Drag mode toggle button - using pen/lock icon */}
             <div className="flex flex-col items-center">
               <Button 
                 color="primary"
                 variant="flat"
                 onClick={toggleEditMode}
-                title={isDragMode ? "完成编辑并锁定" : "进入编辑模式"}
+                title={isDragMode ? "Finish editing and lock" : "Enter edit mode"}
                 isIconOnly={true}
                 size="sm"
               >
@@ -86,7 +86,7 @@ export const ImageEditorToolbar = ({
               </Button>
             </div>
             
-            {/* 撤销按钮 - 圆形弯曲箭头样式 */}
+            {/* Undo button - circular curved arrow style */}
             <div className="flex flex-col items-center">
               <Button 
                 color="primary"
@@ -98,7 +98,7 @@ export const ImageEditorToolbar = ({
                   }
                 }}
                 isDisabled={!isDragMode || historyIndex <= 0}
-                title="撤销"
+                title="Undo"
                 isIconOnly
                 size="sm"
               >
@@ -119,7 +119,7 @@ export const ImageEditorToolbar = ({
               </Button>
             </div>
             
-            {/* 重做按钮 - 圆形弯曲箭头样式 */}
+            {/* Redo button - circular curved arrow style */}
             <div className="flex flex-col items-center">
               <Button 
                 color="primary"
@@ -131,7 +131,7 @@ export const ImageEditorToolbar = ({
                   }
                 }}
                 isDisabled={!isDragMode || historyIndex >= history.length - 1}
-                title="重做"
+                title="Redo"
                 isIconOnly
                 size="sm"
               >
@@ -152,13 +152,13 @@ export const ImageEditorToolbar = ({
               </Button>
             </div>
             
-            {/* 重置布局按钮 */}
+            {/* Reset layout button */}
             <div className="flex flex-col items-center">
               <Button 
                 color="primary"
                 variant="flat"
                 onClick={handleResetLayout}
-                title="恢复默认布局"
+                title="Restore default layout"
                 isIconOnly
                 size="sm"
               >
